@@ -19,9 +19,7 @@ CREATE DATABASE Database_Karate;
 GO
 USE Database_Karate;
 GO
-CREATE LOGIN db_user WITH PASSWORD = "Database.net.user.2023"
-GO
-CREATE USER db_user FOR LOGIN db_user
+CREATE LOGIN db_user WITH PASSWORD = "Database.net.user.2023";
 GO
 CREATE USER db_user FOR LOGIN db_user
 GO
@@ -43,6 +41,7 @@ Server Name:    localhost
 Authentication: SQL Server Authentication
 User Name:      db_user
 Password:       Database.net.user.2023
+Encrypt:        False
 Database Name:  Database_Karate
 
 Click Test Connection
