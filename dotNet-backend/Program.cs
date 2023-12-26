@@ -22,7 +22,7 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
 
     builderInstance.Services.AddControllers(options =>
     {
-        options.Filters.Add(new EmailVerifiedFilter());
+        ///options.Filters.Add(new EmailVerifiedFilter());
     });
     builderInstance.Host.UseSerilog();
     builderInstance.Services.AddAutoMapper(typeof(MapperProfile));
