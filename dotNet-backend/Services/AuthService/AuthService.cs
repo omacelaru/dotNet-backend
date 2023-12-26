@@ -41,37 +41,108 @@ namespace dotNet_backend.Services.AuthService
         public string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            var key = Encoding.ASCII.GetBytes(_configuration["JWT:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, user.Username),
-                    // Add other claims as needed
+                    new Claim("EmailConfirmed", user.EmailConfirmed.ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(15), // Token expiration time
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
+                Audience = _configuration["JWT:ValidAudience"],
+                Issuer = _configuration["JWT:ValidIssuer"],
+                Expires = DateTime.UtcNow.AddMinutes(5), // Token expiration time
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<string> LoginUserAsync(LoginDto loginDto)
+        public async Task<string> GenerateRefreshToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                new Claim(ClaimTypes.Name, user.Username),
+
+            }),
+                Expires = DateTime.UtcNow.AddDays(1), // Token expiration time
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            user.RefreshToken = tokenHandler.WriteToken(token);
+            _dbContext.Users.Update(user);
+
+            await _dbContext.SaveChangesAsync();
+            return user.RefreshToken;
+        }
+        public async Task<object> LoginUserAsync(LoginDto loginDto)
         {
             var user = await _userRepository.FindSingleOrDefaultAsync(u => u.Username == loginDto.Username);
 
             if (VerifyPassword(user.Password, loginDto.Password))
             {
-                return GenerateJwtToken(user);
+                var refreshToken = await GenerateRefreshToken(user);
+                var accessToken = GenerateJwtToken(user);
+                return new { AccessToken = accessToken, RefreshToken = refreshToken };
             }
             else
             {
                 throw new AuthorizationException("Invalid credentials.");
             }
+
+
         }
 
+        public async Task<object> RefreshTokenAsync(string refreshToken)
+        {
+            ValidateToken(refreshToken);
+
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.RefreshToken == refreshToken);
+
+            if (user != null)
+            {
+                return new { AccessToken = GenerateJwtToken(user) };
+            }
+            else
+            {
+                throw new BadRequestException("Invalid refresh token.");
+            }
+        }
+
+        public ClaimsPrincipal ValidateToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JWT:Key")),
+
+                ClockSkew = TimeSpan.Zero
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var validatedToken);
+
+
+                if (!(validatedToken is JwtSecurityToken jwtSecurityToken) ||
+                    !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new SecurityTokenException("Invalid token");
+                }
+
+                return principal;
+            }
+            catch (SecurityTokenException)
+            {
+                throw new BadRequestException("Invalid refresh token.");
+            }
+        }
         public bool VerifyPassword(string hashedPassword, string providedPassword)
         {
             var result = _passwordHasher.VerifyHashedPassword(new User(), hashedPassword, providedPassword);
