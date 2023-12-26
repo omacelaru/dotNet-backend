@@ -59,4 +59,5 @@ EntityFrameworkCore
 EntityFrameworkCore.SqlServer
 EntityFrameworkCore.Tools
 EntityFrameworkCore.Relational
+Microsoft.AspNetCore.Authentication.JwtBearer
 ```
