@@ -18,6 +18,7 @@ namespace dotNet_backend.Models.User
 
         [Required]
         public bool EmailConfirmed { get; set; } = false;
+        public string? RefreshToken { get; set; }
 
     }
 

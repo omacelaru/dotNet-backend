@@ -1,16 +1,18 @@
 ﻿using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Services;
+using dotNet_backend.Services.AuthService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService _authService;
-        public AuthController(AuthService authService)
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
@@ -44,6 +46,28 @@ namespace dotNet_backend.Controllers
             {
                 return Unauthorized();
             }
+        }
+
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(string refreshToken)
+        {
+            try
+            {
+                return Ok(await _authService.RefreshTokenAsync(refreshToken));
+
+            }
+            catch (BadRequestException err)
+            {
+                return BadRequest(new { error = err.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("test")]
+        public async Task<IActionResult> AuthTest()
+        {
+            return Ok("Ok");
         }
     }
 }
