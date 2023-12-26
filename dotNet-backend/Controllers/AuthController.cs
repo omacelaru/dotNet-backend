@@ -1,11 +1,12 @@
 ﻿using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -44,6 +45,28 @@ namespace dotNet_backend.Controllers
             {
                 return Unauthorized();
             }
+        }
+
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(string refreshToken)
+        {
+            try
+            {
+                return Ok(await _authService.RefreshTokenAsync(refreshToken));
+
+            }
+            catch (BadRequestException err)
+            {
+                return BadRequest(new { error = err.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("test")]
+        public async Task<IActionResult> AuthTest()
+        {
+            return Ok("Ok");
         }
     }
 }
