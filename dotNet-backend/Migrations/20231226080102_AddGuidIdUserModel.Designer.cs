@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace dotNet_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231225202107_AddInitialUserModel")]
-    partial class AddInitialUserModel
+    [Migration("20231226080102_AddGuidIdUserModel")]
+    partial class AddGuidIdUserModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,11 +26,9 @@ namespace dotNet_backend.Migrations
 
             modelBuilder.Entity("dotNet_backend.Models.User.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
