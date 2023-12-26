@@ -1,6 +1,7 @@
 ﻿using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Services;
+using dotNet_backend.Services.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +11,8 @@ namespace dotNet_backend.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService _authService;
-        public AuthController(AuthService authService)
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }

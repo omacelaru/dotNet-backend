@@ -1,13 +1,13 @@
 ﻿using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Models.User;
+using System.Security.Claims;
 
 namespace dotNet_backend.Services.AuthService
 {
     public interface IAuthService
     {
         Task<User> RegisterUserAsync(RegisterDto registerDto);
-        string GenerateJwtToken(User user);
         Task<object> LoginUserAsync(LoginDto loginDto);
-        bool VerifyPassword(string hashedPassword, string providedPassword);
+        Task<object> RefreshTokenAsync(string refreshToken);
     }
 }
