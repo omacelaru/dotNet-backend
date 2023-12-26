@@ -20,7 +20,6 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
         .WriteTo.File("log/KarateLogs.txt", rollingInterval: RollingInterval.Month)
         .CreateLogger();
 
-    var configuration = builderInstance.Configuration;
     builderInstance.Services.AddControllers(options =>
     {
         options.Filters.Add(new EmailVerifiedFilter());
