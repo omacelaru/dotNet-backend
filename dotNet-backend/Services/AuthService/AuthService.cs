@@ -76,9 +76,9 @@ namespace dotNet_backend.Services.AuthService
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.RefreshToken = tokenHandler.WriteToken(token);
-            _dbContext.Users.Update(user);
+            _userRepository.Update(user);
 
-            await _dbContext.SaveChangesAsync();
+            await _userRepository.SaveAsync();
             return user.RefreshToken;
         }
         public async Task<object> LoginUserAsync(LoginDto loginDto)
@@ -103,7 +103,7 @@ namespace dotNet_backend.Services.AuthService
         {
             ValidateToken(refreshToken);
 
-            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            var user = await _userRepository.FindSingleOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
             if (user != null)
             {

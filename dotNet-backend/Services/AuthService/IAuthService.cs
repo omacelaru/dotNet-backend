@@ -7,7 +7,7 @@ namespace dotNet_backend.Services.AuthService
     {
         Task<User> RegisterUserAsync(RegisterDto registerDto);
         string GenerateJwtToken(User user);
-        Task<string> LoginUserAsync(LoginDto loginDto);
+        Task<object> LoginUserAsync(LoginDto loginDto);
         bool VerifyPassword(string hashedPassword, string providedPassword);
     }
 }
