@@ -23,9 +23,7 @@ CREATE LOGIN db_user WITH PASSWORD = "Database.net.user.2023";
 GO
 CREATE USER db_user FOR LOGIN db_user
 GO
-ALTER ROLE db_datareader ADD MEMBER db_user
-GO
-ALTER ROLE db_datawriter ADD MEMBER db_user
+EXEC sp_addrolemember 'db_owner', 'db_user';
 GO
 QUIT
 ```
