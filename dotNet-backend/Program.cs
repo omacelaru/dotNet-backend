@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using dotNet_backend.Helpers;
+using dotNet_backend.Helpers.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +51,8 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
             };
         });
 
-    builderInstance.Services.AddScoped<AuthService>();
+    builderInstance.Services.AddRepositories();
+    builderInstance.Services.AddServices();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builderInstance.Services.AddEndpointsApiExplorer();
     builderInstance.Services.AddSwaggerGen();

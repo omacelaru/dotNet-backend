@@ -1,24 +1,24 @@
-﻿
-using dotNet_backend.Data.Exceptions;
+﻿using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User;
 using dotNet_backend.Models.User.DTO;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using dotNet_backend.Repositories.UserRepository;
 
-namespace dotNet_backend.Services
+namespace dotNet_backend.Services.AuthService
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IUserRepository _userRepository;
         private readonly PasswordHasher<User> _passwordHasher;
         private readonly IConfiguration _configuration;
-        public AuthService(ApplicationDbContext dbContext, IConfiguration configuration)
+
+        public AuthService(IUserRepository userRepository, IConfiguration configuration)
         {
-            _dbContext = dbContext;
+            _userRepository = userRepository;
             _passwordHasher = new PasswordHasher<User>();
             _configuration = configuration;
         }
@@ -33,10 +33,11 @@ namespace dotNet_backend.Services
 
             user.Password = _passwordHasher.HashPassword(user, registerDto.Password);
 
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
+            _userRepository.Create(user);
+            await _userRepository.SaveAsync();
             return user;
         }
+
         public string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -45,20 +46,21 @@ namespace dotNet_backend.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                new Claim(ClaimTypes.Name, user.Username),
-                // Add other claims as needed
-            }),
+                    new Claim(ClaimTypes.Name, user.Username),
+                    // Add other claims as needed
+                }),
                 Expires = DateTime.UtcNow.AddMinutes(15), // Token expiration time
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
         public async Task<string> LoginUserAsync(LoginDto loginDto)
         {
-
-            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Username == loginDto.Username);
+            var user = await _userRepository.FindSingleOrDefaultAsync(u => u.Username == loginDto.Username);
 
             if (VerifyPassword(user.Password, loginDto.Password))
             {
@@ -68,8 +70,6 @@ namespace dotNet_backend.Services
             {
                 throw new AuthorizationException("Invalid credentials.");
             }
-
-
         }
 
         public bool VerifyPassword(string hashedPassword, string providedPassword)

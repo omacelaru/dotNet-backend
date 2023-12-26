@@ -1,6 +1,6 @@
 ﻿using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User.DTO;
-using dotNet_backend.Services;
+using dotNet_backend.Services.AuthService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Controllers
