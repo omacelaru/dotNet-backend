@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using dotNet_backend.Helpers;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
         .CreateLogger();
 
     builderInstance.Host.UseSerilog();
+    builderInstance.Services.AddAutoMapper(typeof(MapperProfile));
     builderInstance.Services.AddControllers();
     builderInstance.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
