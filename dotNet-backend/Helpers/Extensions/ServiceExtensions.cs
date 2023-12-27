@@ -1,5 +1,6 @@
 ﻿using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.AuthService;
+using dotNet_backend.Services.SMTP;
 
 namespace dotNet_backend.Helpers.Extensions
 {
@@ -15,6 +16,7 @@ namespace dotNet_backend.Helpers.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<ISMTPService, SMTPService>();
             return services;
         }
     }
