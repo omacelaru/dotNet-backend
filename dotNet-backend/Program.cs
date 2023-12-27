@@ -10,8 +10,6 @@ using System.Text;
 using dotNet_backend.Helpers;
 using dotNet_backend.Helpers.Extensions;
 using Serilog;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using dotNet_backend.Services.SMTP;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,11 +35,11 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
         .AddDefaultTokenProviders();
 
     builderInstance.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
         .AddJwtBearer(options =>
         {
             options.SaveToken = true;
@@ -55,79 +53,7 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
             };
         });
-void ConfigureServices(WebApplicationBuilder builderInstance)
-{
-    var configuration = builderInstance.Configuration;
-    Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
-        .WriteTo.File("log/KarateLogs.txt", rollingInterval: RollingInterval.Month)
-        .CreateLogger();
 
-    builderInstance.Services.AddRepositories();
-    builderInstance.Services.AddServices();
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-    builderInstance.Services.AddEndpointsApiExplorer();
-
-    builderInstance.Services.AddSwaggerGen(option =>
-    {
-        option.SwaggerDoc("v1", new OpenApiInfo { Title = "Karate API", Version = "v1" });
-        option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Please enter a valid token",
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = "Bearer"
-        });
-        option.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type=ReferenceType.SecurityScheme,
-                        Id="Bearer"
-                    }
-                },
-                new string[]{}
-            }
-        });
-    });
-    builderInstance.Services.AddControllers(options =>
-    {
-        ///options.Filters.Add(new EmailVerifiedFilter());
-    });
-    builderInstance.Host.UseSerilog();
-    builderInstance.Services.AddAutoMapper(typeof(MapperProfile));
-    builderInstance.Services.AddControllers();
-    builderInstance.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
-    builderInstance.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
-
-    builderInstance.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.SaveToken = true;
-            options.RequireHttpsMetadata = false;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                ClockSkew = TimeSpan.Zero,
-                ValidAudience = configuration["JWT:ValidAudience"],
-                ValidIssuer = configuration["JWT:ValidIssuer"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
-            };
-        });
-    builderInstance.Services.AddTransient<ISMTPService, SMTPService>();
     builderInstance.Services.AddRepositories();
     builderInstance.Services.AddServices();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -176,8 +102,7 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
 
     app.UseAuthorization();
 
-    //add smtp with sengrid
-    app.UseSendGridEmailSender();
+
 
     app.MapControllers();
 

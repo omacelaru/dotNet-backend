@@ -7,6 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using dotNet_backend.Repositories.UserRepository;
+using dotNet_backend.Services.SMTP;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace dotNet_backend.Services.AuthService
 {
@@ -15,12 +17,15 @@ namespace dotNet_backend.Services.AuthService
         private readonly IUserRepository _userRepository;
         private readonly PasswordHasher<User> _passwordHasher;
         private readonly IConfiguration _configuration;
+        private SMTPService _smtpService;
 
         public AuthService(IUserRepository userRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _passwordHasher = new PasswordHasher<User>();
             _configuration = configuration;
+            //generate new SMTPService
+            _smtpService = new SMTPService(configuration, new Logger<SMTPService>(new NullLoggerFactory()));
         }
 
         public async Task<User> RegisterUserAsync(RegisterDto registerDto)
@@ -32,6 +37,13 @@ namespace dotNet_backend.Services.AuthService
             };
 
             user.Password = _passwordHasher.HashPassword(user, registerDto.Password);
+            
+            //send email with smtpservice with jwt token link to confirm
+            var token = GenerateJwtToken(user);
+            //generate link to confirm with token
+            var link = _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
+            await _smtpService.SendEmailAsync(user.Email, "Confirm your account", $"<a href=\"{link}\">Confirm your account</a>");
+
 
             _userRepository.Create(user);
             await _userRepository.SaveAsync();
