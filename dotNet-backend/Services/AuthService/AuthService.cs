@@ -17,15 +17,17 @@ namespace dotNet_backend.Services.AuthService
         private readonly IUserRepository _userRepository;
         private readonly PasswordHasher<User> _passwordHasher;
         private readonly IConfiguration _configuration;
-        private SMTPService _smtpService;
+        private readonly ISMTPService _smtpService;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IUserRepository userRepository, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration, ISMTPService smtpService, ILogger<AuthService> logger)
         {
             _userRepository = userRepository;
             _passwordHasher = new PasswordHasher<User>();
             _configuration = configuration;
             //generate new SMTPService
-            _smtpService = new SMTPService(configuration, new Logger<SMTPService>(new NullLoggerFactory()));
+            _smtpService = smtpService;
+            _logger = logger;
         }
 
         public async Task<User> RegisterUserAsync(RegisterDto registerDto)
@@ -41,6 +43,7 @@ namespace dotNet_backend.Services.AuthService
             //send email with smtpservice with jwt token link to confirm
             var token = GenerateJwtToken(user);
             //generate link to confirm with token
+            // TODO: change this to a frontend link
             var link = _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
             await _smtpService.SendEmailAsync(user.Email, "Confirm your account", $"<a href=\"{link}\">Confirm your account</a>");
 

@@ -17,7 +17,7 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
 {
     var configuration = builderInstance.Configuration;
     Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
-        .WriteTo.File("log/KarateLogs.txt", rollingInterval: RollingInterval.Month)
+        .WriteTo.File("log/KarateLogs.txt", rollingInterval: RollingInterval.Day)
         .CreateLogger();
 
     builderInstance.Services.AddControllers(options =>
@@ -101,7 +101,6 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-
 
 
     app.MapControllers();
