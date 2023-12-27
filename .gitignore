@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /dotNet-backend/appsettings.json
 /dotNet-backend/Migrations/ApplicationDbContextModelSnapshot.cs
 /dotNet-backend/appsettings.example.Development.json
+/dotNet-backend/appsettings.json
