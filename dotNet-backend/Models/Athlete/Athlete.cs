@@ -8,7 +8,7 @@ namespace dotNet_backend.Models.Athlete
     public class Athlete : User.User
     {
         public string Name { get; set; }
-        public Coach.Coach Coach { get; set; }
-        public Guid CoachId { get; set; }
+        public Coach.Coach? Coach { get; set; }
+        public Guid? CoachId { get; set; }
     }
 }
