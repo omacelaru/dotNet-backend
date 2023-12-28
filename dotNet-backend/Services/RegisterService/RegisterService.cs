@@ -54,6 +54,9 @@ namespace dotNet_backend.Services.RegisterService
 
         public async Task<Coach> RegisterCoachAsync(CoachRegisterDto coachRegisterDto)
         {
+            if( await _userRepository.GetByEmailAsync(coachRegisterDto.Email) != null)
+                throw new ArgumentException("Email already exists!");
+            
             var coach = _mapper.Map<Coach>(coachRegisterDto);
             coach.Password = _passwordHasher.HashPassword(coach, coachRegisterDto.Password);
             coach.Role = Role.Coach;
@@ -69,6 +72,6 @@ namespace dotNet_backend.Services.RegisterService
             await _userRepository.SaveAsync();
             return coach;
         }
-
+        
     }
 }

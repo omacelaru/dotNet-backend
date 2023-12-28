@@ -49,6 +49,11 @@ namespace dotNet_backend.Controllers
                 _logger.LogError("Unauthorized registering coach {}", coachRegisterDto);
                 return Unauthorized();
             }
+            catch (ArgumentException exception)
+            {
+                _logger.LogError("Email already exists registering coach {}", coachRegisterDto);
+                return BadRequest(error: exception.Message);
+            }
             catch
             {
                 _logger.LogError("Error registering coach {}", coachRegisterDto);
