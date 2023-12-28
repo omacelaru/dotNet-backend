@@ -5,6 +5,5 @@ namespace dotNet_backend.Models.Athlete.DTO
     public class AthleteRegisterDto : RegisterDto
     {
         public string Name { get; set; }
-        public string CoachName { get; set; }
     }
 }
