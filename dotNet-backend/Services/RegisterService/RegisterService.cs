@@ -39,6 +39,7 @@ namespace dotNet_backend.Services.RegisterService
         {
             var athlete = _mapper.Map<Athlete>(athleteRegisterDto);
             athlete.Password = _passwordHasher.HashPassword(athlete, athleteRegisterDto.Password);
+            athlete.Role = Role.Athlete;
 
             var token = TokenJwt.GenerateJwtToken(athlete);
             
@@ -62,7 +63,7 @@ namespace dotNet_backend.Services.RegisterService
             var link =  _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
             
             _logger.LogInformation("Sending email to {email} with subject {subject}", coach.Email, _confirmEmailSubject);
-            //await _smtpService.SendEmailAsync(coach.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
+            await _smtpService.SendEmailAsync(coach.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
             
             _userRepository.Create(coach);
             await _userRepository.SaveAsync();

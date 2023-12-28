@@ -34,7 +34,7 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
-    builderInstance.Services.AddAuthentications();
+    builderInstance.Services.AddAuthentications(configuration);
     builderInstance.Services.AddRepositories();
     builderInstance.Services.AddServices();
     builderInstance.Services.AddSwagger();
