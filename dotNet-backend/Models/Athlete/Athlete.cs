@@ -1,15 +1,14 @@
 ﻿using dotNet_backend.Models.Base;
 
-namespace dotNet_backend.Models.Coach
+namespace dotNet_backend.Models.Athlete
 {
-    public class Coach : BaseEntity
+    public class Athlete : BaseEntity
     {
         public string Name { get; set; }
 
-        public Club.Club Club { get; set; }
+        public Coach.Coach Coach { get; set; }
 
         public User.User User { get; set; }
         public Guid UserId { get; set; }
-
     }
 }

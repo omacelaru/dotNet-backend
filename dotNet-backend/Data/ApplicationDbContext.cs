@@ -1,4 +1,5 @@
 ﻿
+using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.User;
@@ -16,18 +17,20 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
         modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Coach)
+            .WithOne(c => c.User)
+            .HasForeignKey<Coach>(c => c.UserId);
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Athlete)
+            .WithOne(a => a.User)
+            .HasForeignKey<Athlete>(a => a.UserId);
 
         modelBuilder.Entity<Club>().HasIndex(c => c.Name).IsUnique();
         modelBuilder.Entity<Club>()
             .HasMany(c => c.Coaches)
-            .WithOne(c => c.Club)
-            .OnDelete(DeleteBehavior.Cascade);
-        
-        modelBuilder.Entity<Coach>()
-            .HasOne(c => c.User)
-            .WithOne(c => c.Coach)
-            .HasForeignKey<Coach>(c => c.Id)
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithOne(c => c.Club);
+
 
         base.OnModelCreating(modelBuilder);
     }
