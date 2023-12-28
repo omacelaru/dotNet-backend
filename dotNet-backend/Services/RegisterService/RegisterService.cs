@@ -35,12 +35,13 @@ namespace dotNet_backend.Services.RegisterService
             _mapper = mapper;
         }
         
-        public async Task<Athlete> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto)
+        public async Task<AthleteResponseDto> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto)
         {
             var athlete = _mapper.Map<Athlete>(athleteRegisterDto);
             athlete.Password = _passwordHasher.HashPassword(athlete, athleteRegisterDto.Password);
             athlete.Role = Role.Athlete;
 
+            
             var token = TokenJwt.GenerateJwtToken(athlete);
             
             var link =  _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
@@ -49,10 +50,12 @@ namespace dotNet_backend.Services.RegisterService
             
             _userRepository.Create(athlete);
             await _userRepository.SaveAsync();
-            return athlete;
+
+            var athleteResponseDto = _mapper.Map<AthleteResponseDto>(athlete);
+            return athleteResponseDto;
         }
 
-        public async Task<Coach> RegisterCoachAsync(CoachRegisterDto coachRegisterDto)
+        public async Task<CoachResponseDto> RegisterCoachAsync(CoachRegisterDto coachRegisterDto)
         {
             if( await _userRepository.GetByEmailAsync(coachRegisterDto.Email) != null)
                 throw new ArgumentException("Email already exists!");
@@ -70,7 +73,9 @@ namespace dotNet_backend.Services.RegisterService
             
             _userRepository.Create(coach);
             await _userRepository.SaveAsync();
-            return coach;
+            
+            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
+            return coachResponseDto;
         }
         
     }

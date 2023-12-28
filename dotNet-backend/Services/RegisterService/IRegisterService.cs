@@ -7,9 +7,9 @@ namespace dotNet_backend.Services.RegisterService
 {
     public interface IRegisterService
     {
-        Task<Athlete> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto);
+        Task<AthleteResponseDto> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto);
 
-        Task<Coach> RegisterCoachAsync(CoachRegisterDto coachRegisterDto);
+        Task<CoachResponseDto> RegisterCoachAsync(CoachRegisterDto coachRegisterDto);
 
     }
 }
