@@ -1,8 +1,10 @@
 ﻿using System.Text;
 using dotNet_backend.Repositories.ClubRepository;
+using dotNet_backend.Repositories.CoachRepository;
 using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.AuthService;
 using dotNet_backend.Services.ClubService;
+using dotNet_backend.Services.CoachService;
 using dotNet_backend.Services.RegisterService;
 using dotNet_backend.Services.SMTP;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +19,8 @@ namespace dotNet_backend.Helpers.Extensions
         {
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IClubRepository, ClubRepository>();
+            services.AddTransient<ICoachRepository, CoachRepository>();
+
 
             return services;
         }
@@ -27,6 +31,7 @@ namespace dotNet_backend.Helpers.Extensions
             services.AddTransient<ISMTPService, SMTPService>();
             services.AddTransient<IRegisterService, RegisterService>();
             services.AddTransient<IClubService, ClubService>();
+            services.AddTransient<ICoachService, CoachService>();
             return services;
         }
         
