@@ -2,7 +2,7 @@
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Club.DTO;
 using dotNet_backend.Services.ClubService;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Controllers
@@ -24,7 +24,7 @@ namespace dotNet_backend.Controllers
 
         // GET: api/Club
         [HttpGet]
-        public async Task<IEnumerable<Club>> Get()
+        public async Task<IEnumerable<ClubResponseDto>> Get()
         {
             try
             {
@@ -42,13 +42,13 @@ namespace dotNet_backend.Controllers
 
         // POST: api/Club
         [HttpPost]
-        public async Task<Club> Post([FromBody] ClubRequestDto clubRequestDto)
+        [Authorize(Roles = "Coach")]
+        public async Task<ClubResponseDto> Post([FromBody] ClubRequestDto clubRequestDto)
         {
             try
             {
                 var club = _mapper.Map<Club>(clubRequestDto);
-                return await _clubService.CreateClubAsync(club);
-
+                return await _clubService.CreateClubAsync(User.Identity.Name,club);
             }
             catch (Exception e)
             {
