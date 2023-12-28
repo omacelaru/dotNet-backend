@@ -33,9 +33,6 @@
     <Folder Include="Interfaces\" />
     <Folder Include="log\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Models\Athlete\DTO\" />
-    <Folder Include="Models\Club\DTO\" />
-    <Folder Include="Models\Coach\DTO\" />
   </ItemGroup>
 
 </Project>

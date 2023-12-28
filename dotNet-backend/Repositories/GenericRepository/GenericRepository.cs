@@ -21,7 +21,7 @@ namespace dotNet_backend.Repositories.GenericRepository
             return _table.AsNoTracking().ToList();
         }
 
-        public async Task<List<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await _table.AsNoTracking().ToListAsync();
         }

@@ -6,6 +6,6 @@ namespace dotNet_backend.Models.Club
     {
         public string Name { get; set; }
 
-        public ICollection<Coach.Coach> Coaches { get; set; }
+        public ICollection<Coach.Coach>? Coaches { get; set; }
     }
 }

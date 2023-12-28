@@ -23,10 +23,6 @@ namespace dotNet_backend.Models.User
 
         public Role Role { get; set; }
 
-        public Coach.Coach? Coach { get; set; }
-
-        public Athlete.Athlete? Athlete { get; set; }
-
     }
 
 }

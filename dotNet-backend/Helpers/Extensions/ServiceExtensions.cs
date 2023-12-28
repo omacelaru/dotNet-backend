@@ -1,6 +1,9 @@
 ﻿using System.Text;
+using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.AuthService;
+using dotNet_backend.Services.ClubService;
+using dotNet_backend.Services.RegisterService;
 using dotNet_backend.Services.SMTP;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +16,7 @@ namespace dotNet_backend.Helpers.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IClubRepository, ClubRepository>();
 
             return services;
         }
@@ -21,8 +25,11 @@ namespace dotNet_backend.Helpers.Extensions
         {
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<ISMTPService, SMTPService>();
+            services.AddTransient<IRegisterService, RegisterService>();
+            services.AddTransient<IClubService, ClubService>();
             return services;
         }
+        
 
         public static IServiceCollection AddSwagger(this IServiceCollection services)
         {
