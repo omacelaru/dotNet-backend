@@ -27,7 +27,8 @@ namespace dotNet_backend.Helpers
 
             CreateMap<Club, ClubResponseDto>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.CoachesNames, opt => opt.MapFrom(src => src.getCoachesNames()));
+                .ForMember(dest => dest.CoachesNames,
+                    opt => opt.MapFrom(src => src.Coaches.Select(coach => coach.Name)));
         }
     }
 }
