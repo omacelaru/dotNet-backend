@@ -6,7 +6,7 @@ namespace dotNet_backend.Services.CoachService;
 
 public interface ICoachService
 {
-    Task<Club> AddCoachToClubAsync(string coachUserName, Club club);
     Task<IEnumerable<Coach>> GetAllCoachesAsync();
     Task<Coach> GetCoachByIdAsync(Guid id);
+    Task<Coach> GetCoachByUserNameAsync(string username);
 }

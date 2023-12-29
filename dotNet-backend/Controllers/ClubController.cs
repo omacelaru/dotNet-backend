@@ -2,6 +2,7 @@
 using dotNet_backend.CustomActionFilters;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Club.DTO;
+using dotNet_backend.Models.Coach;
 using dotNet_backend.Services.ClubService;
 using dotNet_backend.Services.CoachService;
 using Microsoft.AspNetCore.Authorization;
@@ -50,11 +51,15 @@ namespace dotNet_backend.Controllers
         [ValidateModel]
         public async Task<ClubResponseDto> Post([FromBody] ClubRequestDto clubRequestDto)
         {
+            //create club and add coach to coach list in club
             try
             {
-                var club = await _clubService.CreateClubAsync(_mapper.Map<Club>(clubRequestDto));
-                var clubWithCoach = await _coachService.AddCoachToClubAsync(User.Identity.Name,club);
-                return _mapper.Map<ClubResponseDto>(clubWithCoach);
+                var club = _mapper.Map<Club>(clubRequestDto);
+                var coach = await _coachService.GetCoachByUserNameAsync(User.Identity.Name);
+                club.Coaches.Add(coach);
+                await _clubService.CreateClubAsync(club);
+                _logger.LogInformation("Creating club {}", club);
+                return _mapper.Map<ClubResponseDto>(club);
             }
             catch (Exception e)
             {
