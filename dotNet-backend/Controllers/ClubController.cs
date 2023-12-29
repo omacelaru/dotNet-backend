@@ -56,7 +56,7 @@ namespace dotNet_backend.Controllers
             {
                 var club = _mapper.Map<Club>(clubRequestDto);
                 var coach = await _coachService.GetCoachByUserNameAsync(User.Identity.Name);
-                club.Coaches.Add(coach);
+                club.Coaches = new List<Coach>() {coach};
                 await _clubService.CreateClubAsync(club);
                 _logger.LogInformation("Creating club {}", club);
                 return _mapper.Map<ClubResponseDto>(club);
