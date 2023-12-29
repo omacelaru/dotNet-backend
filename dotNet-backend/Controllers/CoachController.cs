@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CoachController : ControllerBase
     {
@@ -22,8 +22,7 @@ namespace dotNet_backend.Controllers
             _logger = logger;
             _mapper = mapper;
         }
-
-        // GET: api/Coach
+        
         [HttpGet]
         public async Task<IEnumerable<CoachResponseDto>> GetAllCoaches()
         {

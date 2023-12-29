@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ClubController : ControllerBase
     {
@@ -26,8 +26,7 @@ namespace dotNet_backend.Controllers
             _logger = logger;
             _mapper = mapper;
         }
-
-        // GET: api/Club
+        
         [HttpGet]
         public async Task<IEnumerable<ClubResponseDto>> Get()
         {
@@ -44,8 +43,7 @@ namespace dotNet_backend.Controllers
             }
 
         }
-
-        // POST: api/Club
+        
         [HttpPost]
         [Authorize(Roles = "Coach")]
         [ValidateModel]
