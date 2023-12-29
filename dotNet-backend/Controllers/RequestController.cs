@@ -34,6 +34,7 @@ namespace dotNet_backend.Controllers
                 var coach = await _coachService.GetCoachByUserNameAsync(coachUsername);
                 var athlete = await _athleteService.GetAthleteByUserNameAsync(User.Identity.Name);
                 await _requestService.JoinCoachAsync(coach, athlete);
+                //TODO - return something:(
                 return Ok();
             }
             catch (Exception e)

@@ -55,10 +55,9 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-
-
+    
     app.MapControllers();
-
+    
     app.Run();
 }
 
