@@ -2,6 +2,7 @@
 using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Coach;
+using dotNet_backend.Models.Request;
 using dotNet_backend.Models.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Club> Clubs { get; set; }
     public DbSet<Coach> Coaches { get; set; }
     public DbSet<Athlete> Athletes { get; set; }
+    public DbSet<RequestInfo> Requests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
