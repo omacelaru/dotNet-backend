@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Helpers.GenerateJwt;
 using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Models.User;
@@ -38,44 +39,39 @@ namespace dotNet_backend.Services.RegisterService
         public async Task<AthleteResponseDto> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto)
         {
             var athlete = _mapper.Map<Athlete>(athleteRegisterDto);
-            athlete.Password = _passwordHasher.HashPassword(athlete, athleteRegisterDto.Password);
             athlete.Role = Role.Athlete;
-
-            
-            var token = TokenJwt.GenerateJwtToken(athlete);
-            
-            var link =  _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
-            
-            await _smtpService.SendEmailAsync(athlete.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
-            
-            _userRepository.Create(athlete);
-            await _userRepository.SaveAsync();
-
+            await RegisterUserAsync(athlete);
             var athleteResponseDto = _mapper.Map<AthleteResponseDto>(athlete);
             return athleteResponseDto;
         }
 
         public async Task<CoachResponseDto> RegisterCoachAsync(CoachRegisterDto coachRegisterDto)
         {
-            if( await _userRepository.GetByEmailAsync(coachRegisterDto.Email) != null)
-                throw new ArgumentException("Email already exists!");
-            
             var coach = _mapper.Map<Coach>(coachRegisterDto);
-            coach.Password = _passwordHasher.HashPassword(coach, coachRegisterDto.Password);
             coach.Role = Role.Coach;
+            await RegisterUserAsync(coach);
+            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
+            return coachResponseDto;
+        }
+        
+        private async Task RegisterUserAsync(User user)
+        {
+            if( await _userRepository.FindByEmailAsync(user.Email) != null)
+                throw new EmailAlreadyExists();
+                if (await _userRepository.FindByUserNameAsync(user.Username) != null)
+                    throw new UsernameAlreadyExists();
             
-            var token = TokenJwt.GenerateJwtToken(coach);
+            user.Password = _passwordHasher.HashPassword(user, user.Password);
+            
+            var token = TokenJwt.GenerateJwtToken(user);
             
             var link =  _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
             
-            _logger.LogInformation("Sending email to {email} with subject {subject}", coach.Email, _confirmEmailSubject);
-            await _smtpService.SendEmailAsync(coach.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
+            _logger.LogInformation("Sending email to {email} with subject {subject}", user.Email, _confirmEmailSubject);
+            await _smtpService.SendEmailAsync(user.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
             
-            _userRepository.Create(coach);
+            _userRepository.Create(user);
             await _userRepository.SaveAsync();
-            
-            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
-            return coachResponseDto;
         }
         
     }
