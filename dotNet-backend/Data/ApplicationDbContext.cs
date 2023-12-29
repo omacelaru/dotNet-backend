@@ -4,7 +4,6 @@ using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.User;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 public class ApplicationDbContext : DbContext
 {
