@@ -3,6 +3,7 @@ using dotNet_backend.CustomActionFilters;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Club.DTO;
 using dotNet_backend.Services.ClubService;
+using dotNet_backend.Services.CoachService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +14,14 @@ namespace dotNet_backend.Controllers
     public class ClubController : ControllerBase
     {
         public readonly IClubService _clubService;
+        public readonly ICoachService _coachService;
         public readonly ILogger<ClubController> _logger;
         public readonly IMapper _mapper;
 
-        public ClubController(IClubService clubService, ILogger<ClubController> logger, IMapper mapper)
+        public ClubController(IClubService clubService, ICoachService coachService,ILogger<ClubController> logger, IMapper mapper)
         {
             _clubService = clubService;
+            _coachService = coachService;
             _logger = logger;
             _mapper = mapper;
         }
@@ -49,8 +52,9 @@ namespace dotNet_backend.Controllers
         {
             try
             {
-                var club = _mapper.Map<Club>(clubRequestDto);
-                return await _clubService.CreateClubAsync(User.Identity.Name,club);
+                var club = await _clubService.CreateClubAsync(_mapper.Map<Club>(clubRequestDto));
+                var clubWithCoach = await _coachService.AddCoachToClubAsync(User.Identity.Name,club);
+                return _mapper.Map<ClubResponseDto>(clubWithCoach);
             }
             catch (Exception e)
             {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using dotNet_backend.Controllers;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Club.DTO;
 using dotNet_backend.Models.Coach;
@@ -21,13 +22,11 @@ namespace dotNet_backend.Services.ClubService
             _mapper = mapper;
         }
 
-        public async Task<ClubResponseDto> CreateClubAsync(string coachUsername,Club club)
+        public async Task<Club> CreateClubAsync(Club club)
         {
-            var coach = await _coachRepository.FindByUserNameAsync(coachUsername);
-            club.Coaches = new List<Coach> {coach};
             await _clubRepository.CreateAsync(club);
             await _clubRepository.SaveAsync();
-            return _mapper.Map<ClubResponseDto>(club);
+            return club;
         }
 
         public async Task<IEnumerable<ClubResponseDto>> GetAllClubsAsync()
