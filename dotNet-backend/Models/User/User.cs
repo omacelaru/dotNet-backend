@@ -1,5 +1,6 @@
 ﻿using dotNet_backend.Models.Base;
 using System.ComponentModel.DataAnnotations;
+using dotNet_backend.Models.User.Enum;
 
 namespace dotNet_backend.Models.User
 {
@@ -19,7 +20,8 @@ namespace dotNet_backend.Models.User
         [Required]
         public bool EmailConfirmed { get; set; } = false;
         public string? RefreshToken { get; set; }
-        public Coach.Coach? Coach { get; set; }
+
+        public Role Role { get; set; }
 
     }
 

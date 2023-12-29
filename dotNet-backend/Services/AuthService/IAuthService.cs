@@ -6,7 +6,6 @@ namespace dotNet_backend.Services.AuthService
 {
     public interface IAuthService
     {
-        Task<User> RegisterUserAsync(RegisterDto registerDto);
         Task<object> LoginUserAsync(LoginDto loginDto);
         Task<object> RefreshTokenAsync(string refreshToken);
     }

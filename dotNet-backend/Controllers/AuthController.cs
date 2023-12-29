@@ -1,4 +1,5 @@
-﻿using dotNet_backend.Data.Exceptions;
+﻿using dotNet_backend.CustomActionFilters;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Services;
 using dotNet_backend.Services.AuthService;
@@ -16,25 +17,9 @@ namespace dotNet_backend.Controllers
         {
             _authService = authService;
         }
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
-        {
-            try
-            {
-                return Ok(await _authService.RegisterUserAsync(registerDto));
-
-            }
-            catch (AuthorizationException)
-            {
-                return Unauthorized();
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-        }
 
         [HttpPost("login")]
+        [ValidateModel]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             try
@@ -47,8 +32,7 @@ namespace dotNet_backend.Controllers
                 return Unauthorized();
             }
         }
-
-
+        
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(string refreshToken)
         {

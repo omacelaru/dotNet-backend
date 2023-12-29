@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using dotNet_backend.Helpers.GenerateJwt;
 using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.SMTP;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -29,135 +30,40 @@ namespace dotNet_backend.Services.AuthService
             _smtpService = smtpService;
             _logger = logger;
         }
-
-        public async Task<User> RegisterUserAsync(RegisterDto registerDto)
-        {
-            var user = new User
-            {
-                Username = registerDto.Username,
-                Email = registerDto.Email
-            };
-
-            user.Password = _passwordHasher.HashPassword(user, registerDto.Password);
-            
-            //send email with smtpservice with jwt token link to confirm
-            var token = GenerateJwtToken(user);
-            //generate link to confirm with token
-            // TODO: change this to a frontend link
-            var link = _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
-            await _smtpService.SendEmailAsync(user.Email, "Confirm your account", $"<a href=\"{link}\">Confirm your account</a>");
-
-
-            _userRepository.Create(user);
-            await _userRepository.SaveAsync();
-            return user;
-        }
-
-        public string GenerateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["JWT:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim("EmailConfirmed", user.EmailConfirmed.ToString()),
-                }),
-                Audience = _configuration["JWT:ValidAudience"],
-                Issuer = _configuration["JWT:ValidIssuer"],
-                Expires = DateTime.UtcNow.AddMinutes(5), // Token expiration time
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        public async Task<string> GenerateRefreshToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                new Claim(ClaimTypes.Name, user.Username),
-
-            }),
-                Expires = DateTime.UtcNow.AddDays(1), // Token expiration time
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.RefreshToken = tokenHandler.WriteToken(token);
-            _userRepository.Update(user);
-
-            await _userRepository.SaveAsync();
-            return user.RefreshToken;
-        }
+        
         public async Task<object> LoginUserAsync(LoginDto loginDto)
         {
             var user = await _userRepository.FindSingleOrDefaultAsync(u => u.Username == loginDto.Username);
 
             if (VerifyPassword(user.Password, loginDto.Password))
             {
-                var refreshToken = await GenerateRefreshToken(user);
-                var accessToken = GenerateJwtToken(user);
+                var refreshToken = TokenJwt.GenerateRefreshToken(user);
+                user.RefreshToken = refreshToken;
+                await _userRepository.SaveAsync();
+                var accessToken = TokenJwt.GenerateJwtToken(user);
                 return new { AccessToken = accessToken, RefreshToken = refreshToken };
             }
             else
             {
                 throw new AuthorizationException("Invalid credentials.");
             }
-
-
         }
-
         public async Task<object> RefreshTokenAsync(string refreshToken)
         {
-            ValidateToken(refreshToken);
+            TokenJwt.ValidateToken(refreshToken);
 
             var user = await _userRepository.FindSingleOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
             if (user != null)
             {
-                return new { AccessToken = GenerateJwtToken(user) };
+                return new { AccessToken = TokenJwt.GenerateJwtToken(user) };
             }
             else
             {
                 throw new BadRequestException("Invalid refresh token.");
             }
         }
-
-        public ClaimsPrincipal ValidateToken(string token)
-        {
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JWT:Key")),
-
-                ClockSkew = TimeSpan.Zero
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            try
-            {
-                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var validatedToken);
-
-
-                if (!(validatedToken is JwtSecurityToken jwtSecurityToken) ||
-                    !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    throw new SecurityTokenException("Invalid token");
-                }
-
-                return principal;
-            }
-            catch (SecurityTokenException)
-            {
-                throw new BadRequestException("Invalid refresh token.");
-            }
-        }
+        
         public bool VerifyPassword(string hashedPassword, string providedPassword)
         {
             var result = _passwordHasher.VerifyHashedPassword(new User(), hashedPassword, providedPassword);
