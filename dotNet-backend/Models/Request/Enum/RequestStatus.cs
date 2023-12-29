@@ -2,9 +2,8 @@
 {
     public enum RequestStatus
     {
-        Pending,
-        InProgress,
-        Accepted,
-        Rejected
+        ACCEPTED,
+        PENDING,
+        DECLINED
     }
 }
