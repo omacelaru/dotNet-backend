@@ -1,4 +1,5 @@
-﻿using dotNet_backend.Data.Exceptions;
+﻿using dotNet_backend.CustomActionFilters;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Services.RegisterService;
@@ -18,6 +19,7 @@ namespace dotNet_backend.Controllers
             _logger = logger;
         }
         [HttpPost("athlete")]
+        [ValidateModel]
         public async Task<IActionResult> RegisterAthlete([FromBody] AthleteRegisterDto athleteRegisterDto)
         {
             try
@@ -36,6 +38,7 @@ namespace dotNet_backend.Controllers
         }
 
         [HttpPost("coach")]
+        [ValidateModel]
         public async Task<IActionResult> RegisterCoach([FromBody] CoachRegisterDto coachRegisterDto)
         {
             try

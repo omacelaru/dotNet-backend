@@ -1,4 +1,5 @@
-﻿using dotNet_backend.Data.Exceptions;
+﻿using dotNet_backend.CustomActionFilters;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Services;
 using dotNet_backend.Services.AuthService;
@@ -18,6 +19,7 @@ namespace dotNet_backend.Controllers
         }
 
         [HttpPost("login")]
+        [ValidateModel]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             try

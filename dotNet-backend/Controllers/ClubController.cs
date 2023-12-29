@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using dotNet_backend.CustomActionFilters;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Club.DTO;
 using dotNet_backend.Services.ClubService;
@@ -43,6 +44,7 @@ namespace dotNet_backend.Controllers
         // POST: api/Club
         [HttpPost]
         [Authorize(Roles = "Coach")]
+        [ValidateModel]
         public async Task<ClubResponseDto> Post([FromBody] ClubRequestDto clubRequestDto)
         {
             try
