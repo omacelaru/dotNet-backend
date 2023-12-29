@@ -10,7 +10,6 @@ namespace dotNet_backend.Models.Coach
         public Club.Club? Club { get; set; }
         public Guid? ClubId { get; set; }
 
-        public ICollection<Athlete.Athlete>? Athletes { get; set; }
-
+        public ICollection<Athlete.Athlete>? Athletes { get; set; } = new List<Athlete.Athlete>();
     }
 }
