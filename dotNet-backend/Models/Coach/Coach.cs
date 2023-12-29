@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using dotNet_backend.Models.Base;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotNet_backend.Models.Coach
 {
