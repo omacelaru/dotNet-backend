@@ -31,7 +31,7 @@ namespace dotNet_backend.Services.ClubService
 
         public async Task<IEnumerable<Club>> GetAllClubsAsync()
         {
-            return await _clubRepository.GetAllClubs();
+            return await _clubRepository.GetAllClubsAsync();
         }
 
         public async Task UpdateClubAsync(Club newClub)

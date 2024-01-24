@@ -5,5 +5,8 @@ namespace dotNet_backend.Repositories.CoachRepository;
 
 public interface ICoachRepository : IGenericRepository<Coach>
 {
-    Task<Coach> FindByUserNameAsync(string coachUsername);
+    Task<IEnumerable<Coach>> FindAllCoachesAsync();
+
+    Task<Coach> FindCoachByIdAsync(Guid id);
+    Task<Coach> FindCoachByUserNameAsync(string username);
 }

@@ -12,7 +12,7 @@ namespace dotNet_backend.Repositories.ClubRepository
 
         // Add custom methods here
 
-        public async Task<IEnumerable<Club>> GetAllClubs()
+        public async Task<IEnumerable<Club>> FindAllClubsAsync()
         {
             return await _table
                 .Include(c => c.Coach)
