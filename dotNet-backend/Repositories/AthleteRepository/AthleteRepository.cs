@@ -10,8 +10,19 @@ public class AthleteRepository : GenericRepository<Athlete>, IAthleteRepository
     {
     }
 
-    public async Task<Athlete> FindByUserNameAsync(string athleteUsername)
+    public async Task<IEnumerable<Athlete>> FindAllAthletesAsync()
     {
-        return await _table.FirstOrDefaultAsync(a => a.Username == athleteUsername);
+        return await _table
+            .Include(a => a.Coach)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<Athlete> FindAthleteByUserNameAsync(string username)
+    {
+        return await _table
+            .Include(a => a.Coach)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Username == username);
     }
 }

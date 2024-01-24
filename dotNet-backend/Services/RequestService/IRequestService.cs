@@ -9,5 +9,5 @@ public interface IRequestService
 {
     Task JoinCoachAsync(Coach coach, Athlete athlete);
     Task<IEnumerable<RequestInfo>> GetRequestsByUsernameAsync(string username);
-    Task<RequestInfo> UpdateRequestStatusAsync(string myUsername, string usernameAthlete, RequestStatus requestStatus);
+    Task<RequestInfo> UpdateRequestStatusAsync(string coachUsername, string usernameAthlete, string requestStatus);
 }

@@ -32,7 +32,7 @@ public class CoachService : ICoachService
 
     public async Task<Coach> GetCoachByIdAsync(Guid id)
     {
-        var coach = await _coachRepository.FindCoachByIdAsync(id);
+        return await _coachRepository.FindCoachByIdAsync(id);
     }
     
     public async Task<Coach> GetCoachByUserNameAsync(string username)
@@ -42,13 +42,14 @@ public class CoachService : ICoachService
 
     public async Task AddAthleteToCoach(string athleteUsername, string coachUsername)
     {
+        var athlete = await _athleteRepository.FindAthleteByUserNameAsync(athleteUsername);
         var coach = await _coachRepository.FindCoachByUserNameAsync(coachUsername);
-        var athlete = await _athleteRepository.FindByUserNameAsync(athleteUsername);
-        if (coach == null || athlete == null)
-            throw new NotFoundException("Coach or athlete not found");
-        coach.Athletes.Add(athlete);
-        _coachRepository.Update(coach);
-        await _coachRepository.SaveAsync();
+        if (athlete == null || coach == null)
+        {
+            throw new NotFoundException("Athlete or coach not found");
+        }
+        athlete.Coach = coach;
+        await _athleteRepository.SaveAsync();
     }
 
     public async Task UpdateCoachAsync(Coach newCoach)

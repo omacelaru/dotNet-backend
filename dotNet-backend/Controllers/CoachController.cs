@@ -52,7 +52,10 @@ namespace dotNet_backend.Controllers
         [Authorize(Roles = "Coach")]
         public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequests()
         {
-            
+            _logger.LogInformation("Getting all requests for coach: {}", User.Identity.Name);
+            var requests = await _requestService.GetRequestsByUsernameAsync(User.Identity.Name);
+            var requestResponseDtos = _mapper.Map<IEnumerable<RequestInfoResponseDto>>(requests);
+            return Ok(requestResponseDtos);
         }
         
         //set request status to accepted/rejected
@@ -61,6 +64,12 @@ namespace dotNet_backend.Controllers
         [ValidateModel]
         public async Task<ActionResult<RequestInfoResponseDto>> PatchRequest(string usernameAthlete, [FromBody] RequestStatusRequestDto requestStatusDto)
         {
+            string coachUsername = User.Identity.Name;
+            string requestStatus = requestStatusDto.RequestStatus;
+            _logger.LogInformation("Setting request status to {} for athlete {} by coach {}", requestStatus, usernameAthlete, coachUsername);
+            var request = await _requestService.UpdateRequestStatusAsync(coachUsername, usernameAthlete, requestStatus);
+            var requestResponseDto = _mapper.Map<RequestInfoResponseDto>(request);
+            return Ok(requestResponseDto);
         }
         
         
