@@ -49,6 +49,7 @@ public class CoachService : ICoachService
             throw new NotFoundException("Athlete or coach not found");
         }
         athlete.Coach = coach;
+        _athleteRepository.Update(athlete);
         await _athleteRepository.SaveAsync();
     }
 
