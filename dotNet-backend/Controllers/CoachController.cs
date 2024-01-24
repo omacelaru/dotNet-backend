@@ -15,10 +15,10 @@ namespace dotNet_backend.Controllers
     [ApiController]
     public class CoachController : ControllerBase
     {
-        public readonly ICoachService _coachService;
-        public readonly IRequestService _requestService;
-        public readonly ILogger<CoachController> _logger;
-        public readonly IMapper _mapper;
+        private readonly ICoachService _coachService;
+        private readonly IRequestService _requestService;
+        private readonly ILogger<CoachController> _logger;
+        private readonly IMapper _mapper;
 
         public CoachController(ICoachService coachService, ILogger<CoachController> logger, IMapper mapper, IRequestService requestService)
         {

@@ -15,10 +15,10 @@ namespace dotNet_backend.Controllers
     [ApiController]
     public class RequestController : ControllerBase
     {
-        public readonly IClubService _clubService;
-        public readonly ICoachService _coachService;
-        public readonly IAthleteService _athleteService;
-        public readonly IRequestService _requestService;
+        private readonly IClubService _clubService;
+        private readonly ICoachService _coachService;
+        private readonly IAthleteService _athleteService;
+        private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
 
         public RequestController(IClubService clubService, ICoachService coachService, IAthleteService athleteService,

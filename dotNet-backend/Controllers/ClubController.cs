@@ -14,10 +14,10 @@ namespace dotNet_backend.Controllers
     [ApiController]
     public class ClubController : ControllerBase
     {
-        public readonly IClubService _clubService;
-        public readonly ICoachService _coachService;
-        public readonly ILogger<ClubController> _logger;
-        public readonly IMapper _mapper;
+        private readonly IClubService _clubService;
+        private readonly ICoachService _coachService;
+        private readonly ILogger<ClubController> _logger;
+        private readonly IMapper _mapper;
 
         public ClubController(IClubService clubService, ICoachService coachService, ILogger<ClubController> logger,
             IMapper mapper)
