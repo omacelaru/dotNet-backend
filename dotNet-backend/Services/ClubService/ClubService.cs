@@ -29,11 +29,15 @@ namespace dotNet_backend.Services.ClubService
             return club;
         }
 
-        public async Task<IEnumerable<ClubResponseDto>> GetAllClubsAsync()
+        public async Task<IEnumerable<Club>> GetAllClubsAsync()
         {
-            //TODO - fix coach names
-            var clubs = await _clubRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<ClubResponseDto>>(clubs);
+            return await _clubRepository.FindAllClubsAsync();
+        }
+
+        public async Task UpdateClubAsync(Club newClub)
+        {
+            _clubRepository.Update(newClub);
+            await _clubRepository.SaveAsync();
         }
         
     }

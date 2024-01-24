@@ -6,22 +6,46 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dotNet_backend.Migrations
 {
     /// <inheritdoc />
-    public partial class UserasaTPC : Migration
+    public partial class usercoachathleteclub : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Clubs",
+                name: "Coaches",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clubs", x => x.Id);
+                    table.PrimaryKey("PK_Coaches", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Requests",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RequestByUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AssignedToUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RequestType = table.Column<int>(type: "int", nullable: false),
+                    RequestStatus = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Requests", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -43,32 +67,6 @@ namespace dotNet_backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Coaches",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClubId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Coaches", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Coaches_Clubs_ClubId",
-                        column: x => x.ClubId,
-                        principalTable: "Clubs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Athletes",
                 columns: table => new
                 {
@@ -80,7 +78,7 @@ namespace dotNet_backend.Migrations
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -88,6 +86,25 @@ namespace dotNet_backend.Migrations
                     table.PrimaryKey("PK_Athletes", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Athletes_Coaches_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "Coaches",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clubs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clubs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clubs_Coaches_CoachId",
                         column: x => x.CoachId,
                         principalTable: "Coaches",
                         principalColumn: "Id",
@@ -112,15 +129,16 @@ namespace dotNet_backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Clubs_CoachId",
+                table: "Clubs",
+                column: "CoachId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Clubs_Name",
                 table: "Clubs",
                 column: "Name",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Coaches_ClubId",
-                table: "Coaches",
-                column: "ClubId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Coaches_Email",
@@ -154,13 +172,16 @@ namespace dotNet_backend.Migrations
                 name: "Athletes");
 
             migrationBuilder.DropTable(
+                name: "Clubs");
+
+            migrationBuilder.DropTable(
+                name: "Requests");
+
+            migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Coaches");
-
-            migrationBuilder.DropTable(
-                name: "Clubs");
         }
     }
 }

@@ -5,5 +5,6 @@ namespace dotNet_backend.Repositories.ClubRepository
 {
     public interface IClubRepository : IGenericRepository<Club>
     {
+        Task<IEnumerable<Club>> FindAllClubsAsync();
     }
 }

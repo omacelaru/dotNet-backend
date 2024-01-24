@@ -2,9 +2,10 @@
 {
     public class ClubResponseDto
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<string> CoachesNames { get; set; }
+        public string CoachName { get; set; }
         
     }
 }
