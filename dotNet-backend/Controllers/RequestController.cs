@@ -1,4 +1,8 @@
-﻿using dotNet_backend.Services.AthleteService;
+﻿using AutoMapper;
+using dotNet_backend.Models.Request;
+using dotNet_backend.Models.Request.DTO;
+using dotNet_backend.Models.Request.Enum;
+using dotNet_backend.Services.AthleteService;
 using dotNet_backend.Services.ClubService;
 using dotNet_backend.Services.CoachService;
 using dotNet_backend.Services.RequestService;
@@ -11,36 +15,36 @@ namespace dotNet_backend.Controllers
     [ApiController]
     public class RequestController : ControllerBase
     {
-        public readonly IClubService _clubService;
-        public readonly ICoachService _coachService;
-        public readonly IAthleteService _athleteService;
-        public readonly IRequestService _requestService;
-        
-        public RequestController(IClubService clubService, ICoachService coachService, IAthleteService athleteService, IRequestService requestService)  
+        private readonly IClubService _clubService;
+        private readonly ICoachService _coachService;
+        private readonly IAthleteService _athleteService;
+        private readonly IRequestService _requestService;
+        private readonly IMapper _mapper;
+
+        public RequestController(IClubService clubService, ICoachService coachService, IAthleteService athleteService,
+            IRequestService requestService, IMapper mapper)
         {
             _clubService = clubService;
             _coachService = coachService;
             _athleteService = athleteService;
             _requestService = requestService;
+            _mapper = mapper;
         }
 
         //make request to join in the athlete list of a coach by coach username
         [HttpPost("join/{coachUsername}")]
         [Authorize(Roles = "Athlete")]
-        public async Task<IActionResult> JoinCoach(string coachUsername)
+        public async Task<ActionResult<RequestInfoResponseDto>> JoinCoach(string coachUsername)
         {
-            try
+            var athlete = await _athleteService.GetAthleteByUserNameAsync(User.Identity.Name);
+            if (athlete.Coach != null)
             {
-                var coach = await _coachService.GetCoachByUserNameAsync(coachUsername);
-                var athlete = await _athleteService.GetAthleteByUserNameAsync(User.Identity.Name);
-                await _requestService.JoinCoachAsync(coach, athlete);
-                //TODO - return something:(
-                return Ok();
+                return BadRequest("You already have a coach");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var coach = await _coachService.GetCoachByUserNameAsync(coachUsername);
+            var request = await _requestService.CreateRequestAsync(athlete, coach, RequestType.AddAthleteToCoach);
+            var requestResponseDto = _mapper.Map<RequestInfoResponseDto>(request);
+            return Ok(requestResponseDto);
         }
     }
 }

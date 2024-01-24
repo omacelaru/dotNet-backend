@@ -27,27 +27,35 @@ public class CoachService : ICoachService
     
     public async Task<IEnumerable<Coach>> GetAllCoachesAsync()
     {
-        return await _coachRepository.GetAllAsync();
+        return await _coachRepository.FindAllCoachesAsync();
     }
 
     public async Task<Coach> GetCoachByIdAsync(Guid id)
     {
-        return await _coachRepository.FindByIdAsync(id);
+        return await _coachRepository.FindCoachByIdAsync(id);
     }
     
     public async Task<Coach> GetCoachByUserNameAsync(string username)
     {
-        return await _coachRepository.FindByUserNameAsync(username);
+        return await _coachRepository.FindCoachByUserNameAsync(username);
     }
 
     public async Task AddAthleteToCoach(string athleteUsername, string coachUsername)
     {
-        var coach = await _coachRepository.FindByUserNameAsync(coachUsername);
-        var athlete = await _athleteRepository.FindByUserNameAsync(athleteUsername);
-        if (coach == null || athlete == null)
-            throw new NotFoundException("Coach or athlete not found");
-        coach.Athletes.Add(athlete);
-        _coachRepository.Update(coach);
+        var athlete = await _athleteRepository.FindAthleteByUserNameAsync(athleteUsername);
+        var coach = await _coachRepository.FindCoachByUserNameAsync(coachUsername);
+        if (athlete == null || coach == null)
+        {
+            throw new NotFoundException("Athlete or coach not found");
+        }
+        athlete.Coach = coach;
+        _athleteRepository.Update(athlete);
+        await _athleteRepository.SaveAsync();
+    }
+
+    public async Task UpdateCoachAsync(Coach newCoach)
+    {
+        _coachRepository.Update(newCoach);
         await _coachRepository.SaveAsync();
     }
     

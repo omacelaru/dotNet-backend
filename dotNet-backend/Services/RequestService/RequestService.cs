@@ -6,6 +6,7 @@ using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.CoachRepository;
 using dotNet_backend.Repositories.RequestRepository;
 using dotNet_backend.Services.CoachService;
+using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.RequestService;
 
@@ -24,34 +25,41 @@ public class RequestService : IRequestService
         _coachService = coachService;
     }
 
-    public async Task JoinCoachAsync(Coach coach, Athlete athlete)
-    {
-        var request = new RequestInfo
-        {
-            RequestDate = DateTime.Now,
-            RequestByUser = athlete.Username,
-            AssignedToUser = coach.Username,
-            RequestType = RequestType.AddAthleteToCoach,
-            RequestStatus = RequestStatus.PENDING
-        };
-        await _requestRepository.CreateAsync(request);
-        await _requestRepository.SaveAsync();
-    }
-    
     public async Task<IEnumerable<RequestInfo>> GetRequestsByUsernameAsync(string username)
     {
-        return await _requestRepository.GetRequestsByUsernameAsync(username);
+        return await _requestRepository.FindRequestsByUsernameAsync(username);
     }
 
-    public async Task<RequestInfo> UpdateRequestStatusAsync(string myUsername, string usernameAthlete, RequestStatus requestStatus)
+    public async Task<RequestInfo> UpdateRequestStatusAsync(string coachUsername, string usernameAthlete, string requestStatus)
     {
-        var request = await _requestRepository.GetRequestByUsernameAsync(myUsername, usernameAthlete);
+        var request = await _requestRepository.FindRequestByUsernamesAsync(coachUsername, usernameAthlete);
         if (request == null)
-            throw new Exception("Request not found");
-        request.RequestStatus = requestStatus;
-        if (requestStatus == RequestStatus.ACCEPTED)
-            await _coachService.AddAthleteToCoach(usernameAthlete, myUsername);
+            throw new NotFoundException("Request not found");
+        request.RequestStatus = Enum.Parse<RequestStatus>(requestStatus.ToUpper());
+        if (request.RequestStatus == RequestStatus.ACCEPTED)
+        {
+            await _coachService.AddAthleteToCoach(usernameAthlete, coachUsername);
+        }
         _requestRepository.Update(request);
+        await _requestRepository.SaveAsync();
+        return request;
+    }
+
+    public async Task<RequestInfo> CreateRequestAsync(Athlete athlete, Coach coach, RequestType requestType)
+    {
+        var oldRequest = await _requestRepository.FindRequestByUsernamesAsync(coach.Username, athlete.Username);
+        if (oldRequest != null)
+            throw new BadRequestException("Request already exists");
+
+        var request = new RequestInfo
+        {
+            RequestByUser = athlete.Username,
+            AssignedToUser = coach.Username,
+            RequestType = requestType,
+            RequestStatus = RequestStatus.PENDING,
+            RequestDate = DateTime.Now
+        };
+        await _requestRepository.CreateAsync(request);
         await _requestRepository.SaveAsync();
         return request;
     }

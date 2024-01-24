@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 using dotNet_backend.Helpers;
 using dotNet_backend.Helpers.Extensions;
 using Serilog;
@@ -24,6 +25,8 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     {
         ///options.Filters.Add(new EmailVerifiedFilter());
     });
+    builderInstance.Services.AddControllers().AddJsonOptions(x =>
+        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
     builderInstance.Host.UseSerilog();
     builderInstance.Services.AddAutoMapper(typeof(MapperProfile));
     builderInstance.Services.AddControllers();

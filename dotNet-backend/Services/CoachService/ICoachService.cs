@@ -11,4 +11,5 @@ public interface ICoachService
     Task<Coach> GetCoachByIdAsync(Guid id);
     Task<Coach> GetCoachByUserNameAsync(string username);
     Task AddAthleteToCoach(string usernameAthlete, string usernameCoach);
+    Task UpdateCoachAsync(Coach newCoach);
 }

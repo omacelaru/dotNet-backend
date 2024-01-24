@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace dotNet_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231229142237_Add-Requests")]
-    partial class AddRequests
+    [Migration("20240124120347_change-to-TPT")]
+    partial class changetoTPT
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,9 @@ namespace dotNet_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CoachId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -38,6 +41,9 @@ namespace dotNet_backend.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CoachId")
+                        .IsUnique();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -121,7 +127,7 @@ namespace dotNet_backend.Migrations
 
                     b.ToTable("Users");
 
-                    b.UseTpcMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("dotNet_backend.Models.Athlete.Athlete", b =>
@@ -144,16 +150,22 @@ namespace dotNet_backend.Migrations
                 {
                     b.HasBaseType("dotNet_backend.Models.User.User");
 
-                    b.Property<Guid?>("ClubId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ClubId");
-
                     b.ToTable("Coaches");
+                });
+
+            modelBuilder.Entity("dotNet_backend.Models.Club.Club", b =>
+                {
+                    b.HasOne("dotNet_backend.Models.Coach.Coach", "Coach")
+                        .WithOne("Club")
+                        .HasForeignKey("dotNet_backend.Models.Club.Club", "CoachId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coach");
                 });
 
             modelBuilder.Entity("dotNet_backend.Models.Athlete.Athlete", b =>
@@ -162,26 +174,29 @@ namespace dotNet_backend.Migrations
                         .WithMany("Athletes")
                         .HasForeignKey("CoachId");
 
+                    b.HasOne("dotNet_backend.Models.User.User", null)
+                        .WithOne()
+                        .HasForeignKey("dotNet_backend.Models.Athlete.Athlete", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Coach");
                 });
 
             modelBuilder.Entity("dotNet_backend.Models.Coach.Coach", b =>
                 {
-                    b.HasOne("dotNet_backend.Models.Club.Club", "Club")
-                        .WithMany("Coaches")
-                        .HasForeignKey("ClubId");
-
-                    b.Navigation("Club");
-                });
-
-            modelBuilder.Entity("dotNet_backend.Models.Club.Club", b =>
-                {
-                    b.Navigation("Coaches");
+                    b.HasOne("dotNet_backend.Models.User.User", null)
+                        .WithOne()
+                        .HasForeignKey("dotNet_backend.Models.Coach.Coach", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("dotNet_backend.Models.Coach.Coach", b =>
                 {
                     b.Navigation("Athletes");
+
+                    b.Navigation("Club");
                 });
 #pragma warning restore 612, 618
         }

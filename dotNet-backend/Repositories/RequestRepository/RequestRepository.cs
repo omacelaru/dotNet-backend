@@ -11,12 +11,12 @@ public class RequestRepository : GenericRepository<RequestInfo>, IRequestReposit
     {
     }
     
-    public async Task<IEnumerable<RequestInfo>> GetRequestsByUsernameAsync(string username)
+    public async Task<IEnumerable<RequestInfo>> FindRequestsByUsernameAsync(string username)
     {
-        return await _table.Where(r => r.AssignedToUser == username && r.RequestStatus == RequestStatus.PENDING).ToListAsync();
+        return await _table.Where(r => r.AssignedToUser == username).AsNoTracking().ToListAsync();
     }
 
-    public async Task<RequestInfo> GetRequestByUsernameAsync(string myUsername, string usernameAthlete)
+    public async Task<RequestInfo> FindRequestByUsernamesAsync(string myUsername, string usernameAthlete)
     {
         return await _table.FirstOrDefaultAsync(r => r.AssignedToUser == myUsername && r.RequestByUser == usernameAthlete && r.RequestStatus == RequestStatus.PENDING);
     }
