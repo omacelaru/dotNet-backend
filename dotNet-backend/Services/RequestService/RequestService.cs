@@ -25,20 +25,6 @@ public class RequestService : IRequestService
         _coachService = coachService;
     }
 
-    public async Task JoinCoachAsync(Coach coach, Athlete athlete)
-    {
-        var request = new RequestInfo
-        {
-            RequestDate = DateTime.Now,
-            RequestByUser = athlete.Username,
-            AssignedToUser = coach.Username,
-            RequestType = RequestType.AddAthleteToCoach,
-            RequestStatus = RequestStatus.PENDING
-        };
-        await _requestRepository.CreateAsync(request);
-        await _requestRepository.SaveAsync();
-    }
-    
     public async Task<IEnumerable<RequestInfo>> GetRequestsByUsernameAsync(string username)
     {
         return await _requestRepository.FindRequestsByUsernameAsync(username);
@@ -49,12 +35,31 @@ public class RequestService : IRequestService
         var request = await _requestRepository.FindRequestByUsernamesAsync(coachUsername, usernameAthlete);
         if (request == null)
             throw new NotFoundException("Request not found");
-        request.RequestStatus = Enum.Parse<RequestStatus>(requestStatus);
+        request.RequestStatus = Enum.Parse<RequestStatus>(requestStatus.ToUpper());
         if (request.RequestStatus == RequestStatus.ACCEPTED)
         {
             await _coachService.AddAthleteToCoach(usernameAthlete, coachUsername);
         }
         _requestRepository.Update(request);
+        await _requestRepository.SaveAsync();
+        return request;
+    }
+
+    public async Task<RequestInfo> CreateRequestAsync(Athlete athlete, Coach coach, RequestType requestType)
+    {
+        var oldRequest = await _requestRepository.FindRequestByUsernamesAsync(coach.Username, athlete.Username);
+        if (oldRequest != null)
+            throw new BadRequestException("Request already exists");
+
+        var request = new RequestInfo
+        {
+            RequestByUser = athlete.Username,
+            AssignedToUser = coach.Username,
+            RequestType = requestType,
+            RequestStatus = RequestStatus.PENDING,
+            RequestDate = DateTime.Now
+        };
+        await _requestRepository.CreateAsync(request);
         await _requestRepository.SaveAsync();
         return request;
     }

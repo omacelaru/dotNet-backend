@@ -7,7 +7,7 @@ namespace dotNet_backend.Services.RequestService;
 
 public interface IRequestService
 {
-    Task JoinCoachAsync(Coach coach, Athlete athlete);
     Task<IEnumerable<RequestInfo>> GetRequestsByUsernameAsync(string username);
     Task<RequestInfo> UpdateRequestStatusAsync(string coachUsername, string usernameAthlete, string requestStatus);
+    Task<RequestInfo> CreateRequestAsync(Athlete athlete, Coach coach, RequestType addAthleteToCoach);
 }

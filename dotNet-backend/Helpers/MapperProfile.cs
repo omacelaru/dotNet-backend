@@ -21,22 +21,24 @@ namespace dotNet_backend.Helpers
             CreateMap<ClubRequestDto, Club>();
 
             CreateMap<Coach, CoachResponseDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ClubName, opt => opt.MapFrom(src => src.Club.Name))
                 .ForMember(dest => dest.AthletesNames,
                                        opt => opt.MapFrom(src => src.Athletes.Select(athlete => athlete.Name)));
 
             CreateMap<Athlete, AthleteResponseDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.CoachName, opt => opt.MapFrom(src => src.Coach.Name));
 
             CreateMap<Club, ClubResponseDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.CoachName,
                     opt => opt.MapFrom(src => src.Coach.Name));
 
-            CreateMap<RequestInfo, RequestInfoResponseDto>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.RequestByUser));
+            CreateMap<RequestInfo, RequestInfoResponseDto>();
         }
     }
 }

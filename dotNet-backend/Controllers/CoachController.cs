@@ -46,14 +46,33 @@ namespace dotNet_backend.Controllers
             var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
             return Ok(coachResponseDto);
         }
-        
-        //respond to request to join in the athlete list of a coach by coach username
+
+        [HttpGet("{username}")]
+        public async Task<ActionResult<CoachResponseDto>> GetCoachByUserName(string username)
+        {
+            _logger.LogInformation("Getting coach with username {}", username);
+            var coach = await _coachService.GetCoachByUserNameAsync(username);
+            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
+            return Ok(coachResponseDto);
+        }
+
+        [HttpGet("me")]
+        [Authorize(Roles = "Coach")]
+        public async Task<ActionResult<CoachResponseDto>> GetCoachByUserName()
+        {
+            _logger.LogInformation("Getting coach with username {}", User.Identity.Name);
+            var coach = await _coachService.GetCoachByUserNameAsync(User.Identity.Name);
+            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
+            return Ok(coachResponseDto);
+        }
+
         [HttpGet("me/requests")]
         [Authorize(Roles = "Coach")]
         public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequests()
         {
-            _logger.LogInformation("Getting all requests for coach: {}", User.Identity.Name);
-            var requests = await _requestService.GetRequestsByUsernameAsync(User.Identity.Name);
+            string coachUsername = User.Identity.Name;
+            _logger.LogInformation("Getting requests for coach {}", coachUsername);
+            var requests = await _requestService.GetRequestsByUsernameAsync(coachUsername);
             var requestResponseDtos = _mapper.Map<IEnumerable<RequestInfoResponseDto>>(requests);
             return Ok(requestResponseDtos);
         }

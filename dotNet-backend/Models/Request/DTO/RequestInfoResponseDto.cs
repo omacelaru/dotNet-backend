@@ -2,9 +2,13 @@
 {
     public class RequestInfoResponseDto
     {
-        //CreateMap<RequestInfo, RequestInfoResponseDto>()
-        // .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.RequestByUser));
-        public string Name { get; set; }
+        public Guid Id { get; set; }
+        public string RequestByUser { get; set; }
+        public string AssignedToUser { get; set; }
+        public System.DateTime RequestDate { get; set; }
+        public string? Message { get; set; }
+        public Enum.RequestType RequestType { get; set; }
+        public Enum.RequestStatus RequestStatus { get; set; }
     }
 
 }

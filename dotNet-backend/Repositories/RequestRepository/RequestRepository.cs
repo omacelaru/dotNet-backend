@@ -13,7 +13,7 @@ public class RequestRepository : GenericRepository<RequestInfo>, IRequestReposit
     
     public async Task<IEnumerable<RequestInfo>> FindRequestsByUsernameAsync(string username)
     {
-        return await _table.Where(r => r.AssignedToUser == username && r.RequestStatus == RequestStatus.PENDING).ToListAsync();
+        return await _table.Where(r => r.AssignedToUser == username).AsNoTracking().ToListAsync();
     }
 
     public async Task<RequestInfo> FindRequestByUsernamesAsync(string myUsername, string usernameAthlete)
