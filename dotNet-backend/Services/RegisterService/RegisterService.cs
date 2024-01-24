@@ -68,7 +68,7 @@ namespace dotNet_backend.Services.RegisterService
             var link =  _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
             
             _logger.LogInformation("Sending email to {email} with subject {subject}", user.Email, _confirmEmailSubject);
-            await _smtpService.SendEmailAsync(user.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
+            //await _smtpService.SendEmailAsync(user.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
             
             _userRepository.Create(user);
             await _userRepository.SaveAsync();

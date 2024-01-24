@@ -6,6 +6,7 @@ namespace dotNet_backend.Services.ClubService
     public interface IClubService
     {
         Task<Club> CreateClubAsync(Club club);
-        Task<IEnumerable<ClubResponseDto>> GetAllClubsAsync();
+        Task<IEnumerable<Club>> GetAllClubsAsync();
+        Task UpdateClubAsync(Club newClub);
     }
 }

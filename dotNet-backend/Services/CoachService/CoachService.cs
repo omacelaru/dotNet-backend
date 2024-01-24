@@ -50,5 +50,11 @@ public class CoachService : ICoachService
         _coachRepository.Update(coach);
         await _coachRepository.SaveAsync();
     }
+
+    public async Task UpdateCoachAsync(Coach newCoach)
+    {
+        _coachRepository.Update(newCoach);
+        await _coachRepository.SaveAsync();
+    }
     
 }

@@ -23,11 +23,12 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>().UseTpcMappingStrategy();
 
         modelBuilder.Entity<Club>().HasIndex(c => c.Name).IsUnique();
-        modelBuilder.Entity<Club>()
-            .HasMany(c => c.Coaches)
-            .WithOne(c => c.Club)
-            .HasForeignKey(c => c.ClubId);
 
+        modelBuilder.Entity<Coach>()
+            .HasOne(c => c.Club)
+            .WithOne(c => c.Coach)
+            .HasForeignKey<Club>(c => c.CoachId)
+            .IsRequired();
         modelBuilder.Entity<Coach>()
             .HasMany(c => c.Athletes)
             .WithOne(a => a.Coach)

@@ -32,8 +32,8 @@ namespace dotNet_backend.Helpers
 
             CreateMap<Club, ClubResponseDto>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.CoachesNames,
-                    opt => opt.MapFrom(src => src.Coaches.Select(coach => coach.Name)));
+                .ForMember(dest => dest.CoachName,
+                    opt => opt.MapFrom(src => src.Coach.Name));
 
             CreateMap<RequestInfo, RequestInfoResponseDto>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.RequestByUser));
