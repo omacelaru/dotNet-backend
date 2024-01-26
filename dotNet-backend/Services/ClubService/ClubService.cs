@@ -6,6 +6,9 @@ using dotNet_backend.Models.Club.DTO;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.CoachRepository;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.ClubService
 {
@@ -13,32 +16,32 @@ namespace dotNet_backend.Services.ClubService
     {
         private readonly IClubRepository _clubRepository;
         private readonly ICoachRepository _coachRepository;
+        private readonly ILogger<ClubService> _logger;
         private readonly IMapper _mapper;
 
-        public ClubService(IClubRepository clubRepository, ICoachRepository coachRepository, IMapper mapper)
+        public ClubService(IClubRepository clubRepository, ICoachRepository coachRepository, IMapper mapper,
+            ILogger<ClubService> logger)
         {
             _clubRepository = clubRepository;
             _coachRepository = coachRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
-        public async Task<Club> CreateClubAsync(Club club)
+        public async Task<ActionResult<ClubResponseDto>> CreateClubAsync(ClubRequestDto clubRequestDto, string coachUsername)
         {
+            var coach = await _coachRepository.FindCoachByUserNameAsync(coachUsername);
+            var club = _mapper.Map<Club>(clubRequestDto);
+            club.Coach = coach;
             await _clubRepository.CreateAsync(club);
             await _clubRepository.SaveAsync();
-            return club;
+            return _mapper.Map<ClubResponseDto>(club);
         }
 
-        public async Task<IEnumerable<Club>> GetAllClubsAsync()
+        public async Task<ActionResult<IEnumerable<ClubResponseDto>>> GetAllClubsAsync()
         {
-            return await _clubRepository.FindAllClubsAsync();
+            var clubs = await _clubRepository.FindAllClubsAsync();
+            return _mapper.Map<List<ClubResponseDto>>(clubs);
         }
-
-        public async Task UpdateClubAsync(Club newClub)
-        {
-            _clubRepository.Update(newClub);
-            await _clubRepository.SaveAsync();
-        }
-        
     }
 }

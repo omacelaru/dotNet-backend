@@ -1,12 +1,12 @@
 ﻿using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Club.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Services.ClubService
 {
     public interface IClubService
     {
-        Task<Club> CreateClubAsync(Club club);
-        Task<IEnumerable<Club>> GetAllClubsAsync();
-        Task UpdateClubAsync(Club newClub);
+        Task<ActionResult<ClubResponseDto>> CreateClubAsync(ClubRequestDto clubRequestDto, string coachUsername);
+        Task<ActionResult<IEnumerable<ClubResponseDto>>> GetAllClubsAsync();
     }
 }

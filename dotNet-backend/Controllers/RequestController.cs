@@ -36,15 +36,8 @@ namespace dotNet_backend.Controllers
         [Authorize(Roles = "Athlete")]
         public async Task<ActionResult<RequestInfoResponseDto>> JoinCoach(string coachUsername)
         {
-            var athlete = await _athleteService.GetAthleteByUserNameAsync(User.Identity.Name);
-            if (athlete.Coach != null)
-            {
-                return BadRequest("You already have a coach");
-            }
-            var coach = await _coachService.GetCoachByUserNameAsync(coachUsername);
-            var request = await _requestService.CreateRequestAsync(athlete, coach, RequestType.AddAthleteToCoach);
-            var requestResponseDto = _mapper.Map<RequestInfoResponseDto>(request);
-            return Ok(requestResponseDto);
+            string athleteUsername = User.Identity.Name;
+            return await _requestService.CreateRequestAsync(athleteUsername, coachUsername, RequestType.AddAthleteToCoach);
         }
     }
 }

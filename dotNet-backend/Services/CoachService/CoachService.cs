@@ -1,4 +1,5 @@
-﻿using dotNet_backend.Data.Exceptions;
+﻿using AutoMapper;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Coach.DTO;
@@ -8,6 +9,7 @@ using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.CoachRepository;
 using dotNet_backend.Repositories.RequestRepository;
 using dotNet_backend.Repositories.UserRepository;
+using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.CoachService;
@@ -17,27 +19,33 @@ public class CoachService : ICoachService
     private readonly ICoachRepository _coachRepository;
     private readonly IClubRepository _clubRepository;
     private readonly IAthleteRepository _athleteRepository;
+    private readonly IMapper _mapper;
 
-    public CoachService(ICoachRepository coachRepository, IClubRepository clubRepository, IAthleteRepository athleteRepository)
+    public CoachService(ICoachRepository coachRepository, IClubRepository clubRepository,
+        IAthleteRepository athleteRepository, IMapper mapper)
     {
         _coachRepository = coachRepository;
         _clubRepository = clubRepository;
         _athleteRepository = athleteRepository;
-    }
-    
-    public async Task<IEnumerable<Coach>> GetAllCoachesAsync()
-    {
-        return await _coachRepository.FindAllCoachesAsync();
+        _mapper = mapper;
     }
 
-    public async Task<Coach> GetCoachByIdAsync(Guid id)
+    public async Task<ActionResult<IEnumerable<CoachResponseDto>>> GetAllCoachesAsync()
     {
-        return await _coachRepository.FindCoachByIdAsync(id);
+        var coaches = await _coachRepository.FindAllCoachesAsync();
+        return _mapper.Map<List<CoachResponseDto>>(coaches);
     }
-    
-    public async Task<Coach> GetCoachByUserNameAsync(string username)
+
+    public async Task<ActionResult<CoachResponseDto>> GetCoachByIdAsync(Guid id)
     {
-        return await _coachRepository.FindCoachByUserNameAsync(username);
+        var coach = await _coachRepository.FindCoachByIdAsync(id);
+        return _mapper.Map<CoachResponseDto>(coach);
+    }
+
+    public async Task<ActionResult<CoachResponseDto>> GetCoachByUserNameAsync(string username)
+    {
+        var coach = await _coachRepository.FindCoachByUserNameAsync(username);
+        return _mapper.Map<CoachResponseDto>(coach);
     }
 
     public async Task AddAthleteToCoach(string athleteUsername, string coachUsername)
@@ -48,15 +56,9 @@ public class CoachService : ICoachService
         {
             throw new NotFoundException("Athlete or coach not found");
         }
+
         athlete.Coach = coach;
         _athleteRepository.Update(athlete);
         await _athleteRepository.SaveAsync();
     }
-
-    public async Task UpdateCoachAsync(Coach newCoach)
-    {
-        _coachRepository.Update(newCoach);
-        await _coachRepository.SaveAsync();
-    }
-    
 }

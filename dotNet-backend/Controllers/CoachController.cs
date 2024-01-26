@@ -18,42 +18,33 @@ namespace dotNet_backend.Controllers
         private readonly ICoachService _coachService;
         private readonly IRequestService _requestService;
         private readonly ILogger<CoachController> _logger;
-        private readonly IMapper _mapper;
 
-        public CoachController(ICoachService coachService, ILogger<CoachController> logger, IMapper mapper, IRequestService requestService)
+        public CoachController(ICoachService coachService, ILogger<CoachController> logger, IRequestService requestService)
         {
             _coachService = coachService;
             _requestService = requestService;
             _logger = logger;
-            _mapper = mapper;
         }
         
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CoachResponseDto>>> GetAllCoaches()
         {
             _logger.LogInformation("Getting all coaches");
-            var coaches = await _coachService.GetAllCoachesAsync();
-            var coachResponseDtos = _mapper.Map<IEnumerable<CoachResponseDto>>(coaches);
-            return Ok(coachResponseDtos);
-
+            return await _coachService.GetAllCoachesAsync();
         }
         
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<CoachResponseDto>> GetCoachById(Guid id)
         {
             _logger.LogInformation("Getting coach with id {}", id);
-            var coach = await _coachService.GetCoachByIdAsync(id);
-            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
-            return Ok(coachResponseDto);
+            return await _coachService.GetCoachByIdAsync(id);
         }
 
         [HttpGet("{username}")]
         public async Task<ActionResult<CoachResponseDto>> GetCoachByUserName(string username)
         {
             _logger.LogInformation("Getting coach with username {}", username);
-            var coach = await _coachService.GetCoachByUserNameAsync(username);
-            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
-            return Ok(coachResponseDto);
+            return await _coachService.GetCoachByUserNameAsync(username);
         }
 
         [HttpGet("me")]
@@ -61,9 +52,7 @@ namespace dotNet_backend.Controllers
         public async Task<ActionResult<CoachResponseDto>> GetCoachByUserName()
         {
             _logger.LogInformation("Getting coach with username {}", User.Identity.Name);
-            var coach = await _coachService.GetCoachByUserNameAsync(User.Identity.Name);
-            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
-            return Ok(coachResponseDto);
+            return await _coachService.GetCoachByUserNameAsync(User.Identity.Name);
         }
 
         [HttpGet("me/requests")]
@@ -72,9 +61,7 @@ namespace dotNet_backend.Controllers
         {
             string coachUsername = User.Identity.Name;
             _logger.LogInformation("Getting requests for coach {}", coachUsername);
-            var requests = await _requestService.GetRequestsByUsernameAsync(coachUsername);
-            var requestResponseDtos = _mapper.Map<IEnumerable<RequestInfoResponseDto>>(requests);
-            return Ok(requestResponseDtos);
+            return await _requestService.GetRequestsByUsernameAsync(coachUsername);
         }
         
         //set request status to accepted/rejected
@@ -86,9 +73,7 @@ namespace dotNet_backend.Controllers
             string coachUsername = User.Identity.Name;
             string requestStatus = requestStatusDto.RequestStatus;
             _logger.LogInformation("Setting request status to {} for athlete {} by coach {}", requestStatus, usernameAthlete, coachUsername);
-            var request = await _requestService.UpdateRequestStatusAsync(coachUsername, usernameAthlete, requestStatus);
-            var requestResponseDto = _mapper.Map<RequestInfoResponseDto>(request);
-            return Ok(requestResponseDto);
+            return await _requestService.UpdateRequestStatusAsync(coachUsername, usernameAthlete, requestStatus);
         }
         
         
