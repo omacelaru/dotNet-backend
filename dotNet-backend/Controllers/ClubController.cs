@@ -15,13 +15,11 @@ namespace dotNet_backend.Controllers
     public class ClubController : ControllerBase
     {
         private readonly IClubService _clubService;
-        private readonly ICoachService _coachService;
         private readonly ILogger<ClubController> _logger;
 
-        public ClubController(IClubService clubService, ICoachService coachService, ILogger<ClubController> logger)
+        public ClubController(IClubService clubService, ILogger<ClubController> logger)
         {
             _clubService = clubService;
-            _coachService = coachService;
             _logger = logger;
         }
 

@@ -15,20 +15,12 @@ namespace dotNet_backend.Controllers
     [ApiController]
     public class RequestController : ControllerBase
     {
-        private readonly IClubService _clubService;
-        private readonly ICoachService _coachService;
-        private readonly IAthleteService _athleteService;
         private readonly IRequestService _requestService;
-        private readonly IMapper _mapper;
+        private readonly ILogger<RegisterController> _logger;
 
-        public RequestController(IClubService clubService, ICoachService coachService, IAthleteService athleteService,
-            IRequestService requestService, IMapper mapper)
+        public RequestController(IRequestService requestService)
         {
-            _clubService = clubService;
-            _coachService = coachService;
-            _athleteService = athleteService;
             _requestService = requestService;
-            _mapper = mapper;
         }
 
         //make request to join in the athlete list of a coach by coach username
@@ -37,6 +29,7 @@ namespace dotNet_backend.Controllers
         public async Task<ActionResult<RequestInfoResponseDto>> JoinCoach(string coachUsername)
         {
             string athleteUsername = User.Identity.Name;
+            _logger.LogInformation("Athlete {} is requesting to join coach {}", athleteUsername, coachUsername);
             return await _requestService.CreateRequestAsync(athleteUsername, coachUsername, RequestType.AddAthleteToCoach);
         }
     }
