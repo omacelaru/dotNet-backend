@@ -1,11 +1,14 @@
-﻿using dotNet_backend.Models.Athlete;
+﻿using AutoMapper;
+using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Request;
+using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
 using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.CoachRepository;
 using dotNet_backend.Repositories.RequestRepository;
 using dotNet_backend.Services.CoachService;
+using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.RequestService;
@@ -16,23 +19,30 @@ public class RequestService : IRequestService
     private readonly ICoachRepository _coachRepository;
     private readonly IAthleteRepository _athleteRepository;
     private readonly ICoachService _coachService;
+    private readonly IMapper _mapper;
 
-    public RequestService(IRequestRepository requestRepository, ICoachRepository coachRepository, IAthleteRepository athleteRepository, ICoachService coachService)
+    public RequestService(IRequestRepository requestRepository, ICoachRepository coachRepository,
+        IAthleteRepository athleteRepository, ICoachService coachService, IMapper mapper)
     {
         _requestRepository = requestRepository;
         _coachRepository = coachRepository;
         _athleteRepository = athleteRepository;
         _coachService = coachService;
+        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<RequestInfo>> GetRequestsByUsernameAsync(string username)
+    public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequestsByUsernameAsync(string username)
     {
-        return await _requestRepository.FindRequestsByUsernameAsync(username);
+        var request = await _requestRepository.FindRequestsAssignedToUsernameAsync(username);
+        return _mapper.Map<List<RequestInfoResponseDto>>(request);
     }
 
-    public async Task<RequestInfo> UpdateRequestStatusAsync(string coachUsername, string usernameAthlete, string requestStatus)
+    public async Task<ActionResult<RequestInfoResponseDto>> UpdateRequestStatusAsync(string coachUsername,
+        string usernameAthlete, string requestStatus)
     {
-        var request = await _requestRepository.FindRequestByUsernamesAsync(coachUsername, usernameAthlete);
+        var request =
+            await _requestRepository.FindRequestAssignedToUsernameAndRequestedByUsername(coachUsername,
+                usernameAthlete);
         if (request == null)
             throw new NotFoundException("Request not found");
         request.RequestStatus = Enum.Parse<RequestStatus>(requestStatus.ToUpper());
@@ -40,27 +50,34 @@ public class RequestService : IRequestService
         {
             await _coachService.AddAthleteToCoach(usernameAthlete, coachUsername);
         }
+
         _requestRepository.Update(request);
         await _requestRepository.SaveAsync();
-        return request;
+        return _mapper.Map<RequestInfoResponseDto>(request);
     }
 
-    public async Task<RequestInfo> CreateRequestAsync(Athlete athlete, Coach coach, RequestType requestType)
+    public async Task<ActionResult<RequestInfoResponseDto>> CreateRequestAsync(string athleteUsername,
+        string coachUsername,
+        RequestType requestType)
     {
-        var oldRequest = await _requestRepository.FindRequestByUsernamesAsync(coach.Username, athlete.Username);
+        var athlete = await _athleteRepository.FindAthleteByUserNameAsync(athleteUsername);
+        var coach = await _coachRepository.FindCoachByUserNameAsync(coachUsername);
+        var oldRequest =
+            await _requestRepository.FindRequestAssignedToUsernameAndRequestedByUsername(coachUsername,
+                athleteUsername);
         if (oldRequest != null)
             throw new BadRequestException("Request already exists");
 
         var request = new RequestInfo
         {
-            RequestByUser = athlete.Username,
-            AssignedToUser = coach.Username,
+            RequestByUser = athleteUsername,
+            AssignedToUser = coachUsername,
             RequestType = requestType,
             RequestStatus = RequestStatus.PENDING,
             RequestDate = DateTime.Now
         };
         await _requestRepository.CreateAsync(request);
         await _requestRepository.SaveAsync();
-        return request;
+        return _mapper.Map<RequestInfoResponseDto>(request);
     }
 }
