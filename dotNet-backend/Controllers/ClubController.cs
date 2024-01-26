@@ -17,24 +17,19 @@ namespace dotNet_backend.Controllers
         private readonly IClubService _clubService;
         private readonly ICoachService _coachService;
         private readonly ILogger<ClubController> _logger;
-        private readonly IMapper _mapper;
 
-        public ClubController(IClubService clubService, ICoachService coachService, ILogger<ClubController> logger,
-            IMapper mapper)
+        public ClubController(IClubService clubService, ICoachService coachService, ILogger<ClubController> logger)
         {
             _clubService = clubService;
             _coachService = coachService;
             _logger = logger;
-            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClubResponseDto>>> GetAllClubs()
         {
             _logger.LogInformation("Getting all clubs");
-            var clubs = await _clubService.GetAllClubsAsync();
-            var clubResponseDtos = _mapper.Map<IEnumerable<ClubResponseDto>>(clubs);
-            return Ok(clubResponseDtos);
+            return await _clubService.GetAllClubsAsync();
         }
 
         [HttpPost]
@@ -42,13 +37,9 @@ namespace dotNet_backend.Controllers
         [ValidateModel]
         public async Task<ActionResult<ClubResponseDto>> CreateClubFromCoach([FromBody] ClubRequestDto clubRequestDto)
         {
-            _logger.LogInformation("Creating club {}", clubRequestDto);
-            var club = _mapper.Map<Club>(clubRequestDto);
-            var coach = await _coachService.GetCoachByUserNameAsync(User.Identity.Name);
-            club.Coach = coach;
-            var newClub = await _clubService.CreateClubAsync(club);
-            var clubResponseDto = _mapper.Map<ClubResponseDto>(newClub);
-            return Ok(clubResponseDto);
+            string coachUsername = User.Identity.Name;
+            _logger.LogInformation("Creating club {} from coach with username: {} ", clubRequestDto, coachUsername);
+            return await _clubService.CreateClubAsync(clubRequestDto, coachUsername);
         }
     }
 }
