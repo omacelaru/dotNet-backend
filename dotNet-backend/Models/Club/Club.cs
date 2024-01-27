@@ -8,7 +8,5 @@ namespace dotNet_backend.Models.Club
 
         public Guid CoachId { get; set; }
         public Coach.Coach Coach { get; set; }
-
-        public bool IsDeleted { get; set; } = false;
     }
 }
