@@ -44,7 +44,7 @@ public class RequestService : IRequestService
             await _requestRepository.FindRequestAssignedToUsernameAndRequestedByUsername(coachUsername,
                 usernameAthlete);
         if (request == null)
-            throw new NotFoundException("Request not found");
+            throw new NotFoundException("Request not found for this athlete and coach");
         request.RequestStatus = Enum.Parse<RequestStatus>(requestStatus.ToUpper());
         if (request.RequestStatus == RequestStatus.ACCEPTED)
         {
@@ -60,13 +60,13 @@ public class RequestService : IRequestService
         string coachUsername,
         RequestType requestType)
     {
-        var athlete = await _athleteRepository.FindAthleteByUserNameAsync(athleteUsername);
-        var coach = await _coachRepository.FindCoachByUserNameAsync(coachUsername);
+        var athlete = await _athleteRepository.FindAthleteByUsernameAsync(athleteUsername);
+        var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         var oldRequest =
             await _requestRepository.FindRequestAssignedToUsernameAndRequestedByUsername(coachUsername,
                 athleteUsername);
         if (oldRequest != null)
-            throw new BadRequestException("Request already exists");
+            throw new BadRequestException("You already have a request for this athlete");
 
         var request = new RequestInfo
         {

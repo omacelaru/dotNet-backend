@@ -18,7 +18,7 @@ public class AthleteRepository : GenericRepository<Athlete>, IAthleteRepository
             .ToListAsync();
     }
 
-    public async Task<Athlete> FindAthleteByUserNameAsync(string username)
+    public async Task<Athlete> FindAthleteByUsernameAsync(string username)
     {
         return await _table
             .Include(a => a.Coach)

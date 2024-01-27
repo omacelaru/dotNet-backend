@@ -41,18 +41,18 @@ namespace dotNet_backend.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<ActionResult<CoachResponseDto>> GetCoachByUserName(string username)
+        public async Task<ActionResult<CoachResponseDto>> GetCoachByUsername(string username)
         {
             _logger.LogInformation("Getting coach with username {}", username);
-            return await _coachService.GetCoachByUserNameAsync(username);
+            return await _coachService.GetCoachByUsernameAsync(username);
         }
 
         [HttpGet("me")]
         [Authorize(Roles = "Coach")]
-        public async Task<ActionResult<CoachResponseDto>> GetCoachByUserName()
+        public async Task<ActionResult<CoachResponseDto>> GetMeByUsername()
         {
             _logger.LogInformation("Getting coach with username {}", User.Identity.Name);
-            return await _coachService.GetCoachByUserNameAsync(User.Identity.Name);
+            return await _coachService.GetCoachByUsernameAsync(User.Identity.Name);
         }
 
         [HttpGet("me/requests")]

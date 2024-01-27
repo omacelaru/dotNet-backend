@@ -12,7 +12,7 @@ public class AthleteService : IAthleteService
         _athleteRepository = athleteRepository;
     }
 
-    public async Task<Athlete> GetAthleteByUserNameAsync(string username)
+    public async Task<Athlete> GetAthleteByUsernameAsync(string username)
     {
         return await _athleteRepository.FindSingleOrDefaultAsync(a => a.Username == username);
     }

@@ -8,5 +8,5 @@ public interface ICoachRepository : IGenericRepository<Coach>
     Task<IEnumerable<Coach>> FindAllCoachesAsync();
 
     Task<Coach> FindCoachByIdAsync(Guid id);
-    Task<Coach> FindCoachByUserNameAsync(string username);
+    Task<Coach> FindCoachByUsernameAsync(string username);
 }
