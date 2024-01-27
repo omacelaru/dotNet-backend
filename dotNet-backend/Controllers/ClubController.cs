@@ -48,7 +48,7 @@ namespace dotNet_backend.Controllers
         {
             string coachUsername = User.Identity.Name;
             _logger.LogInformation("Deleting club from coach with username: {} ", coachUsername);
-            return Ok(await _clubService.DeleteClubAsync(coachUsername));
+            return await _clubService.DeleteClubAsync(coachUsername);
         }
     }
 }
