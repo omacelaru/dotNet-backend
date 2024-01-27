@@ -50,5 +50,15 @@ namespace dotNet_backend.Controllers
             _logger.LogInformation("Deleting club from coach with username: {} ", coachUsername);
             return await _clubService.DeleteClubAsync(coachUsername);
         }
+        
+        [HttpPatch]
+        [Authorize(Roles = "Coach")]
+        [ValidateModel]
+        public async Task<ActionResult<ClubResponseDto>> UpdateClubFromCoach([FromBody] ClubRequestDto clubRequestDto)
+        {
+            string coachUsername = User.Identity.Name;
+            _logger.LogInformation("Updating club {} from coach with username: {} ", clubRequestDto, coachUsername);
+            return await _clubService.UpdateClubAsync(clubRequestDto, coachUsername);
+        }
     }
 }

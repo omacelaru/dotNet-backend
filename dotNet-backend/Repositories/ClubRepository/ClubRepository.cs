@@ -13,7 +13,6 @@ namespace dotNet_backend.Repositories.ClubRepository
         {
             return await _table
                 .Include(c => c.Coach)
-                .IsNotDeleted()
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -22,15 +21,7 @@ namespace dotNet_backend.Repositories.ClubRepository
         {
             return await _table
                 .Include(c => c.Coach)
-                .IsNotDeleted()
                 .FirstOrDefaultAsync(c => c.Id == clubId);
-        }
-    }
-    public static class ClubRepositoryExtensions
-    {
-        public static IQueryable<Club> IsNotDeleted(this IQueryable<Club> clubs)
-        {
-            return clubs.Where(c => !c.IsDeleted);
         }
     }
 }
