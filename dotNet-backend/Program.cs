@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using dotNet_backend.Exceptions.GlobalExceptionHandler;
 using dotNet_backend.Helpers;
 using dotNet_backend.Helpers.Extensions;
 using Serilog;
@@ -40,6 +41,7 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     builderInstance.Services.AddAuthentications(configuration);
     builderInstance.Services.AddRepositories();
     builderInstance.Services.AddServices();
+    builderInstance.Services.AddExceptionHandler<GlobalExceptionHandler>();
     builderInstance.Services.AddSwagger();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builderInstance.Services.AddEndpointsApiExplorer();
@@ -60,6 +62,8 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     app.UseAuthorization();
     
     app.MapControllers();
+
+    app.UseExceptionHandler(_ => { });
     
     app.Run();
 }

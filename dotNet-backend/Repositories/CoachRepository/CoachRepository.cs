@@ -11,7 +11,7 @@ public class CoachRepository : GenericRepository<Coach>, ICoachRepository
     }
 
     // Add custom methods here
-    public async Task<Coach> FindByUserNameAsync(string coachUsername)
+    public async Task<Coach> FindByUsernameAsync(string coachUsername)
     {
         return await _table.FirstOrDefaultAsync(c => c.Username == coachUsername);
     }
@@ -31,7 +31,7 @@ public class CoachRepository : GenericRepository<Coach>, ICoachRepository
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task<Coach> FindCoachByUserNameAsync(string username)
+    public async Task<Coach> FindCoachByUsernameAsync(string username)
     {
         return await _table
             .Include(c => c.Athletes)

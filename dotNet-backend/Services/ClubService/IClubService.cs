@@ -8,5 +8,6 @@ namespace dotNet_backend.Services.ClubService
     {
         Task<ActionResult<ClubResponseDto>> CreateClubAsync(ClubRequestDto clubRequestDto, string coachUsername);
         Task<ActionResult<IEnumerable<ClubResponseDto>>> GetAllClubsAsync();
+        Task<ActionResult<ClubResponseDto>> DeleteClubAsync(string coachUsername);
     }
 }

@@ -5,6 +5,7 @@ using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User;
 using dotNet_backend.Repositories.UserRepository;
 using Microsoft.IdentityModel.Tokens;
+using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Helpers.GenerateJwt
 {

@@ -14,9 +14,10 @@ namespace dotNet_backend.Controllers
     {
         private readonly IAuthService _authService;
         private readonly ILogger<AuthController> _logger;
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, ILogger<AuthController> logger)
         {
             _authService = authService;
+            _logger = logger;
         }
 
         [HttpPost("login")]
@@ -24,31 +25,14 @@ namespace dotNet_backend.Controllers
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             _logger.LogInformation("Logging in user {}", loginDto);
-            try
-            {
-                return Ok(await _authService.LoginUserAsync(loginDto));
-            }
-            catch (AuthorizationException)
-            {
-                _logger.LogError("Unauthorized login attempt {}", loginDto);
-                return Unauthorized();
-            }
+            return Ok(await _authService.LoginUserAsync(loginDto));
         }
         
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(string refreshToken)
         {
             _logger.LogInformation("Refreshing token {}", refreshToken);
-            try
-            {
-                return Ok(await _authService.RefreshTokenAsync(refreshToken));
-
-            }
-            catch (BadRequestException err)
-            {
-                _logger.LogError("Bad request refreshing token {}", refreshToken);
-                return BadRequest(new { error = err.Message });
-            }
+            return Ok(await _authService.RefreshTokenAsync(refreshToken));
         }
 
         [Authorize]

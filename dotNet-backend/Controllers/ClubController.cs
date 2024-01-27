@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using dotNet_backend.CustomActionFilters;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Club.DTO;
 using dotNet_backend.Models.Coach;
@@ -7,6 +8,7 @@ using dotNet_backend.Services.ClubService;
 using dotNet_backend.Services.CoachService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Controllers
 {
@@ -38,6 +40,15 @@ namespace dotNet_backend.Controllers
             string coachUsername = User.Identity.Name;
             _logger.LogInformation("Creating club {} from coach with username: {} ", clubRequestDto, coachUsername);
             return await _clubService.CreateClubAsync(clubRequestDto, coachUsername);
+        }
+        
+        [HttpDelete]
+        [Authorize(Roles = "Coach")]
+        public async Task<ActionResult<ClubResponseDto>> DeleteClubFromCoach()
+        {
+            string coachUsername = User.Identity.Name;
+            _logger.LogInformation("Deleting club from coach with username: {} ", coachUsername);
+            return Ok(await _clubService.DeleteClubAsync(coachUsername));
         }
     }
 }

@@ -11,6 +11,7 @@ using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.User.Enum;
+using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.RegisterService
 {
@@ -56,10 +57,16 @@ namespace dotNet_backend.Services.RegisterService
         
         private async Task RegisterUserAsync(User user)
         {
-            if( await _userRepository.FindByEmailAsync(user.Email) != null)
-                throw new EmailAlreadyExists();
-                if (await _userRepository.FindByUserNameAsync(user.Username) != null)
-                    throw new UsernameAlreadyExists();
+            if (await _userRepository.FindByEmailAsync(user.Email) != null)
+            {
+                _logger.LogError("Email already exists registering user {}", user);
+                throw new BadRequestException("Email is already used.");
+            }
+            if (await _userRepository.FindByUsernameAsync(user.Username) != null)
+            {
+                _logger.LogError("Username already exists registering user {}", user);
+                throw new BadRequestException("Username is already used.");
+            }
             
             user.Password = _passwordHasher.HashPassword(user, user.Password);
             

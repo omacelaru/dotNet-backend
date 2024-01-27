@@ -6,5 +6,5 @@ namespace dotNet_backend.Repositories.AthleteRepository;
 public interface IAthleteRepository : IGenericRepository<Athlete>
 {
     Task<IEnumerable<Athlete>> FindAllAthletesAsync();
-    Task<Athlete> FindAthleteByUserNameAsync(string athleteUsername);
+    Task<Athlete> FindAthleteByUsernameAsync(string athleteUsername);
 }

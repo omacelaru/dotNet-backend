@@ -12,7 +12,7 @@ namespace dotNet_backend.Repositories.UserRepository
             return await _table.FirstOrDefaultAsync(u => u.Email == email);
         }
         
-        public async Task<User> FindByUserNameAsync(string username)
+        public async Task<User> FindByUsernameAsync(string username)
         {
             return await _table.FirstOrDefaultAsync(u => u.Username == username);
         }

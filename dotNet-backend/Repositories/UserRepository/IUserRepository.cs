@@ -6,6 +6,6 @@ namespace dotNet_backend.Repositories.UserRepository
     public interface IUserRepository : IGenericRepository<User>
     {
         Task<User> FindByEmailAsync(string email);
-        Task<User> FindByUserNameAsync(string username);
+        Task<User> FindByUsernameAsync(string username);
     }
 }

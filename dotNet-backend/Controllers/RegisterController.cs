@@ -22,51 +22,16 @@ namespace dotNet_backend.Controllers
         [ValidateModel]
         public async Task<IActionResult> RegisterAthlete([FromBody] AthleteRegisterDto athleteRegisterDto)
         {
-            try
-            {
-                return Ok(await _registerService.RegisterAthleteAsync(athleteRegisterDto));
-
-            }
-            catch (AuthorizationException)
-            {
-                return Unauthorized();
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
+            _logger.LogInformation("Registering athlete {}", athleteRegisterDto);
+            return Ok(await _registerService.RegisterAthleteAsync(athleteRegisterDto));
         }
 
         [HttpPost("coach")]
         [ValidateModel]
         public async Task<IActionResult> RegisterCoach([FromBody] CoachRegisterDto coachRegisterDto)
         {
-            try
-            {
-                _logger.LogInformation("Registering coach {}", coachRegisterDto);
-                return Ok(await _registerService.RegisterCoachAsync(coachRegisterDto));
-
-            }
-            catch (AuthorizationException)
-            {
-                _logger.LogError("Unauthorized registering coach {}", coachRegisterDto);
-                return Unauthorized();
-            }
-            catch (EmailAlreadyExists e)
-            {
-                _logger.LogError("Email already exists registering coach {}", coachRegisterDto);
-                return BadRequest(e.Message);
-            }
-            catch (UsernameAlreadyExists e)
-            {
-                _logger.LogError("Username already exists registering coach {}", coachRegisterDto);
-                return BadRequest(e.Message);
-            }
-            catch
-            {
-                _logger.LogError("Error registering coach {}", coachRegisterDto);
-                return StatusCode(500);
-            }
+            _logger.LogInformation("Registering coach {}", coachRegisterDto);
+            return Ok(await _registerService.RegisterCoachAsync(coachRegisterDto));
         }   
 
     }

@@ -42,16 +42,16 @@ public class CoachService : ICoachService
         return _mapper.Map<CoachResponseDto>(coach);
     }
 
-    public async Task<ActionResult<CoachResponseDto>> GetCoachByUserNameAsync(string username)
+    public async Task<ActionResult<CoachResponseDto>> GetCoachByUsernameAsync(string username)
     {
-        var coach = await _coachRepository.FindCoachByUserNameAsync(username);
+        var coach = await _coachRepository.FindCoachByUsernameAsync(username);
         return _mapper.Map<CoachResponseDto>(coach);
     }
 
     public async Task AddAthleteToCoach(string athleteUsername, string coachUsername)
     {
-        var athlete = await _athleteRepository.FindAthleteByUserNameAsync(athleteUsername);
-        var coach = await _coachRepository.FindCoachByUserNameAsync(coachUsername);
+        var athlete = await _athleteRepository.FindAthleteByUsernameAsync(athleteUsername);
+        var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         if (athlete == null || coach == null)
         {
             throw new NotFoundException("Athlete or coach not found");

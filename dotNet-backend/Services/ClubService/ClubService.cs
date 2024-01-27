@@ -30,7 +30,9 @@ namespace dotNet_backend.Services.ClubService
 
         public async Task<ActionResult<ClubResponseDto>> CreateClubAsync(ClubRequestDto clubRequestDto, string coachUsername)
         {
-            var coach = await _coachRepository.FindCoachByUserNameAsync(coachUsername);
+            var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
+            if (coach.Club != null)
+                throw new BadRequestException("You already has a club. You must delete the current club to create a new one");    
             var club = _mapper.Map<Club>(clubRequestDto);
             club.Coach = coach;
             await _clubRepository.CreateAsync(club);
@@ -42,6 +44,19 @@ namespace dotNet_backend.Services.ClubService
         {
             var clubs = await _clubRepository.FindAllClubsAsync();
             return _mapper.Map<List<ClubResponseDto>>(clubs);
+        }
+
+        public async Task<ActionResult<ClubResponseDto>> DeleteClubAsync(string coachUsername)
+        {
+            var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
+            if (coach.Club == null)
+                throw new BadRequestException("You don't have a club");
+            var club = await _clubRepository.FindClubByIdAsync(coach.Club.Id);
+            club.IsDeleted = true;
+            club.CoachId = Guid.Empty;
+            _clubRepository.Update(club);
+            await _clubRepository.SaveAsync();
+            return _mapper.Map<ClubResponseDto>(club);
         }
     }
 }
