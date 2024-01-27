@@ -45,15 +45,17 @@ namespace dotNet_backend.Services.ClubService
             var clubs = await _clubRepository.FindAllClubsAsync();
             return _mapper.Map<List<ClubResponseDto>>(clubs);
         }
-        
+
         public async Task<ActionResult<ClubResponseDto>> DeleteClubAsync(string coachUsername)
         {
             var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
             if (coach.Club == null)
                 throw new BadRequestException("You don't have a club");
             var club = await _clubRepository.FindClubByIdAsync(coach.Club.Id);
-            //_clubRepository.Delete(club);
-            //await _clubRepository.SaveAsync();
+            club.IsDeleted = true;
+            club.CoachId = Guid.Empty;
+            _clubRepository.Update(club);
+            await _clubRepository.SaveAsync();
             return _mapper.Map<ClubResponseDto>(club);
         }
     }
