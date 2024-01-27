@@ -18,5 +18,12 @@ namespace dotNet_backend.Repositories.ClubRepository
                 .Include(c => c.Coach)
                 .ToListAsync();
         }
+        
+        public async Task<Club> FindClubByIdAsync(Guid clubId)
+        {
+            return await _table
+                .Include(c => c.Coach)
+                .FirstOrDefaultAsync(c => c.Id == clubId);
+        }
     }
 }
