@@ -2,14 +2,10 @@
 using dotNet_backend.Models.User;
 using dotNet_backend.Models.User.DTO;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using dotNet_backend.Helpers.GenerateJwt;
 using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.SMTP;
-using Microsoft.Extensions.Logging.Abstractions;
+using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.AuthService
 {
@@ -45,7 +41,8 @@ namespace dotNet_backend.Services.AuthService
             }
             else
             {
-                throw new AuthorizationException("Invalid credentials.");
+                _logger.LogError("Unauthorized login attempt {}", loginDto);
+                throw new UnauthorizedException("Invalid credentials.");
             }
         }
         public async Task<object> RefreshTokenAsync(string refreshToken)
@@ -60,6 +57,7 @@ namespace dotNet_backend.Services.AuthService
             }
             else
             {
+                _logger.LogError("Bad request refreshing token {}", refreshToken);
                 throw new BadRequestException("Invalid refresh token.");
             }
         }
