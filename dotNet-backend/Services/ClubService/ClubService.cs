@@ -56,5 +56,17 @@ namespace dotNet_backend.Services.ClubService
             await _clubRepository.SaveAsync();
             return _mapper.Map<ClubResponseDto>(club);
         }
+        
+        public async Task<ActionResult<ClubResponseDto>> UpdateClubAsync(ClubRequestDto clubRequestDto, string coachUsername)
+        {
+            var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
+            if (coach.Club == null)
+                throw new BadRequestException("You don't have a club");
+            var club = await _clubRepository.FindClubByIdAsync(coach.Club.Id);
+            _mapper.Map(clubRequestDto, club);
+            _clubRepository.Update(club);
+            await _clubRepository.SaveAsync();
+            return _mapper.Map<ClubResponseDto>(club);
+        }
     }
 }
