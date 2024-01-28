@@ -18,9 +18,10 @@ namespace dotNet_backend.Controllers
         private readonly IRequestService _requestService;
         private readonly ILogger<RegisterController> _logger;
 
-        public RequestController(IRequestService requestService)
+        public RequestController(IRequestService requestService, ILogger<RegisterController> logger)
         {
             _requestService = requestService;
+            _logger = logger;
         }
 
         //make request to join in the athlete list of a coach by coach username
@@ -30,7 +31,8 @@ namespace dotNet_backend.Controllers
         {
             string athleteUsername = User.Identity.Name;
             _logger.LogInformation("Athlete {} is requesting to join coach {}", athleteUsername, coachUsername);
-            return await _requestService.CreateRequestAsync(athleteUsername, coachUsername, RequestType.AddAthleteToCoach);
+            return await _requestService.CreateRequestAsync(athleteUsername, coachUsername,
+                RequestType.AddAthleteToCoach);
         }
     }
 }
