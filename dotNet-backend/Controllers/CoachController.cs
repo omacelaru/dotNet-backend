@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using dotNet_backend.CustomActionFilters;
-using dotNet_backend.Models.Coach;
+﻿using dotNet_backend.CustomActionFilters;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
@@ -13,19 +11,11 @@ namespace dotNet_backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class CoachController : ControllerBase
+    public class CoachController(ICoachService coachService, IRequestService requestService) : ControllerBase
     {
-        private readonly ICoachService _coachService;
-        private readonly IRequestService _requestService;
-        private readonly ILogger<CoachController> _logger;
-
-        public CoachController(ICoachService coachService, IRequestService requestService, ILogger<CoachController> logger)
-        {
-            _coachService = coachService;
-            _requestService = requestService;
-            _logger = logger;
-        }
-
+        private readonly ICoachService _coachService = coachService;
+        private readonly IRequestService _requestService = requestService;
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CoachResponseDto>>> GetAllCoaches() =>
              await _coachService.GetAllCoachesAsync();
@@ -37,7 +27,6 @@ namespace dotNet_backend.Controllers
         [HttpGet("{coachUsername}")]
         public async Task<ActionResult<CoachResponseDto>> GetCoachByUsername(string coachUsername) =>
             await _coachService.GetCoachByUsernameAsync(coachUsername);
-        
 
         [HttpGet("me")]
         [Authorize(Roles = "Coach")]
@@ -48,8 +37,7 @@ namespace dotNet_backend.Controllers
         [Authorize(Roles = "Coach")]
         public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetCoachRequests() => 
             await _coachService.GetCoachRequestsByUsernameAsync(User.Identity.Name);
-
-        //set request status to accepted/rejected
+        
         [HttpPatch("me/requests/{athleteUsername}")]
         [Authorize(Roles = "Coach")]
         [ValidateModel]

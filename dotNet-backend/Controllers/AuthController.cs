@@ -8,21 +8,14 @@ namespace dotNet_backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService): ControllerBase
     {
-        private readonly IAuthService _authService;
-        private readonly ILogger<AuthController> _logger;
-        public AuthController(IAuthService authService, ILogger<AuthController> logger)
-        {
-            _authService = authService;
-            _logger = logger;
-        }
-
+        private readonly IAuthService _authService =authService;
+        
         [HttpPost("login")]
         [ValidateModel]
         public async Task<IActionResult> Login(LoginDto loginDto) =>
             await _authService.LoginUserAsync(loginDto);
-
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(string refreshToken) =>

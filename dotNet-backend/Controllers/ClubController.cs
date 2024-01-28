@@ -1,30 +1,17 @@
-﻿using AutoMapper;
-using dotNet_backend.CustomActionFilters;
-using dotNet_backend.Data.Exceptions;
-using dotNet_backend.Models.Club;
+﻿using dotNet_backend.CustomActionFilters;
 using dotNet_backend.Models.Club.DTO;
-using dotNet_backend.Models.Coach;
 using dotNet_backend.Services.ClubService;
-using dotNet_backend.Services.CoachService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ClubController : ControllerBase
+    public class ClubController(IClubService clubService) : ControllerBase
     {
-        private readonly IClubService _clubService;
-        private readonly ILogger<ClubController> _logger;
-
-        public ClubController(IClubService clubService, ILogger<ClubController> logger)
-        {
-            _clubService = clubService;
-            _logger = logger;
-        }
-
+        private readonly IClubService _clubService = clubService;
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClubResponseDto>>> GetAllClubs() =>
             await _clubService.GetAllClubsAsync();
@@ -34,7 +21,6 @@ namespace dotNet_backend.Controllers
         [ValidateModel]
         public async Task<ActionResult<ClubResponseDto>> CreateClubFromCoach([FromBody] ClubRequestDto clubRequestDto) => 
             await _clubService.CreateClubAsync(clubRequestDto, User.Identity.Name);
-        
         
         [HttpDelete]
         [Authorize(Roles = "Coach")]
