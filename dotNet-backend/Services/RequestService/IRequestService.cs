@@ -13,9 +13,9 @@ public interface IRequestService
 {
     Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequestsByUsernameAsync(string username);
 
-    Task<ActionResult<RequestInfoResponseDto>> UpdateRequestStatusAsync(string coachUsername, string usernameAthlete,
-        string requestStatus);
+    Task<ActionResult<RequestInfoResponseDto>> UpdateRequestStatusAsync(string requestedByUsername, string assignedToUser,
+        string requestStatus, RequestType requestType);
 
-    Task<ActionResult<RequestInfoResponseDto>> CreateRequestAsync(string athleteUsername, string coachUsername,
-        RequestType addAthleteToCoach);
+    Task<ActionResult<RequestInfoResponseDto>> CreateRequestAsync(string requestedByUsername, string assignedToUser,
+        RequestType requestType);
 }
