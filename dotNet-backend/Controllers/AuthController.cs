@@ -1,6 +1,5 @@
-﻿using dotNet_backend.Data.Exceptions;
+﻿using dotNet_backend.CustomActionFilters;
 using dotNet_backend.Models.User.DTO;
-using dotNet_backend.Services;
 using dotNet_backend.Services.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,65 +8,21 @@ namespace dotNet_backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService): ControllerBase
     {
-        private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
-        {
-            try
-            {
-                return Ok(await _authService.RegisterUserAsync(registerDto));
-
-            }
-            catch (AuthorizationException)
-            {
-                return Unauthorized();
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-        }
-
+        private readonly IAuthService _authService =authService;
+        
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto loginDto)
-        {
-            try
-            {
-                return Ok(await _authService.LoginUserAsync(loginDto));
-
-            }
-            catch (AuthorizationException)
-            {
-                return Unauthorized();
-            }
-        }
-
+        [ValidateModel]
+        public async Task<IActionResult> Login(LoginDto loginDto) =>
+            await _authService.LoginUserAsync(loginDto);
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh(string refreshToken)
-        {
-            try
-            {
-                return Ok(await _authService.RefreshTokenAsync(refreshToken));
-
-            }
-            catch (BadRequestException err)
-            {
-                return BadRequest(new { error = err.Message });
-            }
-        }
+        public async Task<IActionResult> Refresh(string refreshToken) =>
+            await _authService.RefreshTokenAsync(refreshToken);
 
         [Authorize]
         [HttpGet("test")]
-        public async Task<IActionResult> AuthTest()
-        {
-            return Ok("Ok");
-        }
+        public IActionResult AuthTest() => Ok("Ok");
     }
 }

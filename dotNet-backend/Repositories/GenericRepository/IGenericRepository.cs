@@ -6,7 +6,7 @@ namespace dotNet_backend.Repositories.GenericRepository
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         // Get all data
-        Task<List<TEntity>> GetAllAsync();
+        Task<IEnumerable<TEntity>> GetAllAsync();
 
 
         // Create
