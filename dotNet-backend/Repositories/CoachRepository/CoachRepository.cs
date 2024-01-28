@@ -15,11 +15,12 @@ public class CoachRepository : GenericRepository<Coach>, ICoachRepository
     {
         return await _table.FirstOrDefaultAsync(c => c.Username == coachUsername);
     }
-    public async Task<IEnumerable<Coach>>? FindAllCoachesAsync()
+    public async Task<IEnumerable<Coach>> FindAllCoachesAsync()
     {
         return await _table
             .Include(c => c.Athletes)
             .Include(c => c.Club)
+            .AsNoTracking()
             .ToListAsync();
     }
 

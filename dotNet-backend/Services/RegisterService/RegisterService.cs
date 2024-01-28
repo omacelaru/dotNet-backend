@@ -38,7 +38,7 @@ namespace dotNet_backend.Services.RegisterService
             _mapper = mapper;
         }
         
-        public async Task<ActionResult<AthleteResponseDto>> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto)
+        public async Task<ActionResult<AthleteResponseDto>> RegisterAthleteAsync(RegisterDto athleteRegisterDto)
         {
             _logger.LogInformation("Registering athlete {}", athleteRegisterDto);
             var athlete = _mapper.Map<Athlete>(athleteRegisterDto);
@@ -47,13 +47,22 @@ namespace dotNet_backend.Services.RegisterService
             return _mapper.Map<AthleteResponseDto>(athlete);
         }
 
-        public async Task<ActionResult<CoachResponseDto>> RegisterCoachAsync(CoachRegisterDto coachRegisterDto)
+        public async Task<ActionResult<CoachResponseDto>> RegisterCoachAsync(RegisterDto coachRegisterDto)
         {
             _logger.LogInformation("Registering coach {}", coachRegisterDto);
             var coach = _mapper.Map<Coach>(coachRegisterDto);
             coach.Role = Role.Coach;
             await RegisterUserAsync(coach);
             return _mapper.Map<CoachResponseDto>(coach);
+        }
+        
+        public async Task<IActionResult> RegisterAdminAsync(RegisterDto adminRegisterDto)
+        {
+            _logger.LogInformation("Registering admin {}", adminRegisterDto);
+            var admin = _mapper.Map<User>(adminRegisterDto);
+            admin.Role = Role.Admin;
+            await RegisterUserAsync(admin);
+            return new OkResult();
         }
         
         private async Task RegisterUserAsync(User user)

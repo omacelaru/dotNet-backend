@@ -5,5 +5,6 @@ namespace dotNet_backend.Repositories.CompetitionRepository;
 
 public interface ICompetitionRepository : IGenericRepository<Competition>
 {
-    
+    Task<IEnumerable<Competition>> GetAllCompetitions();
+    Task<Competition> CreateCompetitionAsync(Competition competition);
 }
