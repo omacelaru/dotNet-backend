@@ -17,16 +17,16 @@ namespace dotNet_backend.Services.CoachService;
 public class CoachService : ICoachService
 {
     private readonly ICoachRepository _coachRepository;
-    private readonly IClubRepository _clubRepository;
     private readonly IAthleteRepository _athleteRepository;
+    private readonly ILogger<CoachService> _logger;
     private readonly IMapper _mapper;
 
     public CoachService(ICoachRepository coachRepository, IClubRepository clubRepository,
-        IAthleteRepository athleteRepository, IMapper mapper)
+        IAthleteRepository athleteRepository, ILogger<CoachService> logger, IMapper mapper)
     {
         _coachRepository = coachRepository;
-        _clubRepository = clubRepository;
         _athleteRepository = athleteRepository;
+        _logger = logger;
         _mapper = mapper;
     }
 
@@ -48,17 +48,17 @@ public class CoachService : ICoachService
         return _mapper.Map<CoachResponseDto>(coach);
     }
 
-    public async Task AddAthleteToCoach(string athleteUsername, string coachUsername)
+    public async Task AddAthleteToCoachAsync(string athleteUsername, string coachUsername)
     {
-        var athlete = await _athleteRepository.FindAthleteByUsernameAsync(athleteUsername);
         var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
-        if (athlete == null || coach == null)
+        var athlete = await _athleteRepository.FindAthleteByUsernameAsync(athleteUsername);
+        if (athlete == null)
         {
-            throw new NotFoundException("Athlete or coach not found");
+            _logger.LogError("Athlete not found with username {}", athleteUsername);
+            throw new NotFoundException("Athlete not found");
         }
-
-        athlete.Coach = coach;
-        _athleteRepository.Update(athlete);
-        await _athleteRepository.SaveAsync();
+        coach.Athletes.Add(athlete);
+        _coachRepository.Update(coach);
+        await _coachRepository.SaveAsync();
     }
 }
