@@ -2,14 +2,15 @@
 using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Coach.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Services.RegisterService
 {
     public interface IRegisterService
     {
-        Task<AthleteResponseDto> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto);
+        Task<ActionResult<AthleteResponseDto>> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto);
 
-        Task<CoachResponseDto> RegisterCoachAsync(CoachRegisterDto coachRegisterDto);
+        Task<ActionResult<CoachResponseDto>> RegisterCoachAsync(CoachRegisterDto coachRegisterDto);
 
     }
 }
