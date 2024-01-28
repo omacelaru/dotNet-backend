@@ -19,8 +19,7 @@ namespace dotNet_backend.Controllers
         private readonly IRequestService _requestService;
         private readonly ILogger<CoachController> _logger;
 
-        public CoachController(ICoachService coachService, ILogger<CoachController> logger,
-            IRequestService requestService)
+        public CoachController(ICoachService coachService, IRequestService requestService, ILogger<CoachController> logger)
         {
             _coachService = coachService;
             _requestService = requestService;
@@ -28,56 +27,35 @@ namespace dotNet_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CoachResponseDto>>> GetAllCoaches()
-        {
-            _logger.LogInformation("Getting all coaches");
-            return await _coachService.GetAllCoachesAsync();
-        }
+        public async Task<ActionResult<IEnumerable<CoachResponseDto>>> GetAllCoaches() =>
+             await _coachService.GetAllCoachesAsync();
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<CoachResponseDto>> GetCoachById(Guid id)
-        {
-            _logger.LogInformation("Getting coach with id {}", id);
-            return await _coachService.GetCoachByIdAsync(id);
-        }
+        public async Task<ActionResult<CoachResponseDto>> GetCoachById(Guid id) => 
+            await _coachService.GetCoachByIdAsync(id);
 
-        [HttpGet("{username}")]
-        public async Task<ActionResult<CoachResponseDto>> GetCoachByUsername(string username)
-        {
-            _logger.LogInformation("Getting coach with username {}", username);
-            return await _coachService.GetCoachByUsernameAsync(username);
-        }
+        [HttpGet("{coachUsername}")]
+        public async Task<ActionResult<CoachResponseDto>> GetCoachByUsername(string coachUsername) =>
+            await _coachService.GetCoachByUsernameAsync(coachUsername);
+        
 
         [HttpGet("me")]
         [Authorize(Roles = "Coach")]
-        public async Task<ActionResult<CoachResponseDto>> GetMeByUsername()
-        {
-            _logger.LogInformation("Getting coach with username {}", User.Identity.Name);
-            return await _coachService.GetCoachByUsernameAsync(User.Identity.Name);
-        }
+        public async Task<ActionResult<CoachResponseDto>> GetMeByUsername() => 
+            await _coachService.GetCoachByUsernameAsync(User.Identity.Name);
 
         [HttpGet("me/requests")]
         [Authorize(Roles = "Coach")]
-        public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequests()
-        {
-            string coachUsername = User.Identity.Name;
-            _logger.LogInformation("Getting requests for coach {}", coachUsername);
-            return await _requestService.GetRequestsByUsernameAsync(coachUsername);
-        }
+        public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetCoachRequests() => 
+            await _coachService.GetCoachRequestsByusernameAsync(User.Identity.Name);
 
         //set request status to accepted/rejected
         [HttpPatch("me/requests/{athleteUsername}")]
         [Authorize(Roles = "Coach")]
         [ValidateModel]
         public async Task<ActionResult<RequestInfoResponseDto>> UpdateRequestForAddAthleteToCoach(string athleteUsername,
-            [FromBody] RequestStatusRequestDto requestStatusDto)
-        {
-            string coachUsername = User.Identity.Name;
-            string requestStatus = requestStatusDto.RequestStatus;
-            _logger.LogInformation("Setting request status to {} for athlete {} by coach {}", requestStatus,
-                athleteUsername, coachUsername);
-            return await _requestService.UpdateRequestStatusAsync(athleteUsername, coachUsername, requestStatus,
+            [FromBody] RequestStatusRequestDto requestStatusDto) =>
+             await _requestService.UpdateRequestStatusAsync(athleteUsername, User.Identity.Name, requestStatusDto.RequestStatus,
                 RequestType.AddAthleteToCoach);
-        }
     }
 }

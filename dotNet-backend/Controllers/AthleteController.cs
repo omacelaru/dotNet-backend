@@ -1,6 +1,8 @@
 ﻿using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Request.DTO;
+using dotNet_backend.Models.User.Enum;
 using dotNet_backend.Services.AthleteService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Controllers
@@ -19,26 +21,18 @@ namespace dotNet_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetAllAthletes()
-        {
-            _logger.LogInformation("Getting all athletes");
-            return await _athleteService.GetAllAthletesAsync();
-        }
+        public async Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetAllAthletes() => 
+            await _athleteService.GetAllAthletesAsync();
+        
         [HttpGet("me")]
-        public async Task<ActionResult<AthleteResponseDto>> GetAthlete()
-        {
-            string username = User.Identity.Name;
-            _logger.LogInformation("Getting athlete me {username}", username);
-            return await _athleteService.GetAthleteByUsernameAsync(username);
-        }
+        [Authorize(Roles = "Athlete")]
+        public async Task<ActionResult<AthleteResponseDto>> GetAthlete() => 
+            await _athleteService.GetAthleteByUsernameAsync(User.Identity.Name);
         
         [HttpGet("me/requests")]
-        public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetAthleteRequests()
-        {
-            string username = User.Identity.Name;
-            _logger.LogInformation("Getting athlete [me {username}] requests", username);
-            return await _athleteService.GetAthleteRequestsAsync(username);
-        }
+        [Authorize(Roles = "Athlete")]
+        public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetAthleteRequests() => 
+            await _athleteService.GetAthleteRequestsAsync(User.Identity.Name);
         
     }
 }
