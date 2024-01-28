@@ -1,0 +1,6 @@
+﻿namespace dotNet_backend.Models.Competition.DTO;
+
+public class CompetitionRequestDto
+{
+    
+}
