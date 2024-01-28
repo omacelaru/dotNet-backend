@@ -6,7 +6,7 @@ namespace dotNet_backend.Models.Request
     [Table("Requests")]
     public class RequestInfo : BaseEntity
     {
-        public string RequestByUser { get; set; }
+        public string RequestedByUser { get; set; }
         public string AssignedToUser { get; set; }
         public System.DateTime RequestDate { get; set; }
         public string? Message { get; set; }
