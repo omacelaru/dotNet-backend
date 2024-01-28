@@ -4,6 +4,7 @@ using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.RequestRepository;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.AthleteService;
 
@@ -43,6 +44,20 @@ public class AthleteService : IAthleteService
         var athlete = await _athleteRepository.FindAthleteByUsernameAsync(username);
         var requests = await _requestRepository.FindAllRequestsRequestedByUsernameAsync(athlete.Username);
         return _mapper.Map<List<RequestInfoResponseDto>>(requests);
+    }
+    
+    public async Task<ActionResult<RequestInfoResponseDto>> DeleteAthleteRequestAsync(Guid id, string athleteUsername)
+    {
+        _logger.LogInformation("Deleting athlete [me {username}] request with id {id}", athleteUsername, id);
+        var request = await _requestRepository.FindRequestToAddAthleteToCoachByUsernameAndRequestIdAsync(athleteUsername, id);
+        if (request == null)
+        {
+            _logger.LogError("Request not found for athlete {} and request id {}", athleteUsername, id);
+            throw new NotFoundException("Request not found");
+        }
+        _requestRepository.Delete(request);
+        await _requestRepository.SaveAsync();
+        return _mapper.Map<RequestInfoResponseDto>(request);
     }
     
     

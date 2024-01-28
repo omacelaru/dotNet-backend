@@ -34,5 +34,12 @@ namespace dotNet_backend.Controllers
         public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetAthleteRequests() => 
             await _athleteService.GetAthleteRequestsAsync(User.Identity.Name);
         
+        [HttpDelete("me/requests/{Id:Guid}")]
+        [Authorize(Roles = "Athlete")]
+        public async Task<ActionResult<RequestInfoResponseDto>> DeleteAthleteRequest(Guid Id) => 
+            await _athleteService.DeleteAthleteRequestAsync(Id, User.Identity.Name);
+
+        
+        
     }
 }

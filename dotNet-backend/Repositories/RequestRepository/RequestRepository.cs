@@ -36,4 +36,11 @@ public class RequestRepository : GenericRepository<RequestInfo>, IRequestReposit
             r.RequestedByUser == athleteUsername &&
             r.RequestStatus == RequestStatus.PENDING && r.RequestType == RequestType.AddAthleteToCoach);
     }
+    
+    public async Task<RequestInfo> FindRequestToAddAthleteToCoachByUsernameAndRequestIdAsync(string athleteUsername, Guid id)
+    {
+        return await _table.FirstOrDefaultAsync(r =>
+            r.RequestedByUser == athleteUsername && r.Id == id &&
+            r.RequestStatus == RequestStatus.PENDING && r.RequestType == RequestType.AddAthleteToCoach);
+    }
 }

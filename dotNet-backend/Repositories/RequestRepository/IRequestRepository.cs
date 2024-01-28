@@ -12,4 +12,6 @@ public interface IRequestRepository : IGenericRepository<RequestInfo>
         (string athleteUsernam);
     Task<RequestInfo> FindRequestToAddAthleteToCoachByUsernameAsync
         (string athleteUsername, string coachUsername);
+
+    Task<RequestInfo> FindRequestToAddAthleteToCoachByUsernameAndRequestIdAsync(string athleteUsername, Guid id);
 }
