@@ -11,8 +11,6 @@ namespace dotNet_backend.Services.RequestService;
 
 public interface IRequestService
 {
-    Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequestsByUsernameAsync(string username);
-
     Task<ActionResult<RequestInfoResponseDto>> UpdateRequestStatusAsync(string requestedByUsername, string assignedToUser,
         string requestStatus, RequestType requestType);
 

@@ -34,12 +34,6 @@ public class RequestService : IRequestService
         _mapper = mapper;
     }
 
-    public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequestsByUsernameAsync(string username)
-    {
-        var request = await _requestRepository.FindAllRequestsAssignedToUsernameAsync(username);
-        return _mapper.Map<List<RequestInfoResponseDto>>(request);
-    }
-
     public async Task<ActionResult<RequestInfoResponseDto>> UpdateRequestStatusAsync(string requestedByUsername,
         string assignedToUser, string requestStatus, RequestType requestType)
     {
@@ -91,7 +85,7 @@ public class RequestService : IRequestService
         var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         if (coach == null)
         {
-            _logger.LogError("Coach {} not found", coach.Username);
+            _logger.LogError("Coach {} not found", coachUsername);
             throw new NotFoundException("Coach not found");
         }
 
