@@ -11,5 +11,5 @@ public interface ICoachService
     Task<ActionResult<IEnumerable<CoachResponseDto>>> GetAllCoachesAsync();
     Task<ActionResult<CoachResponseDto>> GetCoachByIdAsync(Guid id);
     Task<ActionResult<CoachResponseDto>> GetCoachByUsernameAsync(string username);
-    Task AddAthleteToCoach(string usernameAthlete, string usernameCoach);
+    Task AddAthleteToCoachAsync(string athleteUsername, string coachUsername);
 }
