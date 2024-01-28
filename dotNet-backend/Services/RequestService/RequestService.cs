@@ -69,6 +69,7 @@ public class RequestService : IRequestService
         string assignedToUser,
         RequestType requestType)
     {
+        _logger.LogInformation("Creating request from {} to {}", requestedByUsername, assignedToUser);
         return requestType switch
         {
             RequestType.AddAthleteToCoach => await CreateRequestToAddAthleteToCoachAsync(requestedByUsername,
@@ -81,6 +82,7 @@ public class RequestService : IRequestService
         string athleteUsername,
         string coachUsername)
     {
+        _logger.LogInformation("Athlete {} is requesting to join coach {}", athleteUsername, coachUsername);
         var athlete = await _athleteRepository.FindAthleteByUsernameAsync(athleteUsername);
         var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         if (coach == null)
