@@ -47,7 +47,7 @@ namespace dotNet_backend.Controllers
         [HttpGet("me/requests")]
         [Authorize(Roles = "Coach")]
         public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetCoachRequests() => 
-            await _coachService.GetCoachRequestsByusernameAsync(User.Identity.Name);
+            await _coachService.GetCoachRequestsByUsernameAsync(User.Identity.Name);
 
         //set request status to accepted/rejected
         [HttpPatch("me/requests/{athleteUsername}")]
