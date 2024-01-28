@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using dotNet_backend.Data.Exceptions;
-using dotNet_backend.Models.Club;
-using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Coach.DTO;
-using dotNet_backend.Models.Request;
+using dotNet_backend.Models.Request.DTO;
+using dotNet_backend.Models.Request.Enum;
 using dotNet_backend.Repositories.AthleteRepository;
-using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.CoachRepository;
 using dotNet_backend.Repositories.RequestRepository;
-using dotNet_backend.Repositories.UserRepository;
+using dotNet_backend.Services.RequestService;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
@@ -17,14 +14,16 @@ namespace dotNet_backend.Services.CoachService;
 public class CoachService : ICoachService
 {
     private readonly ICoachRepository _coachRepository;
+    private readonly IRequestRepository _requestRepository;
     private readonly IAthleteRepository _athleteRepository;
     private readonly ILogger<CoachService> _logger;
     private readonly IMapper _mapper;
 
-    public CoachService(ICoachRepository coachRepository, IClubRepository clubRepository,
+    public CoachService(ICoachRepository coachRepository,IRequestRepository requestRepository,
         IAthleteRepository athleteRepository, ILogger<CoachService> logger, IMapper mapper)
     {
         _coachRepository = coachRepository;
+        _requestRepository = requestRepository;
         _athleteRepository = athleteRepository;
         _logger = logger;
         _mapper = mapper;
@@ -32,19 +31,22 @@ public class CoachService : ICoachService
 
     public async Task<ActionResult<IEnumerable<CoachResponseDto>>> GetAllCoachesAsync()
     {
+        
         var coaches = await _coachRepository.FindAllCoachesAsync();
         return _mapper.Map<List<CoachResponseDto>>(coaches);
     }
 
     public async Task<ActionResult<CoachResponseDto>> GetCoachByIdAsync(Guid id)
     {
+        _logger.LogInformation("Getting coach with id {}", id);
         var coach = await _coachRepository.FindCoachByIdAsync(id);
         return _mapper.Map<CoachResponseDto>(coach);
     }
 
-    public async Task<ActionResult<CoachResponseDto>> GetCoachByUsernameAsync(string username)
+    public async Task<ActionResult<CoachResponseDto>> GetCoachByUsernameAsync(string coachUsername)
     {
-        var coach = await _coachRepository.FindCoachByUsernameAsync(username);
+        _logger.LogInformation("Getting coach with username {}", coachUsername);
+        var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         return _mapper.Map<CoachResponseDto>(coach);
     }
 
@@ -61,4 +63,13 @@ public class CoachService : ICoachService
         _coachRepository.Update(coach);
         await _coachRepository.SaveAsync();
     }
+    
+    public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetCoachRequestsByUsernameAsync(string coachUsername)
+    {
+        _logger.LogInformation("Getting requests for coach {}", coachUsername);
+        var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
+        var requests = await _requestRepository.FindAllRequestsAssignedToUsernameAsync(coach.Username);
+        return _mapper.Map<List<RequestInfoResponseDto>>(requests);
+    }
+    
 }
