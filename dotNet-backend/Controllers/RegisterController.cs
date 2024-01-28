@@ -24,6 +24,7 @@ namespace dotNet_backend.Controllers
             await _registerService.RegisterCoachAsync(coachRegisterDto);
         
         [HttpPost("admin")]
+        [NonAction] // Comment this line to enable admin registration
         [ValidateModel]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto adminRegisterDto) =>
             await _registerService.RegisterAdminAsync(adminRegisterDto);
