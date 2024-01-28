@@ -25,4 +25,12 @@ public class AthleteRepository : GenericRepository<Athlete>, IAthleteRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Username == username);
     }
+    
+    public async Task<IEnumerable<Athlete>> GetAllAthletesAsync()
+    {
+        return await _table
+            .Include(a => a.Coach)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }

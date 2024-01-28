@@ -11,9 +11,14 @@ public class RequestRepository : GenericRepository<RequestInfo>, IRequestReposit
     {
     }
 
-    public async Task<IEnumerable<RequestInfo>> FindRequestsAssignedToUsernameAsync(string assignedUsername)
+    public async Task<IEnumerable<RequestInfo>> FindAllRequestsAssignedToUsernameAsync(string assignedUsername)
     {
         return await _table.Where(r => r.AssignedToUser == assignedUsername).AsNoTracking().ToListAsync();
+    }
+    
+    public async Task<IEnumerable<RequestInfo>> FindAllRequestsRequestedByUsernameAsync(string requestedByUsername)
+    {
+        return await _table.Where(r => r.RequestedByUser == requestedByUsername).AsNoTracking().ToListAsync();
     }
 
     public async Task<RequestInfo> FindRequestToAddAthleteToCoachByUsernameAsync
@@ -29,6 +34,13 @@ public class RequestRepository : GenericRepository<RequestInfo>, IRequestReposit
     {
         return await _table.FirstOrDefaultAsync(r =>
             r.RequestedByUser == athleteUsername &&
+            r.RequestStatus == RequestStatus.PENDING && r.RequestType == RequestType.AddAthleteToCoach);
+    }
+    
+    public async Task<RequestInfo> FindRequestToAddAthleteToCoachByUsernameAndRequestIdAsync(string athleteUsername, Guid id)
+    {
+        return await _table.FirstOrDefaultAsync(r =>
+            r.RequestedByUser == athleteUsername && r.Id == id &&
             r.RequestStatus == RequestStatus.PENDING && r.RequestType == RequestType.AddAthleteToCoach);
     }
 }

@@ -30,9 +30,14 @@ namespace dotNet_backend.Services.ClubService
 
         public async Task<ActionResult<ClubResponseDto>> CreateClubAsync(ClubRequestDto clubRequestDto, string coachUsername)
         {
+            _logger.LogInformation("Creating club {} from coach with username: {} ", clubRequestDto, coachUsername);
             var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
             if (coach.Club != null)
-                throw new BadRequestException("You already has a club. You must delete the current club to create a new one");    
+            {
+                _logger.LogError("Coach with username {} already has a club", coachUsername);
+                throw new BadRequestException(
+                    "You already has a club. You must delete the current club to create a new one");
+            }
             var club = _mapper.Map<Club>(clubRequestDto);
             club.Coach = coach;
             await _clubRepository.CreateAsync(club);
@@ -42,15 +47,20 @@ namespace dotNet_backend.Services.ClubService
 
         public async Task<ActionResult<IEnumerable<ClubResponseDto>>> GetAllClubsAsync()
         {
+            _logger.LogInformation("Getting all clubs");
             var clubs = await _clubRepository.FindAllClubsAsync();
             return _mapper.Map<List<ClubResponseDto>>(clubs);
         }
         
         public async Task<ActionResult<ClubResponseDto>> DeleteClubAsync(string coachUsername)
         {
+            _logger.LogInformation("Deleting club from coach with username: {} ", coachUsername);
             var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
             if (coach.Club == null)
+            {
+                _logger.LogError("Coach with username {} doesn't have a club", coachUsername);
                 throw new BadRequestException("You don't have a club");
+            }
             var club = await _clubRepository.FindClubByIdAsync(coach.Club.Id);
             _clubRepository.Delete(club);
             await _clubRepository.SaveAsync();
@@ -59,9 +69,13 @@ namespace dotNet_backend.Services.ClubService
         
         public async Task<ActionResult<ClubResponseDto>> UpdateClubAsync(ClubRequestDto clubRequestDto, string coachUsername)
         {
+            _logger.LogInformation("Updating club {} from coach with username: {} ", clubRequestDto, coachUsername);
             var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
             if (coach.Club == null)
+            {
+                _logger.LogError("Coach with username {} doesn't have a club", coachUsername);
                 throw new BadRequestException("You don't have a club");
+            }
             var club = await _clubRepository.FindClubByIdAsync(coach.Club.Id);
             _mapper.Map(clubRequestDto, club);
             _clubRepository.Update(club);

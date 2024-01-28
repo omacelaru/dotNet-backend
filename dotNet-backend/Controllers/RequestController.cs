@@ -23,16 +23,11 @@ namespace dotNet_backend.Controllers
             _requestService = requestService;
             _logger = logger;
         }
-
-        //make request to join in the athlete list of a coach by coach username
+        
         [HttpPost("join/{coachUsername}")]
         [Authorize(Roles = "Athlete")]
-        public async Task<ActionResult<RequestInfoResponseDto>> JoinCoach(string coachUsername)
-        {
-            string athleteUsername = User.Identity.Name;
-            _logger.LogInformation("Athlete {} is requesting to join coach {}", athleteUsername, coachUsername);
-            return await _requestService.CreateRequestAsync(athleteUsername, coachUsername,
+        public async Task<ActionResult<RequestInfoResponseDto>> JoinCoach(string coachUsername) =>
+            await _requestService.CreateRequestAsync(User.Identity.Name, coachUsername,
                 RequestType.AddAthleteToCoach);
-        }
     }
 }

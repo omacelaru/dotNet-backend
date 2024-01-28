@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using dotNet_backend.Helpers.GenerateJwt;
 using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.SMTP;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.AuthService
@@ -27,8 +29,9 @@ namespace dotNet_backend.Services.AuthService
             _logger = logger;
         }
         
-        public async Task<object> LoginUserAsync(LoginDto loginDto)
+        public async Task<IActionResult> LoginUserAsync(LoginDto loginDto)
         {
+            _logger.LogInformation("Logging in user {}", loginDto);
             var user = await _userRepository.FindSingleOrDefaultAsync(u => u.Username == loginDto.Username);
 
             if (VerifyPassword(user.Password, loginDto.Password))
@@ -37,7 +40,7 @@ namespace dotNet_backend.Services.AuthService
                 user.RefreshToken = refreshToken;
                 await _userRepository.SaveAsync();
                 var accessToken = TokenJwt.GenerateJwtToken(user);
-                return new { AccessToken = accessToken, RefreshToken = refreshToken };
+                return new OkObjectResult(new {AccessToken = accessToken, RefreshToken = refreshToken});
             }
             else
             {
@@ -45,15 +48,16 @@ namespace dotNet_backend.Services.AuthService
                 throw new UnauthorizedException("Invalid credentials.");
             }
         }
-        public async Task<object> RefreshTokenAsync(string refreshToken)
+        public async Task<IActionResult> RefreshTokenAsync(string refreshToken)
         {
+            _logger.LogInformation("Refreshing token {}", refreshToken);
             TokenJwt.ValidateToken(refreshToken);
 
             var user = await _userRepository.FindSingleOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
             if (user != null)
             {
-                return new { AccessToken = TokenJwt.GenerateJwtToken(user) };
+                return new OkObjectResult( new { AccessToken = TokenJwt.GenerateJwtToken(user) });
             }
             else
             {

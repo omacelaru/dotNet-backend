@@ -11,6 +11,7 @@ using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.User.Enum;
+using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
 namespace dotNet_backend.Services.RegisterService
@@ -37,22 +38,22 @@ namespace dotNet_backend.Services.RegisterService
             _mapper = mapper;
         }
         
-        public async Task<AthleteResponseDto> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto)
+        public async Task<ActionResult<AthleteResponseDto>> RegisterAthleteAsync(AthleteRegisterDto athleteRegisterDto)
         {
+            _logger.LogInformation("Registering athlete {}", athleteRegisterDto);
             var athlete = _mapper.Map<Athlete>(athleteRegisterDto);
             athlete.Role = Role.Athlete;
             await RegisterUserAsync(athlete);
-            var athleteResponseDto = _mapper.Map<AthleteResponseDto>(athlete);
-            return athleteResponseDto;
+            return _mapper.Map<AthleteResponseDto>(athlete);
         }
 
-        public async Task<CoachResponseDto> RegisterCoachAsync(CoachRegisterDto coachRegisterDto)
+        public async Task<ActionResult<CoachResponseDto>> RegisterCoachAsync(CoachRegisterDto coachRegisterDto)
         {
+            _logger.LogInformation("Registering coach {}", coachRegisterDto);
             var coach = _mapper.Map<Coach>(coachRegisterDto);
             coach.Role = Role.Coach;
             await RegisterUserAsync(coach);
-            var coachResponseDto = _mapper.Map<CoachResponseDto>(coach);
-            return coachResponseDto;
+            return _mapper.Map<CoachResponseDto>(coach);
         }
         
         private async Task RegisterUserAsync(User user)

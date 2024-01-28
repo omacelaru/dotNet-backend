@@ -34,12 +34,6 @@ public class RequestService : IRequestService
         _mapper = mapper;
     }
 
-    public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequestsByUsernameAsync(string username)
-    {
-        var request = await _requestRepository.FindRequestsAssignedToUsernameAsync(username);
-        return _mapper.Map<List<RequestInfoResponseDto>>(request);
-    }
-
     public async Task<ActionResult<RequestInfoResponseDto>> UpdateRequestStatusAsync(string requestedByUsername,
         string assignedToUser, string requestStatus, RequestType requestType)
     {
@@ -75,6 +69,7 @@ public class RequestService : IRequestService
         string assignedToUser,
         RequestType requestType)
     {
+        _logger.LogInformation("Creating request from {} to {}", requestedByUsername, assignedToUser);
         return requestType switch
         {
             RequestType.AddAthleteToCoach => await CreateRequestToAddAthleteToCoachAsync(requestedByUsername,
@@ -87,11 +82,12 @@ public class RequestService : IRequestService
         string athleteUsername,
         string coachUsername)
     {
+        _logger.LogInformation("Athlete {} is requesting to join coach {}", athleteUsername, coachUsername);
         var athlete = await _athleteRepository.FindAthleteByUsernameAsync(athleteUsername);
         var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         if (coach == null)
         {
-            _logger.LogError("Coach {} not found", coach.Username);
+            _logger.LogError("Coach {} not found", coachUsername);
             throw new NotFoundException("Coach not found");
         }
 
