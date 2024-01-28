@@ -26,39 +26,25 @@ namespace dotNet_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClubResponseDto>>> GetAllClubs()
-        {
-            _logger.LogInformation("Getting all clubs");
-            return await _clubService.GetAllClubsAsync();
-        }
+        public async Task<ActionResult<IEnumerable<ClubResponseDto>>> GetAllClubs() =>
+            await _clubService.GetAllClubsAsync();
 
         [HttpPost]
         [Authorize(Roles = "Coach")]
         [ValidateModel]
-        public async Task<ActionResult<ClubResponseDto>> CreateClubFromCoach([FromBody] ClubRequestDto clubRequestDto)
-        {
-            string coachUsername = User.Identity.Name;
-            _logger.LogInformation("Creating club {} from coach with username: {} ", clubRequestDto, coachUsername);
-            return await _clubService.CreateClubAsync(clubRequestDto, coachUsername);
-        }
+        public async Task<ActionResult<ClubResponseDto>> CreateClubFromCoach([FromBody] ClubRequestDto clubRequestDto) => 
+            await _clubService.CreateClubAsync(clubRequestDto, User.Identity.Name);
+        
         
         [HttpDelete]
         [Authorize(Roles = "Coach")]
-        public async Task<ActionResult<ClubResponseDto>> DeleteClubFromCoach()
-        {
-            string coachUsername = User.Identity.Name;
-            _logger.LogInformation("Deleting club from coach with username: {} ", coachUsername);
-            return await _clubService.DeleteClubAsync(coachUsername);
-        }
+        public async Task<ActionResult<ClubResponseDto>> DeleteClubFromCoach() => 
+            await _clubService.DeleteClubAsync(User.Identity.Name);
         
         [HttpPatch]
         [Authorize(Roles = "Coach")]
         [ValidateModel]
-        public async Task<ActionResult<ClubResponseDto>> UpdateClubFromCoach([FromBody] ClubRequestDto clubRequestDto)
-        {
-            string coachUsername = User.Identity.Name;
-            _logger.LogInformation("Updating club {} from coach with username: {} ", clubRequestDto, coachUsername);
-            return await _clubService.UpdateClubAsync(clubRequestDto, coachUsername);
-        }
+        public async Task<ActionResult<ClubResponseDto>> UpdateClubFromCoach([FromBody] ClubRequestDto clubRequestDto) =>
+            await _clubService.UpdateClubAsync(clubRequestDto, User.Identity.Name);
     }
 }
