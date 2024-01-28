@@ -19,20 +19,21 @@ namespace dotNet_backend.Controllers
         private readonly IRequestService _requestService;
         private readonly ILogger<CoachController> _logger;
 
-        public CoachController(ICoachService coachService, ILogger<CoachController> logger, IRequestService requestService)
+        public CoachController(ICoachService coachService, ILogger<CoachController> logger,
+            IRequestService requestService)
         {
             _coachService = coachService;
             _requestService = requestService;
             _logger = logger;
         }
-        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CoachResponseDto>>> GetAllCoaches()
         {
             _logger.LogInformation("Getting all coaches");
             return await _coachService.GetAllCoachesAsync();
         }
-        
+
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<CoachResponseDto>> GetCoachById(Guid id)
         {
@@ -63,19 +64,20 @@ namespace dotNet_backend.Controllers
             _logger.LogInformation("Getting requests for coach {}", coachUsername);
             return await _requestService.GetRequestsByUsernameAsync(coachUsername);
         }
-        
+
         //set request status to accepted/rejected
-        [HttpPatch("me/requests/{usernameAthlete}")]
+        [HttpPatch("me/requests/{athleteUsername}")]
         [Authorize(Roles = "Coach")]
         [ValidateModel]
-        public async Task<ActionResult<RequestInfoResponseDto>> PatchRequest(string usernameAthlete, [FromBody] RequestStatusRequestDto requestStatusDto)
+        public async Task<ActionResult<RequestInfoResponseDto>> UpdateRequestForAddAthleteToCoach(string athleteUsername,
+            [FromBody] RequestStatusRequestDto requestStatusDto)
         {
             string coachUsername = User.Identity.Name;
             string requestStatus = requestStatusDto.RequestStatus;
-            _logger.LogInformation("Setting request status to {} for athlete {} by coach {}", requestStatus, usernameAthlete, coachUsername);
-            return await _requestService.UpdateRequestStatusAsync(coachUsername, usernameAthlete, requestStatus);
+            _logger.LogInformation("Setting request status to {} for athlete {} by coach {}", requestStatus,
+                athleteUsername, coachUsername);
+            return await _requestService.UpdateRequestStatusAsync(athleteUsername, coachUsername, requestStatus,
+                RequestType.AddAthleteToCoach);
         }
-        
-        
     }
 }
