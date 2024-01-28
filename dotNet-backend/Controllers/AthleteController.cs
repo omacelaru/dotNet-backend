@@ -23,5 +23,13 @@ namespace dotNet_backend.Controllers
             _logger.LogInformation("Getting all athletes");
             return await _athleteService.GetAllAthletesAsync();
         }
+        [HttpGet("me")]
+        public async Task<ActionResult<AthleteResponseDto>> GetAthlete()
+        {
+            string username = User.Identity.Name;
+            _logger.LogInformation("Getting athlete me {username}", username);
+            return await _athleteService.GetAthleteByUsernameAsync(username);
+        }
+        
     }
 }
