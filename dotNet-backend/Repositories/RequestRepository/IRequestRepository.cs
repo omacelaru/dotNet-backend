@@ -5,7 +5,8 @@ namespace dotNet_backend.Repositories.RequestRepository;
 
 public interface IRequestRepository : IGenericRepository<RequestInfo>
 {
-    Task<IEnumerable<RequestInfo>> FindRequestsAssignedToUsernameAsync(string assignedUsername);
+    Task<IEnumerable<RequestInfo>> FindAllRequestsAssignedToUsernameAsync(string assignedUsername);
+    Task<IEnumerable<RequestInfo>> FindAllRequestsRequestedByUsernameAsync(string requestedByUsername);
 
     Task<RequestInfo> FindRequestToAddAthleteToCoachByUsernameAsync
         (string athleteUsernam);

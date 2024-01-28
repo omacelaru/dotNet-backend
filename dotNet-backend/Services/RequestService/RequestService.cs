@@ -36,7 +36,7 @@ public class RequestService : IRequestService
 
     public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetRequestsByUsernameAsync(string username)
     {
-        var request = await _requestRepository.FindRequestsAssignedToUsernameAsync(username);
+        var request = await _requestRepository.FindAllRequestsAssignedToUsernameAsync(username);
         return _mapper.Map<List<RequestInfoResponseDto>>(request);
     }
 

@@ -1,4 +1,5 @@
 ﻿using dotNet_backend.Models.Athlete.DTO;
+using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Services.AthleteService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,14 @@ namespace dotNet_backend.Controllers
             string username = User.Identity.Name;
             _logger.LogInformation("Getting athlete me {username}", username);
             return await _athleteService.GetAthleteByUsernameAsync(username);
+        }
+        
+        [HttpGet("me/requests")]
+        public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetAthleteRequests()
+        {
+            string username = User.Identity.Name;
+            _logger.LogInformation("Getting athlete [me {username}] requests", username);
+            return await _athleteService.GetAthleteRequestsAsync(username);
         }
         
     }
