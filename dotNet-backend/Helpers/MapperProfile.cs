@@ -34,7 +34,7 @@ namespace dotNet_backend.Helpers
                 .ForMember(dest => dest.AthletesNames,
                                        opt => opt.MapFrom(src => src.Athletes.Select(athlete => athlete.Name)));
 
-            CreateMap<Athlete, AthleteResponseDto>()
+            CreateMap<Athlete, AthleteCoachNameResponseDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.CoachName, opt => opt.MapFrom(src => src.Coach.Name));
@@ -61,11 +61,16 @@ namespace dotNet_backend.Helpers
                 .ForMember(dest => dest.NumberOfParticipants, opt => opt.MapFrom(src => src.Participations.Count))
                 .ForMember(dest => dest.DayLeft, opt => opt.MapFrom(src => (src.EndDate - DateTime.Now).Days));
 
+            CreateMap<Athlete, AthleteCoachNameResponseDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.CoachName, opt => opt.MapFrom(src => src.Coach.Name));
             CreateMap<Athlete, AthleteUsernameResponseDto>();
 
-            CreateMap<Participation, AthleteResponseDto>()
+            CreateMap<Participation, AthleteCoachNameResponseDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Athlete.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Athlete.Name))
+                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.Athlete.Points))
                 .ForMember(dest => dest.CoachName, opt => opt.MapFrom(src => src.Athlete.Coach.Name));
             CreateMap<Participation, ParticipationAthleteWithAwardsResponseDto>();
         }

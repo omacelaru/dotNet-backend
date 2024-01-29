@@ -34,7 +34,7 @@ namespace dotNet_backend.Controllers
             await _competitionService.GetCompetitionByIdAsync(id);
         
         [HttpGet("{id:guid}/athletes")]
-        public async Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetCompetitionAthletes(Guid id) =>
+        public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetCompetitionAthletes(Guid id) =>
             await _competitionService.GetCompetitionAthletesAsync(id);
         
     }

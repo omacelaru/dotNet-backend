@@ -30,6 +30,7 @@ public class ParticipationRepository : IParticipationRepository
     {
         return await _table
             .IncludeAll()
+            .AsNoTracking()
             .Where(p => p.CompetitionId == id).ToListAsync();
     }
     
@@ -44,6 +45,7 @@ public class ParticipationRepository : IParticipationRepository
     {
         return await _table
             .IncludeAll()
+            .AsNoTracking()
             .Where(p => p.CompetitionId == competitionId && p.Athlete.Coach.Username == coachUsername).ToListAsync();
     }
     
@@ -56,7 +58,6 @@ public static class ParticipationRepositoryExtensions
         return query
             .Include(p => p.Athlete)
             .Include(p => p.Athlete.Coach)
-            .Include(p => p.Competition)
-            .AsNoTracking();
+            .Include(p => p.Competition);
     }
 }

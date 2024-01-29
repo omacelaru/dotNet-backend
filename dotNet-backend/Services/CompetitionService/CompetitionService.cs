@@ -65,7 +65,7 @@ public class CompetitionService: ICompetitionService
         return _mapper.Map<CompetitionResponseDto>(competition);
     }
     
-    public async Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetCompetitionAthletesAsync(Guid id)
+    public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetCompetitionAthletesAsync(Guid id)
     {
         _logger.LogInformation("Getting competition {} athletes", id);
         var competition = await _competitionRepository.FindCompetitionByIdAsync(id);
@@ -75,6 +75,11 @@ public class CompetitionService: ICompetitionService
             throw new NotFoundException("Competition not found");
         }
         var participations = await _participationRepository.FindAllAthletesParticipatingInACompetitionByIdAsync(id);
-        return _mapper.Map<List<AthleteResponseDto>>(participations);
+        if (participations == null)
+        {
+            _logger.LogError("No athletes found for competition {}", id);
+            throw new NotFoundException("No athletes found for competition");
+        }
+        return _mapper.Map<List<AthleteCoachNameResponseDto>>(participations);
     }
 }

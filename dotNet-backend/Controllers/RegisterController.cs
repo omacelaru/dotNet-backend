@@ -15,7 +15,7 @@ namespace dotNet_backend.Controllers
 
         [HttpPost("athlete")]
         [ValidateModel]
-        public async Task<ActionResult<AthleteResponseDto>> RegisterAthlete([FromBody] RegisterDto athleteRegisterDto) =>
+        public async Task<ActionResult<AthleteCoachNameResponseDto>> RegisterAthlete([FromBody] RegisterDto athleteRegisterDto) =>
             await _registerService.RegisterAthleteAsync(athleteRegisterDto);
 
         [HttpPost("coach")]

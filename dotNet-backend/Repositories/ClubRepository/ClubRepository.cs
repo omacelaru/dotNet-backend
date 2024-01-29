@@ -12,7 +12,7 @@ namespace dotNet_backend.Repositories.ClubRepository
         public async Task<IEnumerable<Club>> FindAllClubsAsync()
         {
             return await _table
-                .IncludeAll() 
+                .IncludeAll()
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -30,8 +30,7 @@ namespace dotNet_backend.Repositories.ClubRepository
         public static IQueryable<Club> IncludeAll(this IQueryable<Club> query)
         {
             return query
-                .Include(c => c.Coach)
-                .AsNoTracking();
+                .Include(c => c.Coach);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Repositories.AthleteRepository;
@@ -24,18 +25,18 @@ public class AthleteService : IAthleteService
         _mapper = mapper;
     }
 
-    public async Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetAllAthletesAsync()
+    public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletesAsync()
     {
         _logger.LogInformation("Getting all athletes");
         var athletes = await _athleteRepository.FindAllAthletesAsync();
-        return _mapper.Map<List<AthleteResponseDto>>(athletes);
+        return _mapper.Map<List<AthleteCoachNameResponseDto>>(athletes);
     }
     
-    public async Task<ActionResult<AthleteResponseDto>> GetAthleteByUsernameAsync(string username)
+    public async Task<ActionResult<AthleteCoachNameResponseDto>> GetAthleteByUsernameAsync(string username)
     {
         _logger.LogInformation("Getting athlete by username {username}", username);
         var athlete = await _athleteRepository.FindAthleteByUsernameAsync(username);
-        return _mapper.Map<AthleteResponseDto>(athlete);
+        return _mapper.Map<AthleteCoachNameResponseDto>(athlete);
     }
     
     public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetAthleteRequestsAsync(string username)
@@ -59,6 +60,4 @@ public class AthleteService : IAthleteService
         await _requestRepository.SaveAsync();
         return _mapper.Map<RequestInfoResponseDto>(request);
     }
-    
-    
 }

@@ -19,6 +19,6 @@ namespace dotNet_backend.Controllers
         [HttpPatch("competition/{competitionId:guid}/athlete/{athleteUsername}")]
         [Authorize(Roles = "Coach")] 
         public async Task<ActionResult<ParticipationAthleteWithAwardsResponseDto>> UpdateAthleteParticipationWithAwards(Guid competitionId, string athleteUsername, [FromBody] ParticipationAwardsRequestDto participationAwardsRequestDto) =>
-            await _participationService.UpdateAthleteParticipationWithAwardsAsync(competitionId, athleteUsername, participationAwardsRequestDto, User.Identity.Name);   
+            await _participationService.UpdateAthleteParticipationWithAwardsAsync(competitionId, athleteUsername, participationAwardsRequestDto, User.Identity.Name);
     }
 }

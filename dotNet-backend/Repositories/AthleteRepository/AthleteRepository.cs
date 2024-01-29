@@ -14,6 +14,7 @@ public class AthleteRepository : GenericRepository<Athlete>, IAthleteRepository
     {
         return await _table
             .IncludeAll()
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -28,6 +29,7 @@ public class AthleteRepository : GenericRepository<Athlete>, IAthleteRepository
     {
         return await _table
             .IncludeAll()
+            .AsNoTracking()
             .Where(a => a.Coach.Username == coachUsername)
             .ToListAsync();
     }
@@ -39,7 +41,6 @@ public static class AthleteRepositoryExtensions
     {
         return query
             .Include(a => a.Coach)
-            .Include(a => a.Participations)
-            .AsNoTracking();
+            .Include(a => a.Participations);
     }
 }

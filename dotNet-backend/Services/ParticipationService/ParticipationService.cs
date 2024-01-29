@@ -11,6 +11,7 @@ using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.CompetitionRepository;
 using dotNet_backend.Repositories.ParticipationRepository;
 using dotNet_backend.Repositories.UserRepository;
+using dotNet_backend.Services.AthleteService;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
@@ -21,15 +22,17 @@ public class ParticipationService :IParticipationService
     private readonly ICompetitionRepository _competitionRepository;
     private readonly IParticipationRepository _participationRepository;
     private readonly IAthleteRepository _athleteRepository;
+    private readonly IAthleteService _athleteService;
     private readonly ILogger<ParticipationService> _logger;
     private readonly IMapper _mapper;
 
 
-    public ParticipationService(ICompetitionRepository competitionRepository, IParticipationRepository participationRepository,IAthleteRepository athleteRepository, ILogger<ParticipationService> logger, IMapper mapper)
+    public ParticipationService(ICompetitionRepository competitionRepository, IParticipationRepository participationRepository,IAthleteRepository athleteRepository, IAthleteService athleteService ,ILogger<ParticipationService> logger, IMapper mapper)
     {
         _competitionRepository = competitionRepository;
         _participationRepository = participationRepository;
         _athleteRepository = athleteRepository;
+        _athleteService = athleteService;
         _logger = logger;
         _mapper = mapper;
     }
@@ -116,6 +119,12 @@ public class ParticipationService :IParticipationService
         participation.ThirdPlace = participationAwardsRequestDto.ThirdPlace;
         _participationRepository.Update(participation);
         await _participationRepository.SaveAsync();
+        
+        var points = participation.FirstPlace * 5 + participation.SecondPlace * 2 + participation.ThirdPlace;
+        athlete.Points += points;
+        _athleteRepository.Update(athlete);
+        await _athleteRepository.SaveAsync();
+        
         return _mapper.Map<ParticipationAthleteWithAwardsResponseDto>(participation);
     }
 }

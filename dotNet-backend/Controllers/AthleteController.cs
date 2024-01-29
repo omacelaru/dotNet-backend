@@ -13,12 +13,12 @@ namespace dotNet_backend.Controllers
         private readonly IAthleteService _athleteService = athleteService;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetAllAthletes() => 
+        public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletes() => 
             await _athleteService.GetAllAthletesAsync();
         
         [HttpGet("me")]
         [Authorize(Roles = "Athlete")]
-        public async Task<ActionResult<AthleteResponseDto>> GetAthlete() => 
+        public async Task<ActionResult<AthleteCoachNameResponseDto>> GetAthlete() => 
             await _athleteService.GetAthleteByUsernameAsync(User.Identity.Name);
         
         [HttpGet("me/requests")]

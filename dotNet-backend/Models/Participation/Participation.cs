@@ -8,8 +8,8 @@ public class Participation
     public Athlete.Athlete Athlete { get; set; }
     public Guid CompetitionId { get; set; }
     public Competition.Competition Competition { get; set; }
-    
-    public int? FirstPlace { get; set; }
-    public int? SecondPlace { get; set; }
-    public int? ThirdPlace { get; set; }
+
+    public int FirstPlace { get; set; } = 0;
+    public int SecondPlace { get; set; } = 0;
+    public int ThirdPlace { get; set; } = 0;
 }

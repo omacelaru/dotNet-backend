@@ -38,13 +38,13 @@ namespace dotNet_backend.Services.RegisterService
             _mapper = mapper;
         }
         
-        public async Task<ActionResult<AthleteResponseDto>> RegisterAthleteAsync(RegisterDto athleteRegisterDto)
+        public async Task<ActionResult<AthleteCoachNameResponseDto>> RegisterAthleteAsync(RegisterDto athleteRegisterDto)
         {
             _logger.LogInformation("Registering athlete {}", athleteRegisterDto);
             var athlete = _mapper.Map<Athlete>(athleteRegisterDto);
             athlete.Role = Role.Athlete;
             await RegisterUserAsync(athlete);
-            return _mapper.Map<AthleteResponseDto>(athlete);
+            return _mapper.Map<AthleteCoachNameResponseDto>(athlete);
         }
 
         public async Task<ActionResult<CoachResponseDto>> RegisterCoachAsync(RegisterDto coachRegisterDto)

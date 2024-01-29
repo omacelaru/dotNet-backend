@@ -14,6 +14,7 @@ public class CompetitionRepository : GenericRepository<Competition>, ICompetitio
     {
         return await _table
             .IncludeAll()
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -37,7 +38,6 @@ public static class CompetitionRepositoryExtensions
     public static IQueryable<Competition> IncludeAll(this IQueryable<Competition> query)
     {
         return query
-            .Include(c => c.Participations)
-            .AsNoTracking();
+            .Include(c => c.Participations);
     }
 }

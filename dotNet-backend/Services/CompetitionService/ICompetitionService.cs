@@ -10,5 +10,5 @@ public interface ICompetitionService
     Task<ActionResult<CompetitionResponseDto>> CreateCompetitionAsync(CompetitionRequestDto competitionRequestDto);
     Task<ActionResult<CompetitionResponseDto>> DeleteCompetitionAsync(Guid id);
     Task<ActionResult<CompetitionResponseDto>> GetCompetitionByIdAsync(Guid id);
-    Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetCompetitionAthletesAsync(Guid id);
+    Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetCompetitionAthletesAsync(Guid id);
 }

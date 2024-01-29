@@ -39,7 +39,6 @@ public static class CoachRepositoryExtensions
     {
         return query
             .Include(c => c.Athletes)
-            .Include(c => c.Club)
-            .AsNoTracking();
+            .Include(c => c.Club);
     }
 }
