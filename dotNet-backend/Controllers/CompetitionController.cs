@@ -1,4 +1,5 @@
 using dotNet_backend.CustomActionFilters;
+using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Competition.DTO;
 using dotNet_backend.Services.CompetitionService;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +28,14 @@ namespace dotNet_backend.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<CompetitionResponseDto>> DeleteCompetition(Guid id) =>
             await _competitionService.DeleteCompetitionAsync(id);
+        
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<CompetitionResponseDto>> GetCompetitionById(Guid id) =>
+            await _competitionService.GetCompetitionByIdAsync(id);
+        
+        [HttpGet("{id:guid}/athletes")]
+        public async Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetCompetitionAthletes(Guid id) =>
+            await _competitionService.GetCompetitionAthletesAsync(id);
         
     }
 }

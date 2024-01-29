@@ -66,13 +66,15 @@ public class ParticipationService :IParticipationService
                 AthleteId = athlete.Id,
                 CompetitionId = competition.Id
             };
+            athlete.Participations.Add(participation);
+            competition.Participations.Add(participation);
             await _participationRepository.CreateAsync(participation);
         } 
         await _participationRepository.SaveAsync();
         var response = new ParticipationResponseDto
         {
             Competition = _mapper.Map<CompetitionNameResponseDto>(competition),
-            Athletes = _mapper.Map<IEnumerable<AthleteUsernameResponseDto>>(athletes)
+            Athletes = _mapper.Map<List<AthleteUsernameResponseDto>>(athletes)
         };
         return response;
     }

@@ -37,6 +37,7 @@ public static class ParticipationRepositoryExtensions
     {
         return query
             .Include(p => p.Athlete)
+            .Include(p => p.Athlete.Coach)
             .Include(p => p.Competition)
             .AsNoTracking();
     }
