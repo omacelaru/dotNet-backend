@@ -5,5 +5,6 @@ namespace dotNet_backend.Repositories.ParticipationRepository;
 
 public interface IParticipationRepository 
 {
-    
+    Task CreateAsync(Participation participation);
+    Task<bool> SaveAsync();
 }

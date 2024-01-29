@@ -7,4 +7,5 @@ public interface ICompetitionService
 {
     Task<ActionResult<IEnumerable<CompetitionResponseDto>>> GetAllCompetitions();
     Task<ActionResult<CompetitionResponseDto>> CreateCompetitionAsync(CompetitionRequestDto competitionRequestDto);
+    Task<ActionResult<CompetitionResponseDto>> DeleteCompetitionAsync(Guid id);
 }

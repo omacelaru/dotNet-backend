@@ -24,4 +24,14 @@ public class CompetitionRepository : GenericRepository<Competition>, ICompetitio
         await _applicationDbContext.SaveChangesAsync();
         return competition;
     }
+    
+    public async Task<Competition> FindCompetitionByIdAsync(Guid id)
+    {
+        return await _table
+            .Include(c => c.Participations)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+    
+    
 }

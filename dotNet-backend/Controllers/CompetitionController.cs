@@ -20,8 +20,13 @@ namespace dotNet_backend.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateModel]
-    public async Task<ActionResult<CompetitionResponseDto>> CreateCompetition([FromBody] CompetitionRequestDto competitionRequestDto) => 
+        public async Task<ActionResult<CompetitionResponseDto>> CreateCompetition([FromBody] CompetitionRequestDto competitionRequestDto) => 
             await _competitionService.CreateCompetitionAsync(competitionRequestDto);
+        
+        [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<CompetitionResponseDto>> DeleteCompetition(Guid id) =>
+            await _competitionService.DeleteCompetitionAsync(id);
         
     }
 }

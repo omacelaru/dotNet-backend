@@ -7,4 +7,5 @@ public interface ICompetitionRepository : IGenericRepository<Competition>
 {
     Task<IEnumerable<Competition>> GetAllCompetitions();
     Task<Competition> CreateCompetitionAsync(Competition competition);
+    Task<Competition> FindCompetitionByIdAsync(Guid id);
 }

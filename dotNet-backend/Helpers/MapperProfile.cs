@@ -8,6 +8,8 @@ using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.Competition;
 using dotNet_backend.Models.Competition.DTO;
+using dotNet_backend.Models.Participation;
+using dotNet_backend.Models.Participation.DTO;
 using dotNet_backend.Models.Request;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.User;

@@ -2,5 +2,5 @@
 
 public class ParticipationRequestDto
 {
-    
+    public List<string> AthletesUsernames { get; set; }
 }
