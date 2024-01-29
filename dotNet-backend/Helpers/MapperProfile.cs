@@ -45,8 +45,13 @@ namespace dotNet_backend.Helpers
                 .ForMember(dest => dest.CoachName,
                     opt => opt.MapFrom(src => src.Coach.Name));
 
-            CreateMap<RequestInfo, RequestInfoResponseDto>();
-
+            CreateMap<RequestInfo, RequestInfoResponseDto>()
+                .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => src.RequestType.ToString()))
+                .ForMember(dest => dest.RequestStatus, opt => opt.MapFrom(src => src.RequestStatus.ToString()));
+            CreateMap<RequestInfo, RequestInfoWithCompetitionResponseDto>()
+                .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => src.RequestType.ToString()))
+                .ForMember(dest => dest.RequestStatus, opt => opt.MapFrom(src => src.RequestStatus.ToString()));
+            
             CreateMap<CompetitionRequestDto, Competition>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.ToDateTime(new TimeOnly(9, 0, 0))))

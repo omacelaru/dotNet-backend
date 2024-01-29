@@ -1,4 +1,5 @@
 ﻿using dotNet_backend.Models.Request;
+using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Repositories.GenericRepository;
 
 namespace dotNet_backend.Repositories.RequestRepository;
@@ -14,4 +15,5 @@ public interface IRequestRepository : IGenericRepository<RequestInfo>
         (string athleteUsername, string coachUsername);
 
     Task<RequestInfo> FindRequestToAddAthleteToCoachByUsernameAndRequestIdAsync(string athleteUsername, Guid id);
+    Task<RequestInfo> FindRequestToAddAthleteToCompetitionByUsernameAsync(string athleteUsername, Guid competitionId);
 }

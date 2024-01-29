@@ -1,4 +1,5 @@
 ﻿using dotNet_backend.Models.Request;
+using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
 using dotNet_backend.Repositories.GenericRepository;
 using Microsoft.EntityFrameworkCore;
@@ -42,5 +43,15 @@ public class RequestRepository : GenericRepository<RequestInfo>, IRequestReposit
         return await _table.FirstOrDefaultAsync(r =>
             r.RequestedByUser == athleteUsername && r.Id == id &&
             r.RequestStatus == RequestStatus.PENDING && r.RequestType == RequestType.AddAthleteToCoach);
+    }
+
+    public async Task<RequestInfo> FindRequestToAddAthleteToCompetitionByUsernameAsync(
+        string athleteUsername, Guid competitionId)
+    {
+        return await _table.FirstOrDefaultAsync(r =>
+            r.RequestedByUser == athleteUsername &&
+            r.CompetitionId == competitionId &&
+            r.RequestStatus == RequestStatus.PENDING &&
+            r.RequestType == RequestType.AddAthleteToCompetition);
     }
 }

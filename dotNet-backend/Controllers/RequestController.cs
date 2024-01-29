@@ -12,10 +12,14 @@ namespace dotNet_backend.Controllers
     {
         private readonly IRequestService _requestService = requestService;
         
-        [HttpPost("join/{coachUsername}")]
+        [HttpPost("join/coach/{coachUsername}")]
         [Authorize(Roles = "Athlete")]
         public async Task<ActionResult<RequestInfoResponseDto>> JoinCoach(string coachUsername) =>
-            await _requestService.CreateRequestAsync(User.Identity.Name, coachUsername,
-                RequestType.AddAthleteToCoach);
+            await _requestService.CreateRequestToJoinInCoachListAsync(User.Identity.Name, coachUsername);
+        
+        [HttpPost("participate/competition/{competitionId:guid}")]
+        [Authorize(Roles = "Athlete")]
+        public async Task<ActionResult<RequestInfoWithCompetitionResponseDto>> ParticipateInCompetition(Guid competitionId) =>
+            await _requestService.CreateRequestToParticipateInCompetitionAsync(User.Identity.Name, competitionId);
     }
 }

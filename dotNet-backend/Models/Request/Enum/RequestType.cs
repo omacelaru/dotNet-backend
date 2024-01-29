@@ -2,6 +2,7 @@
 {
     public enum RequestType
     {
-        AddAthleteToCoach
+        AddAthleteToCoach,
+        AddAthleteToCompetition
     }
 }
