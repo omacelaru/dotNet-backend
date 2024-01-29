@@ -36,6 +36,7 @@ public class ParticipationService :IParticipationService
 
     public async Task<ActionResult<ParticipationResponseDto>> AddAthletesToCompetitionAsync(Guid competitionId,ParticipationRequestDto participationRequestDto, string coachUsername)
     {
+        _logger.LogInformation("Adding athletes to competition with id {competitionId}", competitionId);
         var competition = await _competitionRepository.FindCompetitionByIdAsync(competitionId);
         if (competition == null)
         {
@@ -86,6 +87,7 @@ public class ParticipationService :IParticipationService
     
     public async Task<ActionResult<ParticipationAthleteWithAwardsResponseDto>> UpdateAthleteParticipationWithAwardsAsync(Guid competitionId, string athleteUsername, ParticipationAwardsRequestDto participationAwardsRequestDto, string coachUsername)
     {
+        _logger.LogInformation("Updating athlete with username {athleteUsername} participation in competition with id {competitionId}", athleteUsername, competitionId);
         var competition = await _competitionRepository.FindCompetitionByIdAsync(competitionId);
         if (competition == null)
         {
@@ -112,6 +114,7 @@ public class ParticipationService :IParticipationService
         participation.FirstPlace = participationAwardsRequestDto.FirstPlace;
         participation.SecondPlace = participationAwardsRequestDto.SecondPlace;
         participation.ThirdPlace = participationAwardsRequestDto.ThirdPlace;
+        _participationRepository.Update(participation);
         await _participationRepository.SaveAsync();
         return _mapper.Map<ParticipationAthleteWithAwardsResponseDto>(participation);
     }

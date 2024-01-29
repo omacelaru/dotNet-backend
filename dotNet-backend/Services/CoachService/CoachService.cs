@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Coach.DTO;
+using dotNet_backend.Models.Participation.DTO;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
 using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.CoachRepository;
+using dotNet_backend.Repositories.ParticipationRepository;
 using dotNet_backend.Repositories.RequestRepository;
 using dotNet_backend.Services.RequestService;
 using Microsoft.AspNetCore.Mvc;
@@ -17,15 +19,17 @@ public class CoachService : ICoachService
     private readonly ICoachRepository _coachRepository;
     private readonly IRequestRepository _requestRepository;
     private readonly IAthleteRepository _athleteRepository;
+    private readonly IParticipationRepository _participationRepository;
     private readonly ILogger<CoachService> _logger;
     private readonly IMapper _mapper;
 
     public CoachService(ICoachRepository coachRepository,IRequestRepository requestRepository,
-        IAthleteRepository athleteRepository, ILogger<CoachService> logger, IMapper mapper)
+        IAthleteRepository athleteRepository,IParticipationRepository participationRepository, ILogger<CoachService> logger, IMapper mapper)
     {
         _coachRepository = coachRepository;
         _requestRepository = requestRepository;
         _athleteRepository = athleteRepository;
+        _participationRepository = participationRepository;
         _logger = logger;
         _mapper = mapper;
     }
@@ -73,12 +77,19 @@ public class CoachService : ICoachService
         return _mapper.Map<List<RequestInfoResponseDto>>(requests);
     }
     
-    public async Task<ActionResult<IEnumerable<AthleteUsernameResponseDto>>> GetCoachAthletesByUsernameAsync(string? identityName)
+    public async Task<ActionResult<IEnumerable<AthleteUsernameResponseDto>>> GetCoachAthletesByUsernameAsync(string coachUsername)
     {
-        _logger.LogInformation("Getting athletes for coach {}", identityName);
-        var coach = await _coachRepository.FindCoachByUsernameAsync(identityName);
+        _logger.LogInformation("Getting athletes for coach {}", coachUsername);
+        var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         var athletes = await _athleteRepository.FindAllAthletesAssignedToCoachUsernameAsync(coach.Username);
         return _mapper.Map<List<AthleteUsernameResponseDto>>(athletes);
+    }
+    
+    public async Task<ActionResult<IEnumerable<ParticipationAthleteWithAwardsResponseDto>>> GetAthletesForCompetitionByIdAndCoachUsernameAsync(Guid competitionId, string coachUsername)
+    {
+        _logger.LogInformation("Getting athletes for coach {} for competition with id {}", coachUsername, competitionId);
+        var competitionAthletes = await _participationRepository.FindAllAthletesForCompetitionByIdAndCoachUsernameAsync(competitionId, coachUsername);
+        return _mapper.Map<List<ParticipationAthleteWithAwardsResponseDto>>(competitionAthletes);
     }
     
 }

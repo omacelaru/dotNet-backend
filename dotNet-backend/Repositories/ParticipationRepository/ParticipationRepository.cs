@@ -22,7 +22,10 @@ public class ParticipationRepository : IParticipationRepository
     {
         return await _applicationDbContext.SaveChangesAsync() > 0;
     }
-    
+    public void Update(Participation participation)
+    {
+        _table.Update(participation);
+    }
     public async Task<IEnumerable<Participation>> FindAllAthletesParticipatingInACompetitionByIdAsync(Guid id)
     {
         return await _table
@@ -36,6 +39,14 @@ public class ParticipationRepository : IParticipationRepository
             .IncludeAll()
             .FirstOrDefaultAsync(p => p.AthleteId == athleteId && p.CompetitionId == competitionId);
     }
+    
+    public async Task<IEnumerable<Participation>> FindAllAthletesForCompetitionByIdAndCoachUsernameAsync(Guid competitionId, string coachUsername)
+    {
+        return await _table
+            .IncludeAll()
+            .Where(p => p.CompetitionId == competitionId && p.Athlete.Coach.Username == coachUsername).ToListAsync();
+    }
+    
 }
 
 public static class ParticipationRepositoryExtensions
