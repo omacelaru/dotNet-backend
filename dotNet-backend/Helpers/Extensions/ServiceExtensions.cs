@@ -2,12 +2,16 @@
 using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.CoachRepository;
+using dotNet_backend.Repositories.CompetitionRepository;
+using dotNet_backend.Repositories.ParticipationRepository;
 using dotNet_backend.Repositories.RequestRepository;
 using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.AthleteService;
 using dotNet_backend.Services.AuthService;
 using dotNet_backend.Services.ClubService;
 using dotNet_backend.Services.CoachService;
+using dotNet_backend.Services.CompetitionService;
+using dotNet_backend.Services.ParticipationService;
 using dotNet_backend.Services.RegisterService;
 using dotNet_backend.Services.RequestService;
 using dotNet_backend.Services.SMTP;
@@ -27,6 +31,8 @@ namespace dotNet_backend.Helpers.Extensions
             services.AddTransient<IRequestRepository, RequestRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IAthleteRepository, AthleteRepository>();
+            services.AddTransient<IParticipationRepository, ParticipationRepository>();
+            services.AddTransient<ICompetitionRepository, CompetitionRepository>();
             return services;
         }
 
@@ -39,6 +45,8 @@ namespace dotNet_backend.Helpers.Extensions
             services.AddTransient<ICoachService, CoachService>();
             services.AddTransient<IRequestService, RequestService>();
             services.AddTransient<IAthleteService, AthleteService>();
+            services.AddTransient<IParticipationService, ParticipationService>();
+            services.AddTransient<ICompetitionService, CompetitionService>();
             return services;
         }
         
