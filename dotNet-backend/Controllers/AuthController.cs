@@ -1,6 +1,7 @@
 ﻿using dotNet_backend.CustomActionFilters;
 using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Services.AuthService;
+using dotNet_backend.Services.SMTP;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
