@@ -26,11 +26,12 @@ public class AthleteRepository : GenericRepository<Athlete>, IAthleteRepository
             .FirstOrDefaultAsync(a => a.Username == username);
     }
     
-    public async Task<IEnumerable<Athlete>> GetAllAthletesAsync()
+    public async Task<IEnumerable<Athlete>> FindAllAthletesAssignedToCoachUsernameAsync(string coachUsername)
     {
         return await _table
             .Include(a => a.Coach)
             .AsNoTracking()
+            .Where(a => a.Coach.Username == coachUsername)
             .ToListAsync();
     }
 }

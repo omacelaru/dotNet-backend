@@ -27,7 +27,7 @@ public class AthleteService : IAthleteService
     public async Task<ActionResult<IEnumerable<AthleteResponseDto>>> GetAllAthletesAsync()
     {
         _logger.LogInformation("Getting all athletes");
-        var athletes = await _athleteRepository.GetAllAthletesAsync();
+        var athletes = await _athleteRepository.FindAllAthletesAsync();
         return _mapper.Map<List<AthleteResponseDto>>(athletes);
     }
     

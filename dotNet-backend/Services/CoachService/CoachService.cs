@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
@@ -70,6 +71,14 @@ public class CoachService : ICoachService
         var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         var requests = await _requestRepository.FindAllRequestsAssignedToUsernameAsync(coach.Username);
         return _mapper.Map<List<RequestInfoResponseDto>>(requests);
+    }
+    
+    public async Task<ActionResult<IEnumerable<AthleteUsernameResponseDto>>> GetCoachAthletesByUsernameAsync(string? identityName)
+    {
+        _logger.LogInformation("Getting athletes for coach {}", identityName);
+        var coach = await _coachRepository.FindCoachByUsernameAsync(identityName);
+        var athletes = await _athleteRepository.FindAllAthletesAssignedToCoachUsernameAsync(coach.Username);
+        return _mapper.Map<List<AthleteUsernameResponseDto>>(athletes);
     }
     
 }

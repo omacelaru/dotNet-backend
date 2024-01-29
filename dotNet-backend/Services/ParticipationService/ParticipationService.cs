@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using dotNet_backend.Models.Athlete;
+using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Competition;
 using dotNet_backend.Models.Competition.DTO;
 using dotNet_backend.Models.Participation;
@@ -70,8 +71,8 @@ public class ParticipationService :IParticipationService
         await _participationRepository.SaveAsync();
         var response = new ParticipationResponseDto
         {
-            Competition = new KeyValuePair<Guid, string>(competition.Id, competition.Name),
-            Athletes = athletes.Select(a => new KeyValuePair<Guid, string>(a.Id, a.Username)).ToList()
+            Competition = _mapper.Map<CompetitionNameResponseDto>(competition),
+            Athletes = _mapper.Map<IEnumerable<AthleteUsernameResponseDto>>(athletes)
         };
         return response;
     }

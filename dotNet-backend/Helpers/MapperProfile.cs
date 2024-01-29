@@ -51,7 +51,8 @@ namespace dotNet_backend.Helpers
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.ToDateTime(new TimeOnly(9, 0, 0))))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.ToDateTime(new TimeOnly(9,0,0))));
-                
+
+            CreateMap<Competition, CompetitionNameResponseDto>();
             CreateMap<Competition, CompetitionResponseDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
@@ -59,6 +60,8 @@ namespace dotNet_backend.Helpers
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.Date))
                 .ForMember(dest => dest.NumberOfParticipants, opt => opt.MapFrom(src => src.Participations.Count))
                 .ForMember(dest => dest.DayLeft, opt => opt.MapFrom(src => (src.EndDate - DateTime.Now).Days));
+
+            CreateMap<Athlete, AthleteUsernameResponseDto>();
         }
     }
 }

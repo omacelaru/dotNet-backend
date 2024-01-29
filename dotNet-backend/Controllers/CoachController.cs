@@ -1,4 +1,5 @@
 ﻿using dotNet_backend.CustomActionFilters;
+using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
@@ -32,6 +33,11 @@ namespace dotNet_backend.Controllers
         [Authorize(Roles = "Coach")]
         public async Task<ActionResult<CoachResponseDto>> GetMeByUsername() => 
             await _coachService.GetCoachByUsernameAsync(User.Identity.Name);
+        
+        [HttpGet("me/athletes")]
+        [Authorize(Roles = "Coach")]
+        public async Task<ActionResult<IEnumerable<AthleteUsernameResponseDto>>> GetCoachAthletes() => 
+            await _coachService.GetCoachAthletesByUsernameAsync(User.Identity.Name);
 
         [HttpGet("me/requests")]
         [Authorize(Roles = "Coach")]

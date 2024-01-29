@@ -1,4 +1,5 @@
-﻿using dotNet_backend.Models.Club;
+﻿using dotNet_backend.Models.Athlete.DTO;
+using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.Request;
@@ -15,4 +16,5 @@ public interface ICoachService
     Task<ActionResult<CoachResponseDto>> GetCoachByUsernameAsync(string coachUsername);
     Task AddAthleteToCoachAsync(string athleteUsername, string coachUsername);
     Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetCoachRequestsByUsernameAsync(string coachUsername);
+    Task<ActionResult<IEnumerable<AthleteUsernameResponseDto>>> GetCoachAthletesByUsernameAsync(string? identityName);
 }
