@@ -69,12 +69,17 @@ public class CoachService : ICoachService
         await _coachRepository.SaveAsync();
     }
     
-    public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetCoachRequestsByUsernameAsync(string coachUsername)
+    public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetCoachRequestsByUsernameAsync(string coachUsername, RequestType requestType)
     {
         _logger.LogInformation("Getting requests for coach {}", coachUsername);
         var coach = await _coachRepository.FindCoachByUsernameAsync(coachUsername);
         var requests = await _requestRepository.FindAllRequestsAssignedToUsernameAsync(coach.Username);
-        return _mapper.Map<List<RequestInfoResponseDto>>(requests);
+        return requestType switch
+        {
+            RequestType.AddAthleteToCoach => _mapper.Map<List<RequestInfoResponseDto>>(requests.Where(r => r.RequestType == RequestType.AddAthleteToCoach)),
+            RequestType.AddAthleteToCompetition => _mapper.Map<List<RequestInfoWithCompetitionResponseDto>>(requests.Where(r => r.RequestType == RequestType.AddAthleteToCompetition)),
+            _ => throw new NotFoundException("Request type not found")
+        };
     }
     
     public async Task<ActionResult<IEnumerable<AthleteUsernameResponseDto>>> GetCoachAthletesByUsernameAsync(string coachUsername)

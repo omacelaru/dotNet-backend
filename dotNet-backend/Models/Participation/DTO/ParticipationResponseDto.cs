@@ -8,7 +8,7 @@ namespace dotNet_backend.Models.Participation.DTO
     public class ParticipationResponseDto
     {
         public CompetitionNameResponseDto Competition { get; set; }
-        public IEnumerable<AthleteUsernameResponseDto>? Athletes { get; set; }
+        public AthleteUsernameResponseDto? Athletes { get; set; }
 
     }
     public class ParticipationAthleteWithAwardsResponseDto
