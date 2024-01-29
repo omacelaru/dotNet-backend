@@ -83,4 +83,36 @@ public class ParticipationService :IParticipationService
         };
         return response;
     }
+    
+    public async Task<ActionResult<ParticipationAthleteWithAwardsResponseDto>> UpdateAthleteParticipationWithAwardsAsync(Guid competitionId, string athleteUsername, ParticipationAwardsRequestDto participationAwardsRequestDto, string coachUsername)
+    {
+        var competition = await _competitionRepository.FindCompetitionByIdAsync(competitionId);
+        if (competition == null)
+        {
+            _logger.LogError("Competition with id {competitionId} not found", competitionId);
+            throw new NotFoundException("Competition not found");
+        }
+        var athlete = await _athleteRepository.FindAthleteByUsernameAsync(athleteUsername);
+        if (athlete == null)
+        {
+            _logger.LogError("Athlete with username {athleteUsername} not found", athleteUsername);
+            throw new NotFoundException($"Athlete with username {athleteUsername} not found");
+        }
+        if(athlete.Coach == null || athlete.Coach.Username != coachUsername)
+        {
+            _logger.LogError("Athlete with username {athleteUsername} is not coached by {coachUsername}", athleteUsername, coachUsername);
+            throw new BadRequestException($"You don't train the athlete with the username {athleteUsername}");
+        }
+        if(!athlete.Participations.Any(p => p.CompetitionId == competitionId))
+        {
+            _logger.LogError("Athlete with username {athleteUsername} is not participating in the competition with id {competitionId}", athleteUsername, competitionId);
+            throw new BadRequestException($"Athlete with username {athleteUsername} is not participating in this competition.");
+        }
+        var participation = await _participationRepository.FindParticipationByAthleteIdAndCompetitionId(athlete.Id, competitionId);
+        participation.FirstPlace = participationAwardsRequestDto.FirstPlace;
+        participation.SecondPlace = participationAwardsRequestDto.SecondPlace;
+        participation.ThirdPlace = participationAwardsRequestDto.ThirdPlace;
+        await _participationRepository.SaveAsync();
+        return _mapper.Map<ParticipationAthleteWithAwardsResponseDto>(participation);
+    }
 }

@@ -29,6 +29,13 @@ public class ParticipationRepository : IParticipationRepository
             .IncludeAll()
             .Where(p => p.CompetitionId == id).ToListAsync();
     }
+    
+    public async Task<Participation> FindParticipationByAthleteIdAndCompetitionId(Guid athleteId, Guid competitionId)
+    {
+        return await _table
+            .IncludeAll()
+            .FirstOrDefaultAsync(p => p.AthleteId == athleteId && p.CompetitionId == competitionId);
+    }
 }
 
 public static class ParticipationRepositoryExtensions

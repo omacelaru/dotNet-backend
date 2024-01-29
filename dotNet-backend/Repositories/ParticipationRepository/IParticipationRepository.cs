@@ -8,4 +8,5 @@ public interface IParticipationRepository
     Task CreateAsync(Participation participation);
     Task<bool> SaveAsync();
     Task<IEnumerable<Participation>> FindAllAthletesParticipatingInACompetitionByIdAsync(Guid id);
+    Task<Participation> FindParticipationByAthleteIdAndCompetitionId(Guid athleteId, Guid competitionId);
 }

@@ -67,6 +67,7 @@ namespace dotNet_backend.Helpers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Athlete.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Athlete.Name))
                 .ForMember(dest => dest.CoachName, opt => opt.MapFrom(src => src.Athlete.Coach.Name));
+            CreateMap<Participation, ParticipationAthleteWithAwardsResponseDto>();
         }
     }
 }

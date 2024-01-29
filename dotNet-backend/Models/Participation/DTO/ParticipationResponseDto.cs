@@ -11,11 +11,11 @@ namespace dotNet_backend.Models.Participation.DTO
         public IEnumerable<AthleteUsernameResponseDto>? Athletes { get; set; }
 
     }
-    
-    public class ParticipationAthleteWithPlacesResponseDto
+
+    public class ParticipationAthleteWithAwardsResponseDto
     {
-        public Guid Id { get; set; }
-        public string Username { get; set; }
+        public CompetitionNameResponseDto Competition { get; set; }
+        public AthleteUsernameResponseDto Athlete { get; set; }
         public int? FirstPlace { get; set; }
         public int? SecondPlace { get; set; }
         public int? ThirdPlace { get; set; }
