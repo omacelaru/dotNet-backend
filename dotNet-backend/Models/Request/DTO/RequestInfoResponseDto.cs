@@ -7,8 +7,13 @@
         public string AssignedToUser { get; set; }
         public System.DateTime RequestDate { get; set; }
         public string? Message { get; set; }
-        public Enum.RequestType RequestType { get; set; }
-        public Enum.RequestStatus RequestStatus { get; set; }
+        public string RequestType { get; set; }
+        public string RequestStatus { get; set; }
     }
-
+    
+    public class RequestInfoWithCompetitionResponseDto : RequestInfoResponseDto
+    {
+        public Guid CompetitionId { get; set; }
+        public string CompetitionName { get; set; }
+    }
 }

@@ -6,6 +6,7 @@ using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
 using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.CoachRepository;
+using dotNet_backend.Repositories.CompetitionRepository;
 using dotNet_backend.Repositories.RequestRepository;
 using dotNet_backend.Services.CoachService;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +19,19 @@ public class RequestService : IRequestService
     private readonly IRequestRepository _requestRepository;
     private readonly ICoachRepository _coachRepository;
     private readonly IAthleteRepository _athleteRepository;
+    private readonly ICompetitionRepository _competitionRepository;
     private readonly ICoachService _coachService;
     private readonly ILogger<RequestService> _logger;
     private readonly IMapper _mapper;
 
     public RequestService(IRequestRepository requestRepository, ICoachRepository coachRepository,
-        IAthleteRepository athleteRepository, ICoachService coachService, ILogger<RequestService> logger,
+        IAthleteRepository athleteRepository,ICompetitionRepository competitionRepository, ICoachService coachService, ILogger<RequestService> logger,
         IMapper mapper)
     {
         _requestRepository = requestRepository;
         _coachRepository = coachRepository;
         _athleteRepository = athleteRepository;
+        _competitionRepository = competitionRepository;
         _coachService = coachService;
         _logger = logger;
         _mapper = mapper;
@@ -65,20 +68,7 @@ public class RequestService : IRequestService
         return _mapper.Map<RequestInfoResponseDto>(request);
     }
 
-    public async Task<ActionResult<RequestInfoResponseDto>> CreateRequestAsync(string requestedByUsername,
-        string assignedToUser,
-        RequestType requestType)
-    {
-        _logger.LogInformation("Creating request from {} to {}", requestedByUsername, assignedToUser);
-        return requestType switch
-        {
-            RequestType.AddAthleteToCoach => await CreateRequestToAddAthleteToCoachAsync(requestedByUsername,
-                assignedToUser),
-            _ => throw new BadRequestException("Request type not found")
-        };
-    }
-
-    private async Task<ActionResult<RequestInfoResponseDto>> CreateRequestToAddAthleteToCoachAsync(
+    public async Task<ActionResult<RequestInfoResponseDto>> CreateRequestToJoinInCoachListAsync(
         string athleteUsername,
         string coachUsername)
     {
@@ -91,7 +81,7 @@ public class RequestService : IRequestService
             throw new NotFoundException("Coach not found");
         }
 
-        await ValidateCreateRequest(athlete, coach);
+        await ValidateCreateRequestToJoinInCoachListAsync(athlete, coach);
         var request = new RequestInfo
         {
             RequestedByUser = athleteUsername,
@@ -105,7 +95,7 @@ public class RequestService : IRequestService
         return _mapper.Map<RequestInfoResponseDto>(request);
     }
 
-    private async Task ValidateCreateRequest(Athlete athlete, Coach coach)
+    private async Task ValidateCreateRequestToJoinInCoachListAsync(Athlete athlete, Coach coach)
     {
         if (athlete.Coach != null)
         {
@@ -126,7 +116,47 @@ public class RequestService : IRequestService
             _logger.LogError("Athlete {} already has a request for another coach", athlete.Username);
             throw new BadRequestException("You already have a request for another coach");
         }
-
-        
+    }
+    
+    public async Task<ActionResult<RequestInfoWithCompetitionResponseDto>> CreateRequestToParticipateInCompetitionAsync(string athleteUsername, Guid competitionId)
+    {
+        _logger.LogInformation("Athlete {} is requesting to participate in competition {}", athleteUsername, competitionId);
+        var athlete = await _athleteRepository.FindAthleteByUsernameAsync(athleteUsername);
+        if (athlete == null)
+        {
+            _logger.LogError("Athlete {} not found", athleteUsername);
+            throw new NotFoundException("Athlete not found");
+        }
+        if( athlete.Coach == null)
+        {
+            _logger.LogError("Athlete {} does not have a coach", athleteUsername);
+            throw new BadRequestException("You don't have a coach");
+        }
+        var competition = await _competitionRepository.FindCompetitionByIdAsync(competitionId);
+        if (competition == null)
+        {
+            _logger.LogError("Competition {} not found", competitionId);
+            throw new NotFoundException("Competition not found");
+        }
+        var oldRequest =
+            await _requestRepository.FindRequestToAddAthleteToCompetitionByUsernameAsync(athlete.Username, competitionId);
+        if (oldRequest != null)
+        {
+            _logger.LogError("Athlete {} already has a request for this competition {}", athlete.Username, competitionId);
+            throw new BadRequestException("You already have a request for this competition");
+        }
+        var request = new RequestInfo
+        {
+            RequestedByUser = athleteUsername,
+            AssignedToUser = athlete.Coach.Username,
+            CompetitionId = competition.Id,
+            CompetitionName = competition.Name,
+            RequestType = RequestType.AddAthleteToCompetition,
+            RequestStatus = RequestStatus.PENDING,
+            RequestDate = DateTime.Now
+        };
+        await _requestRepository.CreateAsync(request);
+        await _requestRepository.SaveAsync();
+        return _mapper.Map<RequestInfoWithCompetitionResponseDto>(request);
     }
 }

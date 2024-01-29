@@ -13,7 +13,6 @@ public interface IRequestService
 {
     Task<ActionResult<RequestInfoResponseDto>> UpdateRequestStatusAsync(string requestedByUsername, string assignedToUser,
         string requestStatus, RequestType requestType);
-
-    Task<ActionResult<RequestInfoResponseDto>> CreateRequestAsync(string requestedByUsername, string assignedToUser,
-        RequestType requestType);
+    Task<ActionResult<RequestInfoWithCompetitionResponseDto>> CreateRequestToParticipateInCompetitionAsync(string athleteUsername, Guid competitionId);
+    Task<ActionResult<RequestInfoResponseDto>> CreateRequestToJoinInCoachListAsync(string athleteUsername, string coachUsername);
 }
