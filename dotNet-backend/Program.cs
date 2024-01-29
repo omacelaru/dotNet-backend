@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
+using dotNet_backend.Exceptions.GlobalExceptionHandler;
 using dotNet_backend.Helpers;
 using dotNet_backend.Helpers.Extensions;
 using Serilog;
@@ -24,6 +26,8 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     {
         ///options.Filters.Add(new EmailVerifiedFilter());
     });
+    builderInstance.Services.AddControllers().AddJsonOptions(x =>
+        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
     builderInstance.Host.UseSerilog();
     builderInstance.Services.AddAutoMapper(typeof(MapperProfile));
     builderInstance.Services.AddControllers();
@@ -34,58 +38,13 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
-    builderInstance.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-        .AddJwtBearer(options =>
-        {
-            options.SaveToken = true;
-            options.RequireHttpsMetadata = false;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                ClockSkew = TimeSpan.Zero,
-                ValidAudience = configuration["JWT:ValidAudience"],
-                ValidIssuer = configuration["JWT:ValidIssuer"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
-            };
-        });
-
+    builderInstance.Services.AddAuthentications(configuration);
     builderInstance.Services.AddRepositories();
     builderInstance.Services.AddServices();
+    builderInstance.Services.AddExceptionHandler<GlobalExceptionHandler>();
+    builderInstance.Services.AddSwagger();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builderInstance.Services.AddEndpointsApiExplorer();
-
-    builderInstance.Services.AddSwaggerGen(option =>
-    {
-        option.SwaggerDoc("v1", new OpenApiInfo { Title = "Karate API", Version = "v1" });
-        option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Please enter a valid token",
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = "Bearer"
-        });
-        option.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type=ReferenceType.SecurityScheme,
-                        Id="Bearer"
-                    }
-                },
-                new string[]{}
-            }
-        });
-    });
 
     var app = builderInstance.Build();
 
@@ -101,10 +60,11 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-
-
+    
     app.MapControllers();
 
+    app.UseExceptionHandler(_ => { });
+    
     app.Run();
 }
 
