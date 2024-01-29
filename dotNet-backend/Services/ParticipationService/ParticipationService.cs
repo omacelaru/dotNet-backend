@@ -57,6 +57,11 @@ public class ParticipationService :IParticipationService
                 _logger.LogError("Athlete with username {athleteUsername} is not coached by {coachUsername}", athleteUsername, coachUsername);
                 throw new BadRequestException($"You don't train the athlete with the username {athleteUsername}");
             }
+            if(athlete.Participations.Any(p => p.CompetitionId == competitionId))
+            {
+                _logger.LogError("Athlete with username {athleteUsername} is already participating in the competition with id {competitionId}", athleteUsername, competitionId);
+                throw new BadRequestException($"Athlete with username {athleteUsername} is already participating in this competition.");
+            }
             athletes.Add(athlete);
         }
         foreach (var athlete in athletes)
