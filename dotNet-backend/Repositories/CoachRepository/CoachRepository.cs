@@ -9,17 +9,11 @@ public class CoachRepository : GenericRepository<Coach>, ICoachRepository
     public CoachRepository(ApplicationDbContext context) : base(context)
     {
     }
-
-    // Add custom methods here
-    public async Task<Coach> FindByUsernameAsync(string coachUsername)
-    {
-        return await _table.FirstOrDefaultAsync(c => c.Username == coachUsername);
-    }
+    
     public async Task<IEnumerable<Coach>> FindAllCoachesAsync()
     {
         return await _table
-            .Include(c => c.Athletes)
-            .Include(c => c.Club)
+            .IncludeAll()
             .AsNoTracking()
             .ToListAsync();
     }
@@ -27,16 +21,25 @@ public class CoachRepository : GenericRepository<Coach>, ICoachRepository
     public async Task<Coach> FindCoachByIdAsync(Guid id)
     {
         return await _table
-            .Include(c => c.Athletes)
-            .Include(c => c.Club)
+            .IncludeAll()
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<Coach> FindCoachByUsernameAsync(string username)
     {
         return await _table
+            .IncludeAll()
+            .FirstOrDefaultAsync(c => c.Username == username);
+    }
+}
+
+public static class CoachRepositoryExtensions
+{
+    public static IQueryable<Coach> IncludeAll(this IQueryable<Coach> query)
+    {
+        return query
             .Include(c => c.Athletes)
             .Include(c => c.Club)
-            .FirstOrDefaultAsync(c => c.Username == username);
+            .AsNoTracking();
     }
 }

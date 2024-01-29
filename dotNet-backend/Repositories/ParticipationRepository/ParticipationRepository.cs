@@ -22,4 +22,22 @@ public class ParticipationRepository : IParticipationRepository
     {
         return await _applicationDbContext.SaveChangesAsync() > 0;
     }
+    
+    public async Task<IEnumerable<Participation>> FindAllAthletesParticipatingInACompetitionByIdAsync(Guid id)
+    {
+        return await _table
+            .IncludeAll()
+            .Where(p => p.CompetitionId == id).ToListAsync();
+    }
+}
+
+public static class ParticipationRepositoryExtensions
+{
+    public static IQueryable<Participation> IncludeAll(this IQueryable<Participation> query)
+    {
+        return query
+            .Include(p => p.Athlete)
+            .Include(p => p.Competition)
+            .AsNoTracking();
+    }
 }

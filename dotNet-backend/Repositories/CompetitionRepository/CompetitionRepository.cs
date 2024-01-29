@@ -9,12 +9,11 @@ public class CompetitionRepository : GenericRepository<Competition>, ICompetitio
     public CompetitionRepository(ApplicationDbContext context) : base(context)
     {
     }
-    
+
     public async Task<IEnumerable<Competition>> GetAllCompetitions()
     {
         return await _table
-            .Include(c => c.Participations)
-            .AsNoTracking()
+            .IncludeAll()
             .ToListAsync();
     }
 
@@ -24,14 +23,21 @@ public class CompetitionRepository : GenericRepository<Competition>, ICompetitio
         await _applicationDbContext.SaveChangesAsync();
         return competition;
     }
-    
+
     public async Task<Competition> FindCompetitionByIdAsync(Guid id)
     {
         return await _table
-            .Include(c => c.Participations)
-            .AsNoTracking()
+            .IncludeAll()
             .FirstOrDefaultAsync(c => c.Id == id);
     }
-    
-    
+}
+
+public static class CompetitionRepositoryExtensions
+{
+    public static IQueryable<Competition> IncludeAll(this IQueryable<Competition> query)
+    {
+        return query
+            .Include(c => c.Participations)
+            .AsNoTracking();
+    }
 }

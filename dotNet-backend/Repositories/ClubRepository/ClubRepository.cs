@@ -12,7 +12,7 @@ namespace dotNet_backend.Repositories.ClubRepository
         public async Task<IEnumerable<Club>> FindAllClubsAsync()
         {
             return await _table
-                .Include(c => c.Coach)
+                .IncludeAll() 
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -20,8 +20,18 @@ namespace dotNet_backend.Repositories.ClubRepository
         public async Task<Club> FindClubByIdAsync(Guid clubId)
         {
             return await _table
-                .Include(c => c.Coach)
+                .IncludeAll()
                 .FirstOrDefaultAsync(c => c.Id == clubId);
+        }
+    }
+    
+    public static class ClubRepositoryExtensions
+    {
+        public static IQueryable<Club> IncludeAll(this IQueryable<Club> query)
+        {
+            return query
+                .Include(c => c.Coach)
+                .AsNoTracking();
         }
     }
 }
