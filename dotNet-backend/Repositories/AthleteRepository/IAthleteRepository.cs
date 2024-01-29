@@ -9,5 +9,5 @@ public interface IAthleteRepository : IGenericRepository<Athlete>
 {
     Task<IEnumerable<Athlete>> FindAllAthletesAsync();
     Task<Athlete> FindAthleteByUsernameAsync(string athleteUsername);
-    Task<IEnumerable<Athlete>> GetAllAthletesAsync();
+    Task<IEnumerable<Athlete>> FindAllAthletesAssignedToCoachUsernameAsync(string coachUsername);
 }

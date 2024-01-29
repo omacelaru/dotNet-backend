@@ -2,6 +2,8 @@
 using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Coach;
+using dotNet_backend.Models.Competition;
+using dotNet_backend.Models.Participation;
 using dotNet_backend.Models.Request;
 using dotNet_backend.Models.User;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +17,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Coach> Coaches { get; set; }
     public DbSet<Athlete> Athletes { get; set; }
     public DbSet<RequestInfo> Requests { get; set; }
+    public DbSet<Participation> Participations { get; set; }
+    public DbSet<Competition> Competitions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,6 +37,17 @@ public class ApplicationDbContext : DbContext
             .HasMany(c => c.Athletes)
             .WithOne(a => a.Coach)
             .HasForeignKey(a => a.CoachId);
+        
+        modelBuilder.Entity<Participation>()
+            .HasKey(p => new {p.AthleteId, p.CompetitionId});
+        modelBuilder.Entity<Participation>()
+            .HasOne(p => p.Athlete)
+            .WithMany(a => a.Participations)
+            .HasForeignKey(p => p.AthleteId);
+        modelBuilder.Entity<Participation>()
+            .HasOne(p => p.Competition)
+            .WithMany(c => c.Participations)
+            .HasForeignKey(p => p.CompetitionId);
 
         base.OnModelCreating(modelBuilder);
     }

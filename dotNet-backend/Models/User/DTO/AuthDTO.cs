@@ -5,14 +5,14 @@ namespace dotNet_backend.Models.User.DTO
 {
     public class RegisterDto
     {
-        [ValidateUsername(ErrorMessage = "")]
+        [ValidateUsername]
         public string Username { get; set; }
         [ValidatePassword]
         public string Password { get; set; }
-
         [EmailAddress(ErrorMessage = "Invalid Email Address"), Required] 
         public string Email { get; set; }
-        // Other registration properties
+        [Required]
+        public string Name { get; set; }
     }
 
     public class LoginDto
