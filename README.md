@@ -1,4 +1,32 @@
-﻿## How to create Database in SQL Server
+﻿# Karate Club Management System
+
+This project aims to create a comprehensive Karate Club Management System using the .NET API for the back end and Next.js for the front end. The system focuses on efficiently managing karate clubs, their coaches, and athletes participating in competitions. The features include athlete achievements, competition results, and an overall ranking system.
+## Backend (.NET API)
+
+### Setup
+1. Clone the repository: `git clone https://github.com/victorstefan28/net-project`
+2. Navigate to the backend folder: `cd dotNet-backend/dotNet-backend`
+3. Restore dependencies: `dotnet restore`
+4. Update database: `dotnet ef database update`
+5. Run the API: `dotnet run`
+
+## Frontend (Next.js)
+
+### Prerequisites
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+
+### Setup
+1. Navigate to the frontend folder: `cd next-frontend`
+2. Install dependencies: `npm install`
+3. Run the application: `npm run dev`
+
+### Features
+- View club details, coach information, and athlete profiles.
+- Manage competitions and view medal achievements.
+- Display rankings based on points earned by athletes.
+
+## How to create Database in SQL Server
 
 - start Docker Desktop
 - open Terminal
