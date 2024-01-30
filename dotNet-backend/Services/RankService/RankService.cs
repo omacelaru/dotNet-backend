@@ -67,6 +67,7 @@ public class RankService : IRankService
             if(coach == null)
             {
                 _logger.LogError("Coach with id {} not found from club {}", club.CoachId, club.Id);
+                throw new NotFoundException("Coach not found");
             }
             var athletes = await _athleteRepository.FindAllAthletesAssignedToCoachUsernameAsync(coach.Username);
             var points = athletes.Sum(athlete => athlete.Points);
