@@ -37,9 +37,6 @@ public class RankService : IRankService
         PaginationFilter paginationFilter, string sortBy)
     {
         _logger.LogInformation("Getting all athletes for rank with pagination and {}", sortBy);
-        //for each athlete get the points attribute
-        //sort them by points
-        //return them with pagination
         var athletes = await _athleteRepository.FindAllAthletesAsync();
         athletes = athletes.OrderBy(athlete => athlete.Points);
         var pagedResults = athletes.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize)
