@@ -7,6 +7,6 @@ namespace dotNet_backend.Services.RankService;
 
 public interface IRankService
 {
-    Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletesAsync(PaginationFilter paginationFilter, string sortBy);
-    Task<ActionResult<IEnumerable<ClubResponseWithPointsDto>>> GetAllClubsAndCoachesAsync(PaginationFilter paginationFilter, string sortBy);
+    Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletesAsync(PaginationFilter paginationFilter);
+    Task<ActionResult<IEnumerable<ClubResponseWithPointsDto>>> GetAllClubsAndCoachesAsync(PaginationFilter paginationFilter);
 }
