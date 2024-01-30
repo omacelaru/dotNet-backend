@@ -34,11 +34,11 @@ public class RankService : IRankService
     }
 
     public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletesAsync(
-        PaginationFilter paginationFilter, string sortBy)
+        PaginationFilter paginationFilter)
     {
-        _logger.LogInformation("Getting all athletes for rank with pagination and {}", sortBy);
+        _logger.LogInformation("Getting all athletes for rank with pagination {} {}", paginationFilter.PageNumber, paginationFilter.PageSize);
         var athletes = await _athleteRepository.FindAllAthletesAsync();
-        athletes = athletes.OrderBy(athlete => athlete.Points);
+        athletes = athletes.OrderByDescending(athlete => athlete.Points);
         var pagedResults = athletes.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize)
             .Take(paginationFilter.PageSize).ToList();
         if(pagedResults == null)
@@ -50,14 +50,11 @@ public class RankService : IRankService
     }
 
     public async Task<ActionResult<IEnumerable<ClubResponseWithPointsDto>>> GetAllClubsAndCoachesAsync(
-               PaginationFilter paginationFilter, string sortBy)
+               PaginationFilter paginationFilter)
     {
-        //for each club get the points attribute
-        //sort them by points
-        //return them with pagination
-        _logger.LogInformation("Getting clubs by coach points by athletes with pagination and {}", sortBy);
+        _logger.LogInformation("Getting clubs by coach points by athletes with pagination {} {}", paginationFilter.PageNumber, paginationFilter.PageSize);
         var clubs = await _clubRepository.FindAllClubsAsync();
-        var clubPoints = new List<ClubResponseWithPointsDto>();
+        var clubsWithPoints = new List<ClubResponseWithPointsDto>();
         foreach(var club in clubs)
         {
             var coach = await _coachRepository.FindCoachByIdAsync(club.CoachId);
@@ -68,17 +65,16 @@ public class RankService : IRankService
             }
             var athletes = await _athleteRepository.FindAllAthletesAssignedToCoachUsernameAsync(coach.Username);
             var points = athletes.Sum(athlete => athlete.Points);
-            clubPoints.Add(new ClubResponseWithPointsDto
+            clubsWithPoints.Add(new ClubResponseWithPointsDto
             {
                 Id = club.Id,
                 Name = club.Name,
                 CoachName = coach.Name,
                 Points = points
             });
-            //create a new query to add the points to the club
         }
-        clubPoints = clubPoints.OrderBy(club => club.Points).ToList();
-        var pagedResults = clubPoints.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize)
+        clubsWithPoints = clubsWithPoints.OrderByDescending(club => club.Points).ToList();
+        var pagedResults = clubsWithPoints.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize)
             .Take(paginationFilter.PageSize).ToList();
         if(pagedResults == null)
         {
