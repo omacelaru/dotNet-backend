@@ -12,6 +12,7 @@ using dotNet_backend.Services.ClubService;
 using dotNet_backend.Services.CoachService;
 using dotNet_backend.Services.CompetitionService;
 using dotNet_backend.Services.ParticipationService;
+using dotNet_backend.Services.RankService;
 using dotNet_backend.Services.RegisterService;
 using dotNet_backend.Services.RequestService;
 using dotNet_backend.Services.SMTP;
@@ -47,6 +48,7 @@ namespace dotNet_backend.Helpers.Extensions
             services.AddTransient<IAthleteService, AthleteService>();
             services.AddTransient<IParticipationService, ParticipationService>();
             services.AddTransient<ICompetitionService, CompetitionService>();
+            services.AddTransient<IRankService, RankService>();
             return services;
         }
         

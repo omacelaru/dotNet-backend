@@ -60,7 +60,7 @@ public class RankService : IRankService
         //return them with pagination
         _logger.LogInformation("Getting clubs by coach points by athletes with pagination and {}", sortBy);
         var clubs = await _clubRepository.FindAllClubsAsync();
-        var club_points = new List<ClubResponseWithPointsDto>();
+        var clubPoints = new List<ClubResponseWithPointsDto>();
         foreach(var club in clubs)
         {
             var coach = await _coachRepository.FindCoachByIdAsync(club.CoachId);
@@ -71,7 +71,7 @@ public class RankService : IRankService
             }
             var athletes = await _athleteRepository.FindAllAthletesAssignedToCoachUsernameAsync(coach.Username);
             var points = athletes.Sum(athlete => athlete.Points);
-            club_points.Add(new ClubResponseWithPointsDto
+            clubPoints.Add(new ClubResponseWithPointsDto
             {
                 Id = club.Id,
                 Name = club.Name,
@@ -80,8 +80,8 @@ public class RankService : IRankService
             });
             //create a new query to add the points to the club
         }
-        club_points = club_points.OrderBy(club => club.Points).ToList();
-        var pagedResults = club_points.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize)
+        clubPoints = clubPoints.OrderBy(club => club.Points).ToList();
+        var pagedResults = clubPoints.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize)
             .Take(paginationFilter.PageSize).ToList();
         if(pagedResults == null)
         {
