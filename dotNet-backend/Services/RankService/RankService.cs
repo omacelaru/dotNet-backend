@@ -55,9 +55,6 @@ public class RankService : IRankService
     public async Task<ActionResult<IEnumerable<ClubResponseWithPointsDto>>> GetAllClubsAndCoachesAsync(
                PaginationFilter paginationFilter)
     {
-        //for each club get the points attribute
-        //sort them by points
-        //return them with pagination
         _logger.LogInformation("Getting clubs by coach points by athletes with pagination {} {}", paginationFilter.PageNumber, paginationFilter.PageSize);
         var clubs = await _clubRepository.FindAllClubsAsync();
         var clubsWithPoints = new List<ClubResponseWithPointsDto>();
@@ -78,7 +75,6 @@ public class RankService : IRankService
                 CoachName = coach.Name,
                 Points = points
             });
-            //create a new query to add the points to the club
         }
         clubsWithPoints = clubsWithPoints.OrderByDescending(club => club.Points).ToList();
         var pagedResults = clubsWithPoints.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize)
