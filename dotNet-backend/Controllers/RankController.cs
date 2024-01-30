@@ -12,20 +12,16 @@ namespace dotNet_backend.Controllers
     public class RankController(IRankService rankService) : ControllerBase
     {
         private readonly IRankService _rankService = rankService;
-
         
-        //get all athletes with pagination and sorting by points
         [HttpGet("athletes")]
         [ValidateModel]
-        public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletes([FromQuery] PaginationFilter paginationFilter, [FromQuery] string sortBy) =>
-            await _rankService.GetAllAthletesAsync(paginationFilter, sortBy);
-        //nu stiu exact cu ce ne ajuta sortBy ca noi oricum sortam dupa puncte; eventual de scos
+        public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletes([FromQuery] PaginationFilter paginationFilter) =>
+            await _rankService.GetAllAthletesAsync(paginationFilter);
 
-        //de afisat cluburile si antrenorii cu punctele lor care trebuie calculate cu punctele de la sportivii lor
         [HttpGet("clubs_coaches")]
         [ValidateModel]
-        public async Task<ActionResult<IEnumerable<ClubResponseWithPointsDto>>> GetAllClubsAndCoaches([FromQuery] PaginationFilter paginationFilter, [FromQuery] string sortBy) =>
-            await _rankService.GetAllClubsAndCoachesAsync(paginationFilter, sortBy);
+        public async Task<ActionResult<IEnumerable<ClubResponseWithPointsDto>>> GetAllClubsAndCoaches([FromQuery] PaginationFilter paginationFilter) =>
+            await _rankService.GetAllClubsAndCoachesAsync(paginationFilter);
         
     }
 }
