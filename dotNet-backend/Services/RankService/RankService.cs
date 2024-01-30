@@ -36,6 +36,7 @@ public class RankService : IRankService
     public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletesAsync(
         PaginationFilter paginationFilter)
     {
+        
         _logger.LogInformation("Getting all athletes for rank with pagination {} {}", paginationFilter.PageNumber, paginationFilter.PageSize);
         var athletes = await _athleteRepository.FindAllAthletesAsync();
         athletes = athletes.OrderByDescending(athlete => athlete.Points);
