@@ -52,12 +52,3 @@ Click OK
 ```
 Data Source=localhost;Initial Catalog=Database_Karate;User ID=db_user;Password=Database.net.user.2023;Encrypt=False;MultipleActiveResultSets=True;TrustServerCertificate=True"
 ```
-
-## Nuget Packages
-```
-EntityFrameworkCore
-EntityFrameworkCore.SqlServer
-EntityFrameworkCore.Tools
-EntityFrameworkCore.Relational
-Microsoft.AspNetCore.Authentication.JwtBearer
-```
