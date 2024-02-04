@@ -33,7 +33,6 @@ namespace dotNet_backend.Controllers
         /// <summary>
         /// Get the current athlete's requests
         /// </summary>
-        /// <returns></returns>
         [HttpGet("me/requests")]
         [Authorize(Roles = "Athlete")]
         public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetAthleteRequests() => 
@@ -43,7 +42,6 @@ namespace dotNet_backend.Controllers
         /// Delete a request of the current athlete
         /// </summary>
         /// <param name="Id"></param>
-        /// <returns></returns>
         /// <response code="200">Request deleted</response>
         /// <response code="404">Request not found</response>
         [HttpDelete("me/requests/{Id:Guid}")]

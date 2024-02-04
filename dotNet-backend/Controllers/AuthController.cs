@@ -18,7 +18,6 @@ namespace dotNet_backend.Controllers
         /// Login user
         /// </summary>
         /// <param name="loginDto"></param>
-        /// <returns></returns>
         /// <response code="200">User logged in</response>
         /// <response code="401">Invalid credentials</response>
         /// <response code="403">User is not confirmed</response>
@@ -35,7 +34,6 @@ namespace dotNet_backend.Controllers
         /// Refresh token
         /// </summary>
         /// <param name="refreshToken"></param>
-        /// <returns></returns>
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(string refreshToken) =>
             await _authService.RefreshTokenAsync(refreshToken);
