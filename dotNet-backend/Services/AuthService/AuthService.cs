@@ -35,6 +35,16 @@ namespace dotNet_backend.Services.AuthService
             _logger.LogInformation("Logging in user {}", loginDto);
             var user = await _userRepository.FindSingleOrDefaultAsync(u => u.Username == loginDto.Username);
 
+            if(user == null)
+            {
+                _logger.LogError("Unauthorized login attempt {}", loginDto);
+                throw new UnauthorizedException("Invalid credentials.");
+            }
+            if (user.EmailConfirmed == false)
+            {
+                _logger.LogError("Forbidden login attempt {}", loginDto);
+                throw new ForbiddenException("Email not confirmed.");
+            }
             if (VerifyPassword(user.Password, loginDto.Password))
             {
                 var refreshToken = TokenJwt.GenerateRefreshToken(user);
@@ -43,11 +53,8 @@ namespace dotNet_backend.Services.AuthService
                 var accessToken = TokenJwt.GenerateJwtToken(user);
                 return new OkObjectResult(new {AccessToken = accessToken, RefreshToken = refreshToken});
             }
-            else
-            {
-                _logger.LogError("Unauthorized login attempt {}", loginDto);
-                throw new UnauthorizedException("Invalid credentials.");
-            }
+            _logger.LogError("Unauthorized login attempt {}", loginDto);
+            throw new UnauthorizedException("Invalid credentials.");
         }
         public async Task<IActionResult> RefreshTokenAsync(string refreshToken)
         {
