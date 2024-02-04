@@ -22,8 +22,8 @@ namespace dotNet_backend.Controllers
         public async Task<IActionResult> Refresh(string refreshToken) =>
             await _authService.RefreshTokenAsync(refreshToken);
 
-        [HttpPatch("email-verify")]
-        public async Task<IActionResult> VerifyEmail(string token) =>
+        [HttpPatch("confirm")]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token) =>
             await _authService.VerifyEmailAsync(token);
 
         [Authorize]

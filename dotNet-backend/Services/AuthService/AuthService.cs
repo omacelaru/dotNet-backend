@@ -76,15 +76,13 @@ namespace dotNet_backend.Services.AuthService
 
         public async Task<IActionResult> VerifyEmailAsync(string token)
         {
-            _logger.LogInformation("Verifying email with token {}", token);
-            //nu stiu ce imi intoarce ValidateToken(token)
-            var user = TokenJwt.ValidateToken(token);
-            foreach (Claim x in user.Claims)
-            {
-                _logger.LogInformation("Claim type: {}, value: {}", x.Type, x.Value);
-            }
-            _logger.LogInformation("Email verified for user {}", user);
-            return null;
+            _logger.LogInformation("Verifying email with token {}", token); 
+            string token_name = TokenJwt.GetUsernameFromToken(token);
+            User _user = await _userRepository.FindByUsernameAsync(token_name);
+            _user.EmailConfirmed = true;
+            _userRepository.Update(_user);
+            await _userRepository.SaveAsync();
+            return new OkResult();
         }
     }
 }

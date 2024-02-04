@@ -58,7 +58,15 @@ namespace dotNet_backend.Helpers.GenerateJwt
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        
+
+        public static string GetUsernameFromToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+            return securityToken?.Claims.First(claim => claim.Type == "unique_name").Value;
+        }
+
+
         public static ClaimsPrincipal ValidateToken(string token)
         {
             var tokenValidationParameters = new TokenValidationParameters
