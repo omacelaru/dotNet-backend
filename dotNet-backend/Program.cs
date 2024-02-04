@@ -24,7 +24,7 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
 
     builderInstance.Services.AddControllers(options =>
     {
-        ///options.Filters.Add(new EmailVerifiedFilter());
+        //options.Filters.Add(new EmailVerifiedFilter());
     });
     builderInstance.Services.AddControllers().AddJsonOptions(x =>
         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

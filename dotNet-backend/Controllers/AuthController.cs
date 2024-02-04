@@ -38,6 +38,10 @@ namespace dotNet_backend.Controllers
         public async Task<IActionResult> Refresh(string refreshToken) =>
             await _authService.RefreshTokenAsync(refreshToken);
 
+        [HttpPatch("confirm")]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token) =>
+            await _authService.VerifyEmailAsync(token);
+
         [Authorize]
         [HttpGet("test")]
         public IActionResult AuthTest() => Ok("Ok");
