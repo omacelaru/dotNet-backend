@@ -1,4 +1,5 @@
-﻿using dotNet_backend.Data.Exceptions;
+﻿using System.Security.Claims;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User;
 using dotNet_backend.Models.User.DTO;
 using Microsoft.AspNetCore.Identity;
@@ -71,6 +72,17 @@ namespace dotNet_backend.Services.AuthService
             var result = _passwordHasher.VerifyHashedPassword(new User(), hashedPassword, providedPassword);
             return result == PasswordVerificationResult.Success ||
                    result == PasswordVerificationResult.SuccessRehashNeeded;
+        }
+
+        public async Task<IActionResult> VerifyEmailAsync(string token)
+        {
+            _logger.LogInformation("Verifying email with token {}", token); 
+            string token_name = TokenJwt.GetUsernameFromToken(token);
+            User _user = await _userRepository.FindByUsernameAsync(token_name);
+            _user.EmailConfirmed = true;
+            _userRepository.Update(_user);
+            await _userRepository.SaveAsync();
+            return new OkResult();
         }
     }
 }
