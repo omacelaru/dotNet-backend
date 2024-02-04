@@ -1,12 +1,6 @@
 using dotNet_backend.Auth;
-using dotNet_backend.Data.Filters;
-using dotNet_backend.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
 using System.Text.Json.Serialization;
 using dotNet_backend.Exceptions.GlobalExceptionHandler;
 using dotNet_backend.Helpers;
@@ -21,11 +15,6 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
         .WriteTo.File("log/KarateLogs.txt", rollingInterval: RollingInterval.Day)
         .CreateLogger();
-
-    builderInstance.Services.AddControllers(options =>
-    {
-        //options.Filters.Add(new EmailVerifiedFilter());
-    });
     builderInstance.Services.AddControllers().AddJsonOptions(x =>
         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
     builderInstance.Host.UseSerilog();

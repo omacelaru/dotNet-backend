@@ -1,9 +1,6 @@
 ﻿using dotNet_backend.Models.Athlete.DTO;
-using dotNet_backend.Models.Club;
-using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.Participation.DTO;
-using dotNet_backend.Models.Request;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,4 @@
-﻿using dotNet_backend.Models.Athlete;
-using dotNet_backend.Models.Athlete.DTO;
-using dotNet_backend.Models.Coach;
+﻿using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.User.DTO;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,4 @@
-﻿using dotNet_backend.Models.Athlete;
-using dotNet_backend.Models.Participation;
-using dotNet_backend.Repositories.GenericRepository;
+﻿using dotNet_backend.Models.Participation;
 
 namespace dotNet_backend.Repositories.ParticipationRepository;
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace dotNet_backend.CustomActionFilters
 {
@@ -12,7 +11,6 @@ namespace dotNet_backend.CustomActionFilters
             {
                 return new ValidationResult("Username must be at least 5 characters long");
             }
-
             return ValidationResult.Success;
         }
     }

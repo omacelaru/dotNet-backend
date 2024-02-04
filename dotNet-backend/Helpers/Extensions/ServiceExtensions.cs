@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.CoachRepository;
@@ -81,7 +82,11 @@ namespace dotNet_backend.Helpers.Extensions
                         new string[] { }
                     }
                 });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                option.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+
             return services;
         }
 

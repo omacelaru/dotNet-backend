@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using dotNet_backend.Controllers;
-using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Club.DTO;
-using dotNet_backend.Models.Coach;
 using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.CoachRepository;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 

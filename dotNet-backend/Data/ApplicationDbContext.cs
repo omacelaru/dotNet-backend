@@ -1,5 +1,4 @@
-﻿
-using dotNet_backend.Models.Athlete;
+﻿using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Club;
 using dotNet_backend.Models.Coach;
 using dotNet_backend.Models.Competition;
@@ -8,6 +7,7 @@ using dotNet_backend.Models.Request;
 using dotNet_backend.Models.User;
 using Microsoft.EntityFrameworkCore;
 
+#pragma warning disable CS1591
 public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
@@ -23,7 +23,6 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
-        //sa scoatem email ul din unique sa fie mai usor de testat
         modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
         modelBuilder.Entity<User>().UseTptMappingStrategy();
 
@@ -53,3 +52,4 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 }
+#pragma warning restore CS1591

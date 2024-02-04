@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace dotNet_backend.CustomActionFilters
 {
@@ -7,7 +6,6 @@ namespace dotNet_backend.CustomActionFilters
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            //>8 characters, one uppercase, one lowercase, one number, one special character
             var password = value as string;
             if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
             {
@@ -31,7 +29,6 @@ namespace dotNet_backend.CustomActionFilters
                 return new ValidationResult(
                     "Password must contain at least one uppercase, one lowercase, one number and one special character");
             }
-
             return ValidationResult.Success;
         }
     }

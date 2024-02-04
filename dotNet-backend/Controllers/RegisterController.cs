@@ -13,16 +13,28 @@ namespace dotNet_backend.Controllers
     {
         private readonly IRegisterService _registerService = registerService;
 
+        /// <summary>
+        /// Register an athlete
+        /// </summary>
+        /// <param name="athleteRegisterDto"></param>
         [HttpPost("athlete")]
         [ValidateModel]
         public async Task<ActionResult<AthleteCoachNameResponseDto>> RegisterAthlete([FromBody] RegisterDto athleteRegisterDto) =>
             await _registerService.RegisterAthleteAsync(athleteRegisterDto);
 
+        /// <summary>
+        /// Register a coach
+        /// </summary>
+        /// <param name="coachRegisterDto"></param>
         [HttpPost("coach")]
         [ValidateModel]
         public async Task<ActionResult<CoachResponseDto>> RegisterCoach([FromBody] RegisterDto coachRegisterDto) =>
             await _registerService.RegisterCoachAsync(coachRegisterDto);
         
+        /// <summary>
+        /// Register an admin
+        /// </summary>
+        /// <param name="adminRegisterDto"></param>
         [HttpPost("admin")]
         [NonAction] // Comment this line to enable admin registration
         [ValidateModel]

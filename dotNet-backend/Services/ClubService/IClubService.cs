@@ -1,5 +1,4 @@
-﻿using dotNet_backend.Models.Club;
-using dotNet_backend.Models.Club.DTO;
+﻿using dotNet_backend.Models.Club.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Services.ClubService

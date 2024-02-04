@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using SendGrid;
+﻿using SendGrid;
 using SendGrid.Helpers.Mail;
 
 namespace dotNet_backend.Services.SMTP
@@ -42,10 +41,7 @@ namespace dotNet_backend.Services.SMTP
             else
             {
                 _logger.LogError("Failed to send email");
-                // Adding more information related to the failed email could be helpful in debugging failure,
-                // but be careful about logging PII, as it increases the chance of leaking PII
             }
-
         }
     }
 }

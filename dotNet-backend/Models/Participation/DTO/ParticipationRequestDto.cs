@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using dotNet_backend.CustomActionFilters;
+﻿using dotNet_backend.CustomActionFilters;
 
 namespace dotNet_backend.Models.Participation.DTO;
 

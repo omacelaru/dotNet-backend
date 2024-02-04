@@ -13,11 +13,19 @@ namespace dotNet_backend.Controllers
     {
         private readonly IRankService _rankService = rankService;
         
+        /// <summary>
+        /// Get all athletes ranked by points
+        /// </summary>
+        /// <param name="paginationFilter"></param>
+        /// <returns></returns>
         [HttpGet("athletes")]
         [ValidateModel]
         public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletes([FromQuery] PaginationFilter paginationFilter) =>
             await _rankService.GetAllAthletesAsync(paginationFilter);
 
+        /// <summary>
+        /// Get all clubs and their coaches ranked by points
+        /// </summary>
         [HttpGet("clubs_coaches")]
         [ValidateModel]
         public async Task<ActionResult<IEnumerable<ClubResponseWithPointsDto>>> GetAllClubsAndCoaches([FromQuery] PaginationFilter paginationFilter) =>
