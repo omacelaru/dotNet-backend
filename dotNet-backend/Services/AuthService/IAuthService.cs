@@ -9,5 +9,6 @@ namespace dotNet_backend.Services.AuthService
     {
         Task<IActionResult> LoginUserAsync(LoginDto loginDto);
         Task<IActionResult> RefreshTokenAsync(string refreshToken);
+        Task<IActionResult> VerifyEmailAsync(string token);
     }
 }

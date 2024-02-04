@@ -1,4 +1,5 @@
-﻿using dotNet_backend.Data.Exceptions;
+﻿using System.Security.Claims;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User;
 using dotNet_backend.Models.User.DTO;
 using Microsoft.AspNetCore.Identity;
@@ -71,6 +72,19 @@ namespace dotNet_backend.Services.AuthService
             var result = _passwordHasher.VerifyHashedPassword(new User(), hashedPassword, providedPassword);
             return result == PasswordVerificationResult.Success ||
                    result == PasswordVerificationResult.SuccessRehashNeeded;
+        }
+
+        public async Task<IActionResult> VerifyEmailAsync(string token)
+        {
+            _logger.LogInformation("Verifying email with token {}", token);
+            //nu stiu ce imi intoarce ValidateToken(token)
+            var user = TokenJwt.ValidateToken(token);
+            foreach (Claim x in user.Claims)
+            {
+                _logger.LogInformation("Claim type: {}, value: {}", x.Type, x.Value);
+            }
+            _logger.LogInformation("Email verified for user {}", user);
+            return null;
         }
     }
 }
