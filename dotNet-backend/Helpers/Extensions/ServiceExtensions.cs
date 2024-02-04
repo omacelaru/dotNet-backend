@@ -18,7 +18,6 @@ using dotNet_backend.Services.RegisterService;
 using dotNet_backend.Services.RequestService;
 using dotNet_backend.Services.SMTP;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 

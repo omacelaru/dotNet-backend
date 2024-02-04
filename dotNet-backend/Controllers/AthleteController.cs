@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using dotNet_backend.Data.Exceptions;
+﻿using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Services.AthleteService;

@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using dotNet_backend.Models.Base;
-
+﻿using dotNet_backend.Models.Base;
 namespace dotNet_backend.Models.Competition;
 
 public class Competition : BaseEntity

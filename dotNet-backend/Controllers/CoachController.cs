@@ -2,7 +2,6 @@
 using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.Participation.DTO;
-using dotNet_backend.Models.Request;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Models.Request.Enum;
 using dotNet_backend.Services.CoachService;

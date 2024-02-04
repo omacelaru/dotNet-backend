@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Repositories.AthleteRepository;

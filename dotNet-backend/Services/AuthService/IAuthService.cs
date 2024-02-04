@@ -1,6 +1,4 @@
 ﻿using dotNet_backend.Models.User.DTO;
-using dotNet_backend.Models.User;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Services.AuthService

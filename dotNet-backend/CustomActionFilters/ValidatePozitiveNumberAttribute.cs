@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 namespace dotNet_backend.CustomActionFilters;
 
 public class ValidatePozitiveNumberAttribute : ValidationAttribute

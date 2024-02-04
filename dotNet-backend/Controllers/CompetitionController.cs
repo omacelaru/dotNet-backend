@@ -3,7 +3,6 @@ using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Competition.DTO;
 using dotNet_backend.Services.CompetitionService;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotNet_backend.Controllers

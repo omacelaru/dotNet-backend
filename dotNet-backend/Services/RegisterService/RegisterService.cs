@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Helpers.GenerateJwt;
 using dotNet_backend.Models.User.DTO;
 using dotNet_backend.Models.User;
@@ -87,7 +86,7 @@ namespace dotNet_backend.Services.RegisterService
             _logger.LogInformation("Sending email to {email} with subject {subject}", user.Email, _confirmEmailSubject);
             await _smtpService.SendEmailAsync(user.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
             
-            _userRepository.Create(user);
+            await _userRepository.CreateAsync(user);
             await _userRepository.SaveAsync();
         }
         

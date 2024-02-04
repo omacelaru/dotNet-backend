@@ -1,5 +1,4 @@
 ﻿using dotNet_backend.Models.Request;
-using dotNet_backend.Models.Request.DTO;
 using dotNet_backend.Repositories.GenericRepository;
 
 namespace dotNet_backend.Repositories.RequestRepository;

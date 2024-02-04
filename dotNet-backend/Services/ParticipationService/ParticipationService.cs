@@ -1,16 +1,11 @@
 ﻿using AutoMapper;
-using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Athlete.DTO;
-using dotNet_backend.Models.Competition;
 using dotNet_backend.Models.Competition.DTO;
 using dotNet_backend.Models.Participation;
 using dotNet_backend.Models.Participation.DTO;
-using dotNet_backend.Models.User;
-using dotNet_backend.Models.User.Enum;
 using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.CompetitionRepository;
 using dotNet_backend.Repositories.ParticipationRepository;
-using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.AthleteService;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;

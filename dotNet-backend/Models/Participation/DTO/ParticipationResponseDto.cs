@@ -1,5 +1,4 @@
-﻿using AutoMapper.Internal;
-using dotNet_backend.Models.Athlete.DTO;
+﻿using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Competition.DTO;
 
 namespace dotNet_backend.Models.Participation.DTO

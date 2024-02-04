@@ -1,9 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User;
-using dotNet_backend.Repositories.UserRepository;
 using Microsoft.IdentityModel.Tokens;
 using SendGrid.Helpers.Errors.Model;
 

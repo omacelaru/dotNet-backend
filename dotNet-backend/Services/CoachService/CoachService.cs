@@ -8,7 +8,6 @@ using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.CoachRepository;
 using dotNet_backend.Repositories.ParticipationRepository;
 using dotNet_backend.Repositories.RequestRepository;
-using dotNet_backend.Services.RequestService;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 

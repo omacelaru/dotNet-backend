@@ -1,6 +1,4 @@
-﻿using dotNet_backend.Models.Base;
-
-namespace dotNet_backend.Models.Participation;
+﻿namespace dotNet_backend.Models.Participation;
 
 public class Participation 
 {

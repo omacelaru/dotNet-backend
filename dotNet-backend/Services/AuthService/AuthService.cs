@@ -1,12 +1,9 @@
-﻿using System.Security.Claims;
-using dotNet_backend.Data.Exceptions;
-using dotNet_backend.Models.User;
+﻿using dotNet_backend.Models.User;
 using dotNet_backend.Models.User.DTO;
 using Microsoft.AspNetCore.Identity;
 using dotNet_backend.Helpers.GenerateJwt;
 using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.SMTP;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
