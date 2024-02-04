@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.CoachRepository;
@@ -17,6 +18,7 @@ using dotNet_backend.Services.RegisterService;
 using dotNet_backend.Services.RequestService;
 using dotNet_backend.Services.SMTP;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -81,7 +83,11 @@ namespace dotNet_backend.Helpers.Extensions
                         new string[] { }
                     }
                 });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                option.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+
             return services;
         }
 

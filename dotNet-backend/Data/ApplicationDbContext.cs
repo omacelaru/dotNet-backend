@@ -8,6 +8,7 @@ using dotNet_backend.Models.Request;
 using dotNet_backend.Models.User;
 using Microsoft.EntityFrameworkCore;
 
+#pragma warning disable CS1591
 public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
@@ -52,3 +53,4 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 }
+#pragma warning restore CS1591
