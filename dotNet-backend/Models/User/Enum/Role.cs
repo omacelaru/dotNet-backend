@@ -2,6 +2,7 @@
 {
     public enum Role
     {
+        User,
         Athlete,
         Coach,
         Admin

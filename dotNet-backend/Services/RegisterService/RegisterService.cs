@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using dotNet_backend.Helpers.GenerateJwt;
-using dotNet_backend.Models.User.DTO;
+using dotNet_backend.Models.Athlete;
+using dotNet_backend.Models.Athlete.DTO;
+using dotNet_backend.Models.Coach;
+using dotNet_backend.Models.Coach.DTO;
 using dotNet_backend.Models.User;
+using dotNet_backend.Models.User.DTO;
+using dotNet_backend.Models.User.Enum;
 using dotNet_backend.Repositories.UserRepository;
 using dotNet_backend.Services.SMTP;
 using Microsoft.AspNetCore.Identity;
-using dotNet_backend.Models.Athlete.DTO;
-using dotNet_backend.Models.Athlete;
-using dotNet_backend.Models.Coach;
-using dotNet_backend.Models.Coach.DTO;
-using dotNet_backend.Models.User.Enum;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
@@ -23,7 +23,7 @@ namespace dotNet_backend.Services.RegisterService
         private readonly ISMTPService _smtpService;
         private readonly ILogger<RegisterService> _logger;
         private readonly IMapper _mapper;
-        
+
         private string _confirmEmailSubject = "Confirm your account";
         private string _confirmEmailBody = "<a href=\"{0}\">Confirm your account</a>";
 
@@ -36,7 +36,7 @@ namespace dotNet_backend.Services.RegisterService
             _logger = logger;
             _mapper = mapper;
         }
-        
+
         public async Task<ActionResult<AthleteCoachNameResponseDto>> RegisterAthleteAsync(RegisterDto athleteRegisterDto)
         {
             _logger.LogInformation("Registering athlete {}", athleteRegisterDto);
@@ -54,7 +54,7 @@ namespace dotNet_backend.Services.RegisterService
             await RegisterUserAsync(coach);
             return _mapper.Map<CoachResponseDto>(coach);
         }
-        
+
         public async Task<IActionResult> RegisterAdminAsync(RegisterDto adminRegisterDto)
         {
             _logger.LogInformation("Registering admin {}", adminRegisterDto);
@@ -63,7 +63,17 @@ namespace dotNet_backend.Services.RegisterService
             await RegisterUserAsync(admin);
             return new OkResult();
         }
-        
+
+        public async Task<ActionResult<RegisterResponseDto>> RegisterUser(RegisterDto registerDto)
+        {
+            _logger.LogInformation("Registering user {}", registerDto);
+            var user = _mapper.Map<User>(registerDto);
+            user.Role = Role.User;
+            await RegisterUserAsync(user);
+            return _mapper.Map<RegisterResponseDto>(user);
+        }
+
+
         private async Task RegisterUserAsync(User user)
         {
             if (await _userRepository.FindByEmailAsync(user.Email) != null)
@@ -76,19 +86,19 @@ namespace dotNet_backend.Services.RegisterService
                 _logger.LogError("Username already exists registering user {}", user);
                 throw new BadRequestException("Username is already used.");
             }
-            
+
             user.Password = _passwordHasher.HashPassword(user, user.Password);
-            
+
             var token = TokenJwt.GenerateJwtToken(user);
-            
-            var link =  _configuration["AppUrl"] + "/api/auth/confirm?token=" + token;
-            
+
+            var link = _configuration["AppUrl"] + "confirm-email?token=" + token;
+
             _logger.LogInformation("Sending email to {email} with subject {subject}", user.Email, _confirmEmailSubject);
             await _smtpService.SendEmailAsync(user.Email, _confirmEmailSubject, string.Format(_confirmEmailBody, link));
-            
+
             await _userRepository.CreateAsync(user);
             await _userRepository.SaveAsync();
         }
-        
+
     }
 }

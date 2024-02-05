@@ -19,16 +19,16 @@ namespace dotNet_backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CompetitionResponseDto>>> GetAllCompetitions() =>
             await _competitionService.GetAllCompetitions();
-        
+
         /// <summary>
         /// Create a competition by an admin
         /// </summary>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateModel]
-        public async Task<ActionResult<CompetitionResponseDto>> CreateCompetition([FromBody] CompetitionRequestDto competitionRequestDto) => 
+        public async Task<ActionResult<CompetitionResponseDto>> CreateCompetition([FromBody] CompetitionRequestDto competitionRequestDto) =>
             await _competitionService.CreateCompetitionAsync(competitionRequestDto);
-        
+
         /// <summary>
         /// Delete a competition by an admin
         /// </summary>
@@ -36,20 +36,20 @@ namespace dotNet_backend.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<CompetitionResponseDto>> DeleteCompetition(Guid id) =>
             await _competitionService.DeleteCompetitionAsync(id);
-        
+
         /// <summary>
         /// Get a competition by id
         /// </summary>
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<CompetitionResponseDto>> GetCompetitionById(Guid id) =>
             await _competitionService.GetCompetitionByIdAsync(id);
-        
+
         /// <summary>
         /// Get all athletes who are participating in a competition by competition id
         /// </summary>
         [HttpGet("{id:guid}/athletes")]
         public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetCompetitionAthletes(Guid id) =>
             await _competitionService.GetCompetitionAthletesAsync(id);
-        
+
     }
 }

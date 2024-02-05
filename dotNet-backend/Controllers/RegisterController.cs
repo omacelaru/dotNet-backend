@@ -30,15 +30,20 @@ namespace dotNet_backend.Controllers
         [ValidateModel]
         public async Task<ActionResult<CoachResponseDto>> RegisterCoach([FromBody] RegisterDto coachRegisterDto) =>
             await _registerService.RegisterCoachAsync(coachRegisterDto);
-        
+
         /// <summary>
         /// Register an admin
         /// </summary>
         /// <param name="adminRegisterDto"></param>
         [HttpPost("admin")]
-        [NonAction] // Comment this line to enable admin registration
+        ///[NonAction] // Comment this line to enable admin registration
         [ValidateModel]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto adminRegisterDto) =>
             await _registerService.RegisterAdminAsync(adminRegisterDto);
+
+        [HttpPost]
+        [ValidateModel]
+        public async Task<ActionResult<RegisterResponseDto>> Register([FromBody] RegisterDto registerDto) =>
+            await _registerService.RegisterUser(registerDto);
     }
 }

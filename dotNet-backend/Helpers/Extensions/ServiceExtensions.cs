@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using System.Text;
-using dotNet_backend.Repositories.AthleteRepository;
+﻿using dotNet_backend.Repositories.AthleteRepository;
 using dotNet_backend.Repositories.ClubRepository;
 using dotNet_backend.Repositories.CoachRepository;
 using dotNet_backend.Repositories.CompetitionRepository;
@@ -20,6 +18,8 @@ using dotNet_backend.Services.SMTP;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Text;
 
 namespace dotNet_backend.Helpers.Extensions
 {
@@ -52,7 +52,7 @@ namespace dotNet_backend.Helpers.Extensions
             services.AddTransient<IRankService, RankService>();
             return services;
         }
-        
+
 
         public static IServiceCollection AddSwagger(this IServiceCollection services)
         {

@@ -17,26 +17,26 @@ namespace dotNet_backend.Controllers
         /// Get all athletes
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletes() => 
+        public async Task<ActionResult<IEnumerable<AthleteCoachNameResponseDto>>> GetAllAthletes() =>
             await _athleteService.GetAllAthletesAsync();
-        
+
         /// <summary>
         /// Get the current athlete
         /// </summary>
         [HttpGet("me")]
         [Authorize(Roles = "Athlete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AthleteCoachNameResponseDto>> GetAthlete() => 
+        public async Task<ActionResult<AthleteCoachNameResponseDto>> GetAthlete() =>
             await _athleteService.GetAthleteByUsernameAsync(User.Identity.Name);
-        
+
         /// <summary>
         /// Get the current athlete's requests
         /// </summary>
         [HttpGet("me/requests")]
         [Authorize(Roles = "Athlete")]
-        public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetAthleteRequests() => 
+        public async Task<ActionResult<IEnumerable<RequestInfoResponseDto>>> GetAthleteRequests() =>
             await _athleteService.GetAthleteRequestsAsync(User.Identity.Name);
-        
+
         /// <summary>
         /// Delete a request of the current athlete
         /// </summary>
@@ -47,7 +47,7 @@ namespace dotNet_backend.Controllers
         [Authorize(Roles = "Athlete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
-        public async Task<ActionResult<RequestInfoResponseDto>> DeleteAthleteRequest(Guid Id) => 
+        public async Task<ActionResult<RequestInfoResponseDto>> DeleteAthleteRequest(Guid Id) =>
             await _athleteService.DeleteAthleteRequestAsync(Id, User.Identity.Name);
     }
 }

@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using dotNet_backend.CustomActionFilters;
+﻿using dotNet_backend.CustomActionFilters;
+using System.ComponentModel.DataAnnotations;
 
 namespace dotNet_backend.Models.User.DTO
 {
@@ -9,9 +9,16 @@ namespace dotNet_backend.Models.User.DTO
         public string Username { get; set; }
         [ValidatePassword]
         public string Password { get; set; }
-        [EmailAddress(ErrorMessage = "Invalid Email Address"), Required] 
+        [EmailAddress(ErrorMessage = "Invalid Email Address"), Required]
         public string Email { get; set; }
         [Required]
+        public string Name { get; set; }
+    }
+
+    public class RegisterResponseDto
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
         public string Name { get; set; }
     }
 
