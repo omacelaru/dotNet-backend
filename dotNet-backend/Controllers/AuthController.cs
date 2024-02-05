@@ -1,6 +1,6 @@
-﻿using dotNet_backend.Data.Exceptions;
+﻿using dotNet_backend.CustomActionFilters;
+using dotNet_backend.Data.Exceptions;
 using dotNet_backend.Models.User.DTO;
-using dotNet_backend.Services;
 using dotNet_backend.Services.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,65 +9,44 @@ namespace dotNet_backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService): ControllerBase
     {
-        private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
-        {
-            try
-            {
-                return Ok(await _authService.RegisterUserAsync(registerDto));
-
-            }
-            catch (AuthorizationException)
-            {
-                return Unauthorized();
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-        }
-
+        private readonly IAuthService _authService =authService;
+        
+        /// <summary>
+        /// Login user
+        /// </summary>
+        /// <param name="loginDto"></param>
+        /// <response code="200">User logged in</response>
+        /// <response code="401">Invalid credentials</response>
+        /// <response code="403">User is not confirmed</response>
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto loginDto)
-        {
-            try
-            {
-                return Ok(await _authService.LoginUserAsync(loginDto));
+        [ValidateModel]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorMessage))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorMessage))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorMessage))]
+        public async Task<IActionResult> Login(LoginDto loginDto) =>
+            await _authService.LoginUserAsync(loginDto);
 
-            }
-            catch (AuthorizationException)
-            {
-                return Unauthorized();
-            }
-        }
-
-
+        /// <summary>
+        /// Refresh token
+        /// </summary>
+        /// <param name="refreshToken"></param>
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh(string refreshToken)
-        {
-            try
-            {
-                return Ok(await _authService.RefreshTokenAsync(refreshToken));
+        public async Task<IActionResult> Refresh(string refreshToken) =>
+            await _authService.RefreshTokenAsync(refreshToken);
 
-            }
-            catch (BadRequestException err)
-            {
-                return BadRequest(new { error = err.Message });
-            }
-        }
+        /// <summary>
+        /// Validate email
+        /// </summary>
+        /// <param name="email token"></param>
+        [HttpPatch("confirm")]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token) =>
+            await _authService.VerifyEmailAsync(token);
 
         [Authorize]
         [HttpGet("test")]
-        public async Task<IActionResult> AuthTest()
-        {
-            return Ok("Ok");
-        }
+        public IActionResult AuthTest() => Ok("Ok");
     }
 }

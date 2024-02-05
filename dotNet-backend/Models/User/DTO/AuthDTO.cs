@@ -1,17 +1,32 @@
-﻿namespace dotNet_backend.Models.User.DTO
+﻿using dotNet_backend.CustomActionFilters;
+using System.ComponentModel.DataAnnotations;
+
+namespace dotNet_backend.Models.User.DTO
 {
     public class RegisterDto
     {
+        [ValidateUsername]
         public string Username { get; set; }
+        [ValidatePassword]
         public string Password { get; set; }
-
+        [EmailAddress(ErrorMessage = "Invalid Email Address"), Required]
         public string Email { get; set; }
-        // Other registration properties
+        [Required]
+        public string Name { get; set; }
+    }
+
+    public class RegisterResponseDto
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string Name { get; set; }
     }
 
     public class LoginDto
     {
+        [Required]
         public string Username { get; set; }
+        [Required]
         public string Password { get; set; }
     }
 
