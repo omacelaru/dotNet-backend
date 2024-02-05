@@ -1,11 +1,11 @@
 using dotNet_backend.Auth;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 using dotNet_backend.Exceptions.GlobalExceptionHandler;
 using dotNet_backend.Helpers;
 using dotNet_backend.Helpers.Extensions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +35,14 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builderInstance.Services.AddEndpointsApiExplorer();
 
+    builderInstance.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAll", builder =>
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader());
+    });
+
     var app = builderInstance.Build();
 
     // Configure the HTTP request pipeline.
@@ -43,17 +51,18 @@ void ConfigureServices(WebApplicationBuilder builderInstance)
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    app.UseCors("AllowAll");
 
     app.UseAuthentication();
 
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-    
+
     app.MapControllers();
 
     app.UseExceptionHandler(_ => { });
-    
+
     app.Run();
 }
 

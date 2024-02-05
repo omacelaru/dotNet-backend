@@ -12,5 +12,6 @@ namespace dotNet_backend.Services.RegisterService
         Task<ActionResult<CoachResponseDto>> RegisterCoachAsync(RegisterDto coachRegisterDto);
 
         Task<IActionResult> RegisterAdminAsync(RegisterDto adminRegisterDto);
+        Task<ActionResult<RegisterResponseDto>> RegisterUser(RegisterDto registerDto);
     }
 }

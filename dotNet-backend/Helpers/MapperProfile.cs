@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using dotNet_backend.Models.Athlete;
 using dotNet_backend.Models.Athlete.DTO;
 using dotNet_backend.Models.Club;
@@ -51,11 +50,11 @@ namespace dotNet_backend.Helpers
             CreateMap<RequestInfo, RequestInfoWithCompetitionResponseDto>()
                 .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => src.RequestType.ToString()))
                 .ForMember(dest => dest.RequestStatus, opt => opt.MapFrom(src => src.RequestStatus.ToString()));
-            
+
             CreateMap<CompetitionRequestDto, Competition>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.ToDateTime(new TimeOnly(9, 0, 0))))
-                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.ToDateTime(new TimeOnly(9,0,0))));
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.ToDateTime(new TimeOnly(9, 0, 0))));
 
             CreateMap<Competition, CompetitionNameResponseDto>();
             CreateMap<Competition, CompetitionResponseDto>()
@@ -78,6 +77,8 @@ namespace dotNet_backend.Helpers
                 .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.Athlete.Points))
                 .ForMember(dest => dest.CoachName, opt => opt.MapFrom(src => src.Athlete.Coach.Name));
             CreateMap<Participation, ParticipationAthleteWithAwardsResponseDto>();
+
+            CreateMap<User, RegisterResponseDto>();
         }
     }
 }
