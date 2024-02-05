@@ -26,6 +26,9 @@ This project aims to create a comprehensive Karate Club Management System using 
 - Manage competitions and view medal achievements.
 - Display rankings based on points earned by athletes.
 
+## Database diagram
+![image](documentation/images/database_karate_diagrams.png)
+
 ## How to create Database in SQL Server
 
 - start Docker Desktop
